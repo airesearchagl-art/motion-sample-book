@@ -99,7 +99,7 @@ app.innerHTML = `
           <p class="eyebrow">VIDEO & CAMERA</p>
           <h2 id="video-catalog-title">映像の動きから選ぶ</h2>
         </div>
-        <p class="catalog-note">プレビューを押すと、何度でも再生できます。</p>
+        <p class="catalog-note">カーソルを重ねるか、タップして動きを試せます。</p>
       </div>
       <p class="result"><span>5</span>件を表示</p>
       <div class="grid" id="video-grid"></div>
@@ -155,7 +155,7 @@ videoGrid.innerHTML = videoSamples.map((sample) => `
         <span class="pan-track" aria-hidden="true"><i></i><i></i><i></i></span>
         <span class="frame-guides" aria-hidden="true"></span>
       </span>
-      <span class="replay-label"><span aria-hidden="true">↻</span> PLAY</span>
+      <span class="interaction-label">HOVER / TAP</span>
     </button>
     <div class="card-copy">
       <p class="english">${sample.english}</p>
