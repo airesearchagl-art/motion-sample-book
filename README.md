@@ -2,4 +2,28 @@
 
 操作の動きが一目でわかる動き見本帳。
 
-A motion sample book for UI interactions.
+> A motion sample book for UI interactions.
+
+名前を思い出せないUIモーションを、実際に触りながら探すための小さな図鑑です。初版では、特徴の異なる10種類を収録しています。
+
+## 収録している動き
+
+1. ふわっと浮く
+2. 大きくなる
+3. 押し込まれる
+4. ぷるっと弾む
+5. 左右に揺れる
+6. 少し傾く
+7. 下線が伸びる
+8. 背景色が広がる
+9. 光が横切る
+10. 波紋が広がる
+
+## ローカルで動かす
+
+```bash
+npm install
+npm run dev
+```
+
+本番用の確認は `npm run build` で行います。
