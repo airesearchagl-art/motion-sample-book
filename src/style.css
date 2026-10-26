@@ -154,7 +154,7 @@ h1 em { color: var(--coral); font-style: normal; }
 .scene-shape { display: block; width: 32%; aspect-ratio: 1; border: 2px solid rgba(255,255,255,.9); transform: rotate(45deg); }
 .shape-b { width: 38%; border-radius: 50%; transform: none; background: rgba(255,255,255,.1); }
 .scene small { position: absolute; left: 18px; bottom: 16px; font-size: .62rem; letter-spacing: .15em; font-weight: 600; opacity: .72; }
-.replay-label { position: absolute; right: 14px; bottom: 12px; z-index: 8; padding: 7px 9px; background: rgba(17,18,19,.68); font-size: .62rem; letter-spacing: .13em; }
+.interaction-label { position: absolute; right: 14px; bottom: 12px; z-index: 8; padding: 7px 9px; background: rgba(17,18,19,.68); font-size: .62rem; letter-spacing: .13em; }
 .frame-guides { position: absolute; inset: 10%; z-index: 7; border: 1px solid rgba(255,255,255,.22); pointer-events: none; }
 .frame-guides::before, .frame-guides::after { content: ''; position: absolute; background: rgba(255,255,255,.14); }
 .frame-guides::before { left: 33.333%; top: 0; bottom: 0; width: 1px; box-shadow: calc(100% + 33.333%) 0 0 rgba(255,255,255,.14); }
