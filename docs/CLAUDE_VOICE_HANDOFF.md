@@ -31,8 +31,9 @@ ChatGPTとの音声会話を中心に、次の順で進めました。
 5. Vercelと接続して本番公開
 6. Notionのアプリケーション管理とObsidian Vaultへ記録
 7. 将来の拡張ロードマップを作成
-8. 動画・カメラの基礎5種類をDraft PR #3へ追加
+8. 動画・カメラの基礎5種類をPR #3へ追加
 9. PC・iPhone・キーボードで使える再生方式へ修正
+10. 文言を操作方式に統一し、PR #3をHuman承認後にmerge
 
 認証、空リポジトリの最初の作成、mergeや正式公開などの重要な承認はHumanが行いました。「完全自動」「画面操作なしで完成」ではありません。
 
@@ -68,12 +69,13 @@ Application Roadmap PR #2はmerge済みです。
 
 Notionの「モーション見本帳」管理ページもロードマップのmerge済み状態へ更新済みです。
 
-## 4. 現在の開発対象: Draft PR #3
+## 4. ChatGPT側の完了点: PR #3
 
 - PR: https://github.com/airesearchagl-art/motion-sample-book/pull/3
-- 状態: OPEN / Draft / 未merge
-- 記録時のHEAD: `0fac051c5f22cd013a0af0e2a35154249b2981a0`
-- 記録時のbase: `e41ca6fdaaf49022ace592ec8b05435fe19e8150`
+- 状態: SQUASH MERGED
+- merge commit: `fcc56b323a9c474ba1f54f887bfde606e15bec88`
+- merge前HEAD: `0fac051c5f22cd013a0af0e2a35154249b2981a0`
+- base: `e41ca6fdaaf49022ace592ec8b05435fe19e8150`
 - 作業ブランチ: `feat/video-motion-foundation`
 
 追加した5種類:
@@ -95,7 +97,7 @@ Notionの「モーション見本帳」管理ページもロードマップのme
 - 見出し横の説明は「カーソルを重ねるか、タップして動きを試せます。」
 - 各プレビュー右下の表示は `HOVER / TAP`
 
-記録時の確認結果:
+マージ前の確認結果:
 
 - `npm ci`: PASS
 - `npm run build`: PASS
@@ -106,15 +108,15 @@ Notionの「モーション見本帳」管理ページもロードマップのme
 - 配信されたJavaScriptに、ホバー、細かなポインター判定、キーボードフォーカス、絞り込み範囲の修正が含まれることを確認
 - 配信されたJavaScriptで、新しい説明文と `HOVER / TAP`、旧 `PLAY` 表示の除去を確認
 
-記録時のVercelプレビュー:
+マージ前のVercelプレビュー:
 
 - https://motion-sample-book-ijx1kzpfp-airesearchagls-projects.vercel.app/
 
 プレビューはVercelのログイン保護が表示される場合があります。保護を解除せず、所有者の通常のVercelアカウントで確認してください。
 
-## 5. Human確認が残っている項目
+## 5. Claude側で確認・発展する項目
 
-PCとiPhoneで、次を確認してください。
+PR #3のmergeを止める項目ではありません。Claudeへ切り替えた後、PCとiPhoneで次を再確認し、次の改善候補を整理してください。
 
 - 「動画・カメラ 5」タブへ切り替えられる
 - 5種類の違いを見分けられる
@@ -131,23 +133,23 @@ PR #4がmainへmergeされた後に実施します。
 
 1. Claudeの新しい通常チャットを開き、音声会話を開始する
 2. 下の「開始用指示」を読み上げるか貼り付ける
-3. Claudeに、この文書と`ROADMAP.md`、README、Draft PR #3を読ませる
-4. Claudeから、現在のHEAD、base、Draft状態、Vercel状態を読み返してもらう
+3. Claudeに、この文書と`ROADMAP.md`、README、merge済みPR #3を読ませる
+4. Claudeから、mainの現在HEAD、PR #3のmerge状態、VercelのProduction状態を読み返してもらう
 5. 上記と一致しない場合は、古い情報を使わず、現在のGitHubを正とする
-6. まずHuman確認の指摘を整理し、修正が必要なら既存のPR #3で進める
-7. Humanの明示承認があるまで、PR #3をReady化・merge・Production反映しない
+6. 上記の再確認項目を整理し、修正が必要なら新しいDraft PRで進める
+7. 次の開発は`ROADMAP.md`の優先順を基準にし、Humanの明示承認があるまでmerge・Production反映しない
 
 ## 7. Claudeへの開始用指示
 
-> GitHubの公開リポジトリ `airesearchagl-art/motion-sample-book` を確認してください。最初にmainの `docs/CLAUDE_VOICE_HANDOFF.md`、`ROADMAP.md`、READMEを読み、その後Draft PR #3の現在状態、HEAD、base、差分、Vercelチェックを読み取り専用で確認してください。引き継ぎ書の記録と現在状態が違う場合はGitHubの現在状態を優先してください。目的は、動画・カメラ5種類のHuman UX確認と必要な修正を、音声会話中心で続けることです。まず現在地、確認済み、未確認、次の一手を短く整理してください。私が明示的に承認するまで、PR #3のReady化、merge、Production反映、Vercel設定変更、Notion・Obsidian Vault更新はしないでください。
+> GitHubの公開リポジトリ `airesearchagl-art/motion-sample-book` を確認してください。最初にmainの `docs/CLAUDE_VOICE_HANDOFF.md`、`ROADMAP.md`、READMEを読み、その後merge済みPR #3の履歴、mainの現在HEAD、VercelのProduction状態を読み取り専用で確認してください。引き継ぎ書の記録と現在状態が違う場合はGitHubの現在状態を優先してください。目的は、動画・カメラ5種類の再確認とロードマップの次段階を、音声会話中心で続けることです。まず現在地、確認済み、未確認、次の一手を短く整理してください。私が明示的に承認するまで、新しい実装、PRのReady化・merge、Production反映、Vercel設定変更、Notion・Obsidian Vault更新はしないでください。
 
 ## 8. 安全境界
 
 - 秘密情報、トークン、アカウントIDを文書やPRへ記録しない
 - Vercelの保護設定を確認の都合だけで解除しない
-- PR #3のDraft状態をHuman承認なしに変えない
 - mainやProductionをHuman承認なしに変更しない
-- 新しいPRを増やす前に、PR #3で扱う変更かを判断する
+- 新しい実装を始める前に、`ROADMAP.md`のどの段階かを明示する
+- 修正や次機能は新しいDraft PRに分ける
 - 「音声だけですべて自動化できた」と表現しない
 
 ## 9. 引き継ぎ完了条件
@@ -155,6 +157,6 @@ PR #4がmainへmergeされた後に実施します。
 次の4点をClaudeが読み返せたら、引き継ぎ完了です。
 
 - mainへ反映済みの範囲
-- Draft PR #3の現在状態
-- Human確認が残る項目
-- mergeとProduction反映にはHuman承認が必要であること
+- merge済みPR #3とmainの現在状態
+- Claude側で再確認・発展する項目
+- 今後のmergeとProduction反映にはHuman承認が必要であること
