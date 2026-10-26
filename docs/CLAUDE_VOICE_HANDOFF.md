@@ -72,7 +72,7 @@ Notionの「モーション見本帳」管理ページもロードマップのme
 
 - PR: https://github.com/airesearchagl-art/motion-sample-book/pull/3
 - 状態: OPEN / Draft / 未merge
-- 記録時のHEAD: `bc11c664400fbad708bb3c229c0d86e5a66366ab`
+- 記録時のHEAD: `0fac051c5f22cd013a0af0e2a35154249b2981a0`
 - 記録時のbase: `e41ca6fdaaf49022ace592ec8b05435fe19e8150`
 - 作業ブランチ: `feat/video-motion-foundation`
 
@@ -92,6 +92,8 @@ Notionの「モーション見本帳」管理ページもロードマップのme
 - キーボード: フォーカスすると再生
 - 連続して再生しても、以前のタイマーで途中停止しない
 - UI側の絞り込みは動画カードへ影響しない
+- 見出し横の説明は「カーソルを重ねるか、タップして動きを試せます。」
+- 各プレビュー右下の表示は `HOVER / TAP`
 
 記録時の確認結果:
 
@@ -102,10 +104,11 @@ Notionの「モーション見本帳」管理ページもロードマップのme
 - `git diff --check`: PASS
 - Vercel: READY / SUCCESS
 - 配信されたJavaScriptに、ホバー、細かなポインター判定、キーボードフォーカス、絞り込み範囲の修正が含まれることを確認
+- 配信されたJavaScriptで、新しい説明文と `HOVER / TAP`、旧 `PLAY` 表示の除去を確認
 
 記録時のVercelプレビュー:
 
-- https://motion-sample-book-5iblm4yks-airesearchagls-projects.vercel.app/
+- https://motion-sample-book-ijx1kzpfp-airesearchagls-projects.vercel.app/
 
 プレビューはVercelのログイン保護が表示される場合があります。保護を解除せず、所有者の通常のVercelアカウントで確認してください。
 
