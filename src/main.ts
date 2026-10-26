@@ -210,11 +210,34 @@ document.querySelectorAll<HTMLButtonElement>('.motion-stage').forEach((stage) =>
   })
 })
 
-document.querySelectorAll<HTMLButtonElement>('.video-stage').forEach((stage) => {
-  stage.addEventListener('click', () => {
+const videoPlaybackTimers = new WeakMap<HTMLButtonElement, number>()
+const canHover = window.matchMedia('(hover: hover) and (pointer: fine)')
+
+const playVideoPreview = (stage: HTMLButtonElement) => {
+  const activeTimer = videoPlaybackTimers.get(stage)
+  if (activeTimer !== undefined) window.clearTimeout(activeTimer)
+
+  stage.classList.remove('is-playing')
+  void stage.offsetWidth
+  stage.classList.add('is-playing')
+
+  const timer = window.setTimeout(() => {
     stage.classList.remove('is-playing')
-    void stage.offsetWidth
-    stage.classList.add('is-playing')
-    window.setTimeout(() => stage.classList.remove('is-playing'), 2400)
+    videoPlaybackTimers.delete(stage)
+  }, 2400)
+  videoPlaybackTimers.set(stage, timer)
+}
+
+document.querySelectorAll<HTMLButtonElement>('.video-stage').forEach((stage) => {
+  stage.addEventListener('pointerenter', () => {
+    if (canHover.matches) playVideoPreview(stage)
   })
+
+  stage.addEventListener('focus', () => {
+    window.requestAnimationFrame(() => {
+      if (stage.matches(':focus-visible')) playVideoPreview(stage)
+    })
+  })
+
+  stage.addEventListener('click', () => playVideoPreview(stage))
 })
