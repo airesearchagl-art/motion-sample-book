@@ -184,7 +184,7 @@ libraryTabs.forEach((tab) => {
 })
 
 const filters = [...document.querySelectorAll<HTMLButtonElement>('.filter')]
-const cards = [...document.querySelectorAll<HTMLElement>('.sample-card')]
+const cards = [...document.querySelectorAll<HTMLElement>('#motion-grid .sample-card')]
 const resultCount = document.querySelector<HTMLSpanElement>('#result-count')!
 
 filters.forEach((button) => {
