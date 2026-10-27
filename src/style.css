@@ -40,6 +40,11 @@ button { color: inherit; }
 .brand-mark i:nth-child(3) { height: 12px; animation-delay: -.3s; }
 .edition, .eyebrow { font-size: .72rem; letter-spacing: .16em; font-weight: 600; text-transform: uppercase; }
 .edition { color: #6e695e; }
+.header-links { display: flex; align-items: center; gap: 22px; }
+.guide-link { color: var(--ink); text-decoration: none; font-size: .86rem; font-weight: 600; padding: 8px 16px; border: 1px solid var(--ink); border-radius: 999px; transition: background .2s, color .2s; }
+.guide-link:hover, .guide-link:focus-visible { background: var(--ink); color: var(--cream); }
+.guide-link:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+.playback-note a { margin-left: 6px; color: var(--blue); }
 
 .hero { padding: clamp(72px, 12vw, 160px) 5vw 80px; border-bottom: 1px solid var(--line); position: relative; overflow: hidden; }
 .hero::after { content: ''; position: absolute; width: 34vw; height: 34vw; min-width: 280px; min-height: 280px; right: -8vw; top: 22px; border: 1px solid rgba(234,107,77,.55); border-radius: 50%; box-shadow: 0 0 0 35px rgba(234,107,77,.05), 0 0 0 70px rgba(234,107,77,.035); pointer-events: none; }

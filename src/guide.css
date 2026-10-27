@@ -1,0 +1,77 @@
+/* 使い方ページ（guide.html）。色や書体は style.css の変数を使う */
+.guide { padding-bottom: 80px; }
+.guide-hero { padding: clamp(56px, 9vw, 110px) 5vw 48px; border-bottom: 1px solid var(--line); }
+.guide-hero .eyebrow { color: var(--coral); }
+.guide-hero h1 { font-size: clamp(2.6rem, 6vw, 5rem); margin: 14px 0 20px; }
+
+.guide-layout { display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: clamp(32px, 5vw, 72px); padding: 0 5vw; }
+.guide-toc { position: sticky; top: 0; align-self: start; padding: 40px 0; max-height: 100vh; overflow-y: auto; }
+.guide-toc .eyebrow { margin: 0 0 14px; color: #746e62; }
+.guide-toc ol { margin: 0; padding: 0; list-style: none; counter-reset: toc; display: grid; gap: 2px; }
+.guide-toc li { counter-increment: toc; }
+.guide-toc a { display: flex; gap: 10px; padding: 8px 10px; border-radius: 6px; color: var(--ink); text-decoration: none; font-size: .9rem; line-height: 1.4; }
+.guide-toc a::before { content: counter(toc, decimal-leading-zero); color: #9a9488; font-size: .74rem; padding-top: 2px; }
+.guide-toc a:hover, .guide-toc a:focus-visible { background: rgba(37,35,31,.06); }
+.guide-toc a:focus-visible { outline: 2px solid var(--blue); outline-offset: 1px; }
+
+.guide-body { min-width: 0; max-width: 780px; }
+.guide-section { padding: 48px 0 40px; border-bottom: 1px solid var(--line); scroll-margin-top: 16px; }
+.guide-section h2 { margin: 4px 0 10px; font-size: clamp(1.5rem, 2.8vw, 2.1rem); letter-spacing: -.03em; }
+.guide-section h4 { margin: 0 0 8px; font-size: .95rem; }
+.guide-section p, .guide-section li, .guide-section dd, .guide-section td { line-height: 1.85; font-size: .95rem; color: #3f3c36; }
+.guide-section a { color: var(--blue); }
+.g-index { margin: 0; color: var(--coral); font-size: .76rem; font-weight: 600; letter-spacing: .14em; }
+.g-lead { margin: 0 0 22px; color: #5b574e !important; }
+
+kbd { display: inline-block; padding: 1px 8px; margin: 1px 0; border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 6px; background: var(--cream); font-family: inherit; font-size: .84em; line-height: 1.6; white-space: nowrap; color: var(--ink); }
+.g-badge { display: inline-block; font-size: .72em; padding: 1px 6px; border: 1px solid rgba(49,92,112,.35); color: var(--blue); border-radius: 4px; vertical-align: 1px; }
+
+.g-steps { margin: 0 0 18px; padding: 0; list-style: none; counter-reset: step; display: grid; gap: 10px; }
+.g-steps li { counter-increment: step; display: grid; grid-template-columns: 36px 120px minmax(0, 1fr); gap: 12px; align-items: baseline; padding: 14px 16px; background: rgba(255,253,247,.55); border: 1px solid var(--line); }
+.g-steps li::before { content: counter(step); display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--ink); color: var(--cream); font-size: .8rem; font-weight: 600; align-self: start; }
+.g-steps strong { font-size: .95rem; }
+
+.g-list { margin: 0 0 18px; padding-left: 1.2em; display: grid; gap: 6px; }
+.g-table { width: 100%; border-collapse: collapse; margin: 0 0 18px; font-size: .92rem; }
+.g-table th, .g-table td { padding: 12px 14px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+.g-table th { font-size: .76rem; letter-spacing: .06em; color: #746e62; font-weight: 600; background: rgba(37,35,31,.04); }
+.g-table td:first-child { white-space: nowrap; font-weight: 600; }
+
+.g-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-bottom: 18px; }
+.g-cards > div { padding: 18px; border: 1px solid var(--line); background: rgba(255,253,247,.55); }
+.g-cards h4 small { margin-left: 6px; font-weight: 500; color: #827c70; }
+.g-cards p { margin: 0; font-size: .86rem; }
+
+.g-columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-bottom: 18px; }
+.g-columns > div { padding: 16px 18px; border: 1px solid var(--line); }
+.g-names { margin: 0; padding: 0; list-style: none; display: grid; gap: 2px; }
+.g-names li { font-size: .86rem; line-height: 1.7; }
+.g-num { display: inline-block; min-width: 40px; color: #827c70; font-size: .78rem; }
+
+.g-tip, .g-note { padding: 14px 16px; border-left: 3px solid var(--coral); background: rgba(234,107,77,.07); }
+.g-note { border-left-color: var(--blue); background: rgba(49,92,112,.07); }
+.g-tip strong, .g-note strong { margin-right: 4px; }
+
+.g-faq { margin: 0; display: grid; gap: 4px; }
+.g-faq dt { font-weight: 600; padding-top: 14px; }
+.g-faq dt::before { content: 'Q. '; color: var(--coral); }
+.g-faq dd { margin: 0; padding-bottom: 14px; border-bottom: 1px solid rgba(37,35,31,.1); }
+
+.g-changelog { margin: 0; display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 10px 16px; }
+.g-changelog dt { font-weight: 600; color: var(--coral); }
+.g-changelog dd { margin: 0; }
+
+.guide-back { padding-top: 40px; }
+
+@media (max-width: 760px) {
+  .guide-hero { padding-inline: 20px; }
+  .guide-layout { grid-template-columns: 1fr; gap: 0; padding: 0 20px; }
+  .guide-toc { position: static; max-height: none; padding: 28px 0 8px; border-bottom: 1px solid var(--line); }
+  .guide-toc ol { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .guide-toc a { padding: 7px 6px; font-size: .84rem; }
+  .g-steps li { grid-template-columns: 28px minmax(0, 1fr); }
+  .g-steps li span { grid-column: 2; }
+  .g-cards, .g-columns { grid-template-columns: 1fr; }
+  .g-table td:first-child { white-space: normal; }
+  .site-header .guide-link { padding: 7px 12px; font-size: .8rem; }
+}
