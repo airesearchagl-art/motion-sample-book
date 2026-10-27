@@ -14,42 +14,44 @@ type Sample = {
   hint: string
   /** 避けたい場面 */
   avoid: string
+  /** 感覚語（v0.4）。名前を知らなくても、印象の言葉から探せるようにする */
+  feel: string[]
 }
 
 type MotionSample = Sample & { category: MotionCategory }
 
 const samples: MotionSample[] = [
-  { id: 'float', number: '01', name: 'ふわっと浮く', english: 'Float', description: '位置と影を少し動かし、選べる要素だと伝える。', category: 'quiet', categoryLabel: '静か', hint: 'カード・リンク', avoid: '押せない要素' },
-  { id: 'scale', number: '02', name: '大きくなる', english: 'Scale up', description: '要素をわずかに拡大して、注目を集める。', category: 'quiet', categoryLabel: '静か', hint: '画像・アイコン', avoid: '密に並んだ一覧' },
-  { id: 'press', number: '03', name: '押し込まれる', english: 'Press', description: '沈み込みで、押した感触を返す。', category: 'quiet', categoryLabel: '静か', hint: 'ボタン', avoid: '文中のリンク' },
-  { id: 'bounce', number: '04', name: 'ぷるっと弾む', english: 'Bounce', description: '小さな弾みで、楽しさや完了感を出す。', category: 'dynamic', categoryLabel: 'はっきり', hint: '完了・リアクション', avoid: 'エラー・真面目な通知' },
-  { id: 'shake', number: '05', name: '左右に揺れる', english: 'Shake', description: '左右の反復で、注意やエラーを知らせる。', category: 'dynamic', categoryLabel: 'はっきり', hint: '警告・入力ミス', avoid: '成功・完了の通知' },
-  { id: 'tilt', number: '06', name: '少し傾く', english: 'Tilt', description: '角度と奥行きを加えて、遊びのある反応にする。', category: 'dynamic', categoryLabel: 'はっきり', hint: 'カード・作品', avoid: '文字中心の情報カード' },
-  { id: 'underline', number: '07', name: '下線が伸びる', english: 'Underline reveal', description: '文字を動かさず、選択状態を端的に示す。', category: 'decorative', categoryLabel: '装飾', hint: 'ナビゲーション', avoid: 'ボタン' },
-  { id: 'fill', number: '08', name: '背景色が広がる', english: 'Background fill', description: '面が横に満ちる動きで、操作を強く誘導する。', category: 'decorative', categoryLabel: '装飾', hint: '主要ボタン', avoid: '補助的なリンク' },
-  { id: 'shine', number: '09', name: '光が横切る', english: 'Shine', description: '光沢の移動で、特別感や新しさを表現する。', category: 'decorative', categoryLabel: '装飾', hint: 'おすすめ・新着', avoid: '常に並ぶ通常要素' },
-  { id: 'ripple', number: '10', name: '波紋が広がる', english: 'Ripple', description: '触れた位置から広がる印象で、入力を確認させる。', category: 'dynamic', categoryLabel: 'はっきり', hint: 'タップ操作', avoid: '静かな読み物画面' },
+  { id: 'float', number: '01', name: 'ふわっと浮く', english: 'Float', description: '位置と影を少し動かし、選べる要素だと伝える。', category: 'quiet', categoryLabel: '静か', hint: 'カード・リンク', avoid: '押せない要素', feel: ['ふわっと', '軽い', '上品'] },
+  { id: 'scale', number: '02', name: '大きくなる', english: 'Scale up', description: '要素をわずかに拡大して、注目を集める。', category: 'quiet', categoryLabel: '静か', hint: '画像・アイコン', avoid: '密に並んだ一覧', feel: ['注目させる', '控えめ', '親しみ'] },
+  { id: 'press', number: '03', name: '押し込まれる', english: 'Press', description: '沈み込みで、押した感触を返す。', category: 'quiet', categoryLabel: '静か', hint: 'ボタン', avoid: '文中のリンク', feel: ['手応え', '確か', '控えめ'] },
+  { id: 'bounce', number: '04', name: 'ぷるっと弾む', english: 'Bounce', description: '小さな弾みで、楽しさや完了感を出す。', category: 'dynamic', categoryLabel: 'はっきり', hint: '完了・リアクション', avoid: 'エラー・真面目な通知', feel: ['楽しい', '弾む', '勢いがある'] },
+  { id: 'shake', number: '05', name: '左右に揺れる', english: 'Shake', description: '左右の反復で、注意やエラーを知らせる。', category: 'dynamic', categoryLabel: 'はっきり', hint: '警告・入力ミス', avoid: '成功・完了の通知', feel: ['注意', '焦り', '勢いがある'] },
+  { id: 'tilt', number: '06', name: '少し傾く', english: 'Tilt', description: '角度と奥行きを加えて、遊びのある反応にする。', category: 'dynamic', categoryLabel: 'はっきり', hint: 'カード・作品', avoid: '文字中心の情報カード', feel: ['遊び心', '奥行き', '立体的'] },
+  { id: 'underline', number: '07', name: '下線が伸びる', english: 'Underline reveal', description: '文字を動かさず、選択状態を端的に示す。', category: 'decorative', categoryLabel: '装飾', hint: 'ナビゲーション', avoid: 'ボタン', feel: ['上品', 'すっきり', '控えめ'] },
+  { id: 'fill', number: '08', name: '背景色が広がる', english: 'Background fill', description: '面が横に満ちる動きで、操作を強く誘導する。', category: 'decorative', categoryLabel: '装飾', hint: '主要ボタン', avoid: '補助的なリンク', feel: ['力強い', '誘導', 'はっきり'] },
+  { id: 'shine', number: '09', name: '光が横切る', english: 'Shine', description: '光沢の移動で、特別感や新しさを表現する。', category: 'decorative', categoryLabel: '装飾', hint: 'おすすめ・新着', avoid: '常に並ぶ通常要素', feel: ['高級感', '特別', 'きらっと'] },
+  { id: 'ripple', number: '10', name: '波紋が広がる', english: 'Ripple', description: '触れた位置から広がる印象で、入力を確認させる。', category: 'dynamic', categoryLabel: 'はっきり', hint: 'タップ操作', avoid: '静かな読み物画面', feel: ['手応え', '広がる', 'やわらかい'] },
 ]
 
 const videoSamples: Sample[] = [
-  { id: 'cut', number: 'V01', name: 'カット', english: 'Cut', description: '間を作らず、次の画へ瞬時に切り替える。', categoryLabel: 'つなぎ', hint: 'テンポ・会話', avoid: '余韻を残したい場面' },
-  { id: 'fade', number: 'V02', name: 'フェード', english: 'Fade', description: '二つの画をゆっくり溶かしてつなぐ。', categoryLabel: 'つなぎ', hint: '時間経過・余韻', avoid: 'テンポを上げたい場面' },
-  { id: 'wipe', number: 'V03', name: 'ワイプ', english: 'Wipe', description: '次の画が横から覆うように切り替わる。', categoryLabel: 'つなぎ', hint: '場面転換・章替え', avoid: '落ち着いた本編の途中' },
-  { id: 'zoom', number: 'V04', name: 'ズーム', english: 'Zoom', description: '被写体へ近づき、視線と注目を集める。', categoryLabel: 'カメラ', hint: '強調・発見', avoid: '短い間の多用' },
-  { id: 'pan', number: 'V05', name: 'パン', english: 'Pan', description: '視点を横へ振り、空間や関係を見せる。', categoryLabel: 'カメラ', hint: '空間説明・導入', avoid: '主役が一点だけの画' },
-  { id: 'tilt', number: 'V06', name: 'チルト', english: 'Tilt', description: '視点を縦に振り、高さやスケールを見せる。', categoryLabel: 'カメラ', hint: '高層・吹抜け', avoid: '横に広い被写体' },
-  { id: 'dolly', number: 'V07', name: 'ドリーイン', english: 'Dolly in', description: 'カメラ自体が前へ進み、手前と奥の見え方の差で没入させる。', categoryLabel: 'カメラ', hint: '導入・空間への没入', avoid: '奥行きのない平面' },
-  { id: 'orbit', number: 'V08', name: 'オービット', english: 'Orbit', description: '被写体の周りを回り込み、立体の形を見せる。', categoryLabel: 'カメラ', hint: '外観・プロダクト', avoid: '正面だけ見せたい物' },
-  { id: 'track', number: 'V09', name: 'トラック', english: 'Truck / Tracking', description: 'カメラが横へ移動し、手前ほど速く流れるずれで奥行きを出す。', categoryLabel: 'カメラ', hint: '街並み・並走', avoid: '一点を注視させたい場面' },
-  { id: 'rack', number: 'V10', name: 'ラックフォーカス', english: 'Rack focus', description: 'ピントを手前から奥へ移し、視線の先を切り替える。', categoryLabel: 'カメラ', hint: '主役の切替・ディテール', avoid: '全体を一度に見せたい画' },
+  { id: 'cut', number: 'V01', name: 'カット', english: 'Cut', description: '間を作らず、次の画へ瞬時に切り替える。', categoryLabel: 'つなぎ', hint: 'テンポ・会話', avoid: '余韻を残したい場面', feel: ['一瞬で', 'テンポ', '歯切れよく'] },
+  { id: 'fade', number: 'V02', name: 'フェード', english: 'Fade', description: '二つの画をゆっくり溶かしてつなぐ。', categoryLabel: 'つなぎ', hint: '時間経過・余韻', avoid: 'テンポを上げたい場面', feel: ['ふわっと', '余韻', 'しっとり'] },
+  { id: 'wipe', number: 'V03', name: 'ワイプ', english: 'Wipe', description: '次の画が横から覆うように切り替わる。', categoryLabel: 'つなぎ', hint: '場面転換・章替え', avoid: '落ち着いた本編の途中', feel: ['勢いがある', '区切り', '軽快'] },
+  { id: 'zoom', number: 'V04', name: 'ズーム', english: 'Zoom', description: '被写体へ近づき、視線と注目を集める。', categoryLabel: 'カメラ', hint: '強調・発見', avoid: '短い間の多用', feel: ['注目させる', '迫る', '発見'] },
+  { id: 'pan', number: 'V05', name: 'パン', english: 'Pan', description: '視点を横へ振り、空間や関係を見せる。', categoryLabel: 'カメラ', hint: '空間説明・導入', avoid: '主役が一点だけの画', feel: ['広がる', '見渡す', '落ち着いた'] },
+  { id: 'tilt', number: 'V06', name: 'チルト', english: 'Tilt', description: '視点を縦に振り、高さやスケールを見せる。', categoryLabel: 'カメラ', hint: '高層・吹抜け', avoid: '横に広い被写体', feel: ['見上げる', 'スケール感', '壮大'] },
+  { id: 'dolly', number: 'V07', name: 'ドリーイン', english: 'Dolly in', description: 'カメラ自体が前へ進み、手前と奥の見え方の差で没入させる。', categoryLabel: 'カメラ', hint: '導入・空間への没入', avoid: '奥行きのない平面', feel: ['没入', '奥行き', '引き込む'] },
+  { id: 'orbit', number: 'V08', name: 'オービット', english: 'Orbit', description: '被写体の周りを回り込み、立体の形を見せる。', categoryLabel: 'カメラ', hint: '外観・プロダクト', avoid: '正面だけ見せたい物', feel: ['立体的', '高級感', '見回す'] },
+  { id: 'track', number: 'V09', name: 'トラック', english: 'Truck / Tracking', description: 'カメラが横へ移動し、手前ほど速く流れるずれで奥行きを出す。', categoryLabel: 'カメラ', hint: '街並み・並走', avoid: '一点を注視させたい場面', feel: ['並走', '奥行き', '軽快'] },
+  { id: 'rack', number: 'V10', name: 'ラックフォーカス', english: 'Rack focus', description: 'ピントを手前から奥へ移し、視線の先を切り替える。', categoryLabel: 'カメラ', hint: '主役の切替・ディテール', avoid: '全体を一度に見せたい画', feel: ['視線誘導', '繊細', '映画的'] },
 ]
 
 const textSamples: Sample[] = [
-  { id: 'fade-in', number: 'T01', name: 'フェードイン', english: 'Fade in', description: '文字全体を、薄い状態から静かに浮かび上がらせる。', categoryLabel: '静か', hint: '見出し・キャプション', avoid: 'すぐ読ませたい情報' },
-  { id: 'typewriter', number: 'T02', name: 'タイプ表示', english: 'Typewriter', description: '一文字ずつ打ち込むように表示し、読む速さを揃える。', categoryLabel: 'リズム', hint: '問いかけ・コード', avoid: '長い文章' },
-  { id: 'stagger', number: 'T03', name: '文字送り', english: 'Stagger', description: '文字が少しずつ遅れて順に現れ、リズムを生む。', categoryLabel: 'リズム', hint: 'タイトル・ロゴ', avoid: '本文・注意書き' },
-  { id: 'scatter', number: 'T04', name: '分解／集合', english: 'Scatter & assemble', description: 'ばらばらの文字が集まり、一語に組み上がる。', categoryLabel: '演出', hint: 'オープニング・ブランド', avoid: '何度も見る画面' },
-  { id: 'mask', number: 'T05', name: 'マスク表示', english: 'Mask reveal', description: '見えない境界の下から、文字がせり上がって現れる。', categoryLabel: '静か', hint: '章タイトル・テロップ', avoid: '小さな文字' },
+  { id: 'fade-in', number: 'T01', name: 'フェードイン', english: 'Fade in', description: '文字全体を、薄い状態から静かに浮かび上がらせる。', categoryLabel: '静か', hint: '見出し・キャプション', avoid: 'すぐ読ませたい情報', feel: ['ふわっと', '上品', '静か'] },
+  { id: 'typewriter', number: 'T02', name: 'タイプ表示', english: 'Typewriter', description: '一文字ずつ打ち込むように表示し、読む速さを揃える。', categoryLabel: 'リズム', hint: '問いかけ・コード', avoid: '長い文章', feel: ['一文字ずつ', 'リズム', '語りかける'] },
+  { id: 'stagger', number: 'T03', name: '文字送り', english: 'Stagger', description: '文字が少しずつ遅れて順に現れ、リズムを生む。', categoryLabel: 'リズム', hint: 'タイトル・ロゴ', avoid: '本文・注意書き', feel: ['リズム', '軽快', '弾む'] },
+  { id: 'scatter', number: 'T04', name: '分解／集合', english: 'Scatter & assemble', description: 'ばらばらの文字が集まり、一語に組み上がる。', categoryLabel: '演出', hint: 'オープニング・ブランド', avoid: '何度も見る画面', feel: ['勢いがある', '組み上がる', '演出'] },
+  { id: 'mask', number: 'T05', name: 'マスク表示', english: 'Mask reveal', description: '見えない境界の下から、文字がせり上がって現れる。', categoryLabel: '静か', hint: '章タイトル・テロップ', avoid: '小さな文字', feel: ['高級感', 'すっきり', '映画的'] },
 ]
 
 const totalSamples = samples.length + videoSamples.length + textSamples.length
@@ -57,7 +59,20 @@ const libraryCount = 3
 
 const usageRows = (sample: Sample, hintLabel: string) => `
     <div class="usage"><span>${hintLabel}</span><strong>${sample.hint}</strong></div>
-    <div class="usage usage-avoid"><span>避けたい場面</span><strong>${sample.avoid}</strong></div>`
+    <div class="usage usage-avoid"><span>避けたい場面</span><strong>${sample.avoid}</strong></div>
+    <div class="feel-tags" aria-label="感覚語">${sample.feel.map((word) => `<button class="feel-tag" type="button" data-feel="${word}">#${word}</button>`).join('')}</div>`
+
+/** 全角・半角、大文字・小文字、ひらがな・カタカナの違いを吸収して比較する */
+const normalize = (text: string) => text
+  .normalize('NFKC')
+  .toLowerCase()
+  .replace(/[ぁ-ゖ]/g, (char) => String.fromCharCode(char.charCodeAt(0) + 0x60))
+
+const searchText = (sample: Sample) => normalize([
+  sample.name, sample.english, sample.description, sample.categoryLabel, sample.hint, ...sample.feel,
+].join(' '))
+
+const finderWords = ['ふわっと', '一瞬で', '高級感', '勢いがある', '上品', '奥行き', '注目させる', 'リズム']
 
 const app = document.querySelector<HTMLDivElement>('#app')!
 
@@ -82,15 +97,30 @@ app.innerHTML = `
       </div>
     </section>
 
+    <section class="finder" aria-labelledby="finder-title">
+      <div class="finder-head">
+        <p class="eyebrow">SEARCH BY FEELING</p>
+        <label id="finder-title" for="finder-input">印象の言葉や用途で探す</label>
+      </div>
+      <div class="finder-field">
+        <input id="finder-input" type="search" placeholder="例：ふわっと　高級感　ボタン" autocomplete="off" enterkeyhint="search">
+        <button class="finder-clear" type="button" hidden>クリア</button>
+      </div>
+      <div class="finder-chips" role="group" aria-label="よく使う感覚語">
+        ${finderWords.map((word) => `<button class="finder-chip" type="button" data-feel="${word}">${word}</button>`).join('')}
+      </div>
+      <p class="finder-status" aria-live="polite"></p>
+    </section>
+
     <nav class="library-tabs" aria-label="見本帳を切り替える" role="tablist">
       <button class="library-tab is-active" type="button" role="tab" data-library="ui" aria-controls="ui-library" aria-selected="true">
-        <span>UIモーション</span><strong>${samples.length}</strong>
+        <span>UIモーション</span><strong data-tab-count>${samples.length}</strong>
       </button>
       <button class="library-tab" type="button" role="tab" data-library="video" aria-controls="video-library" aria-selected="false">
-        <span>動画・カメラ</span><strong>${videoSamples.length}</strong>
+        <span>動画・カメラ</span><strong data-tab-count>${videoSamples.length}</strong>
       </button>
       <button class="library-tab" type="button" role="tab" data-library="text" aria-controls="text-library" aria-selected="false">
-        <span>文字</span><strong>${textSamples.length}</strong>
+        <span>文字</span><strong data-tab-count>${textSamples.length}</strong>
       </button>
     </nav>
 
@@ -107,8 +137,9 @@ app.innerHTML = `
           <button class="filter" type="button" data-filter="decorative">装飾</button>
         </div>
       </div>
-      <p class="result" aria-live="polite"><span id="result-count">${samples.length}</span>件を表示</p>
+      <p class="result" aria-live="polite"><span data-result-count>${samples.length}</span>件を表示</p>
       <div class="grid" id="motion-grid"></div>
+      <p class="empty-note" hidden>このタブには該当する見本がありません。上の件数を見て、ほかのタブを開いてください。</p>
     </section>
 
     <section class="catalog library-panel" id="video-library" role="tabpanel" data-library-panel="video" aria-labelledby="video-catalog-title" hidden>
@@ -119,8 +150,9 @@ app.innerHTML = `
         </div>
         <p class="catalog-note">カーソルを重ねるか、タップして動きを試せます。</p>
       </div>
-      <p class="result"><span>${videoSamples.length}</span>件を表示</p>
+      <p class="result" aria-live="polite"><span data-result-count>${videoSamples.length}</span>件を表示</p>
       <div class="grid" id="video-grid"></div>
+      <p class="empty-note" hidden>このタブには該当する見本がありません。上の件数を見て、ほかのタブを開いてください。</p>
     </section>
 
     <section class="catalog library-panel" id="text-library" role="tabpanel" data-library-panel="text" aria-labelledby="text-catalog-title" hidden>
@@ -131,8 +163,9 @@ app.innerHTML = `
         </div>
         <p class="catalog-note">カーソルを重ねるか、タップして動きを試せます。</p>
       </div>
-      <p class="result"><span>${textSamples.length}</span>件を表示</p>
+      <p class="result" aria-live="polite"><span data-result-count>${textSamples.length}</span>件を表示</p>
       <div class="grid" id="text-grid"></div>
+      <p class="empty-note" hidden>このタブには該当する見本がありません。上の件数を見て、ほかのタブを開いてください。</p>
     </section>
   </main>
 
@@ -145,7 +178,7 @@ app.innerHTML = `
 const grid = document.querySelector<HTMLDivElement>('#motion-grid')!
 
 grid.innerHTML = samples.map((sample) => `
-  <article class="sample-card" data-category="${sample.category}">
+  <article class="sample-card" data-category="${sample.category}" data-search="${searchText(sample)}">
     <div class="card-top">
       <span class="number">${sample.number}</span>
       <span class="tag">${sample.categoryLabel}</span>
@@ -205,7 +238,7 @@ const cameraScenes: Record<string, string> = {
 const videoGrid = document.querySelector<HTMLDivElement>('#video-grid')!
 
 videoGrid.innerHTML = videoSamples.map((sample) => `
-  <article class="sample-card video-card">
+  <article class="sample-card video-card" data-search="${searchText(sample)}">
     <div class="card-top">
       <span class="number">${sample.number}</span>
       <span class="tag video-tag">${sample.categoryLabel}</span>
@@ -240,7 +273,7 @@ const textChars = [...sampleText].map((char, index) => {
 const textGrid = document.querySelector<HTMLDivElement>('#text-grid')!
 
 textGrid.innerHTML = textSamples.map((sample) => `
-  <article class="sample-card text-card">
+  <article class="sample-card text-card" data-search="${searchText(sample)}">
     <div class="card-top">
       <span class="number">${sample.number}</span>
       <span class="tag text-tag">${sample.categoryLabel}</span>
@@ -264,36 +297,109 @@ textGrid.innerHTML = textSamples.map((sample) => `
 const libraryTabs = [...document.querySelectorAll<HTMLButtonElement>('.library-tab')]
 const libraryPanels = [...document.querySelectorAll<HTMLElement>('[data-library-panel]')]
 
-libraryTabs.forEach((tab) => {
-  tab.addEventListener('click', () => {
-    const selectedLibrary = tab.dataset.library
-    libraryTabs.forEach((item) => {
-      const selected = item === tab
-      item.classList.toggle('is-active', selected)
-      item.setAttribute('aria-selected', String(selected))
-    })
-    libraryPanels.forEach((panel) => {
-      panel.hidden = panel.dataset.libraryPanel !== selectedLibrary
-    })
+const selectLibrary = (library: string | undefined) => {
+  libraryTabs.forEach((item) => {
+    const selected = item.dataset.library === library
+    item.classList.toggle('is-active', selected)
+    item.setAttribute('aria-selected', String(selected))
   })
+  libraryPanels.forEach((panel) => {
+    panel.hidden = panel.dataset.libraryPanel !== library
+  })
+}
+
+libraryTabs.forEach((tab) => {
+  tab.addEventListener('click', () => selectLibrary(tab.dataset.library))
 })
 
+const libraryNames: Record<string, string> = { ui: 'UI', video: '動画・カメラ', text: '文字' }
 const filters = [...document.querySelectorAll<HTMLButtonElement>('.filter')]
-const cards = [...document.querySelectorAll<HTMLElement>('#motion-grid .sample-card')]
-const resultCount = document.querySelector<HTMLSpanElement>('#result-count')!
+const finderInput = document.querySelector<HTMLInputElement>('#finder-input')!
+const finderClear = document.querySelector<HTMLButtonElement>('.finder-clear')!
+const finderStatus = document.querySelector<HTMLParagraphElement>('.finder-status')!
+const finderChips = [...document.querySelectorAll<HTMLButtonElement>('.finder-chip')]
+let uiFilter = 'all'
 
-filters.forEach((button) => {
-  button.addEventListener('click', () => {
-    const filter = button.dataset.filter
-    filters.forEach((item) => item.classList.toggle('is-active', item === button))
+const queryTerms = () => normalize(finderInput.value).split(/\s+/).filter(Boolean)
 
+/** 検索語（すべて含む）とUIの雰囲気フィルターを重ねて、3つの見本帳へ同時に反映する */
+const applyFilters = () => {
+  const terms = queryTerms()
+  const counts: Record<string, number> = {}
+
+  libraryPanels.forEach((panel) => {
+    const library = panel.dataset.libraryPanel!
     let visible = 0
-    cards.forEach((card) => {
-      const show = filter === 'all' || card.dataset.category === filter
+    panel.querySelectorAll<HTMLElement>('.sample-card').forEach((card) => {
+      const text = card.dataset.search ?? ''
+      const matchesQuery = terms.every((term) => text.includes(term))
+      const matchesCategory = library !== 'ui' || uiFilter === 'all' || card.dataset.category === uiFilter
+      const show = matchesQuery && matchesCategory
       card.hidden = !show
       if (show) visible += 1
     })
-    resultCount.textContent = String(visible)
+    counts[library] = visible
+    panel.querySelector('[data-result-count]')!.textContent = String(visible)
+    panel.querySelector<HTMLElement>('.empty-note')!.hidden = visible > 0
+  })
+
+  libraryTabs.forEach((tab) => {
+    tab.querySelector('[data-tab-count]')!.textContent = String(counts[tab.dataset.library!])
+  })
+
+  finderClear.hidden = terms.length === 0
+  finderChips.forEach((chip) => chip.classList.toggle('is-active', terms.includes(normalize(chip.dataset.feel!))))
+
+  if (terms.length === 0) {
+    finderStatus.textContent = ''
+    return
+  }
+  const total = Object.values(counts).reduce((sum, count) => sum + count, 0)
+  finderStatus.textContent = total === 0
+    ? `「${finderInput.value.trim()}」に合う見本はありません。言葉を減らすか、別の言い方で試してください。`
+    : `「${finderInput.value.trim()}」に合う見本：${Object.keys(libraryNames).map((key) => `${libraryNames[key]} ${counts[key]}`).join('／')}`
+
+  // 今のタブに結果がなく、ほかのタブにある場合は、結果のあるタブへ切り替える
+  const activeLibrary = libraryTabs.find((tab) => tab.classList.contains('is-active'))?.dataset.library
+  if (activeLibrary && counts[activeLibrary] === 0) {
+    const next = Object.keys(libraryNames).find((key) => counts[key] > 0)
+    if (next) selectLibrary(next)
+  }
+}
+
+filters.forEach((button) => {
+  button.addEventListener('click', () => {
+    uiFilter = button.dataset.filter ?? 'all'
+    filters.forEach((item) => item.classList.toggle('is-active', item === button))
+    applyFilters()
+  })
+})
+
+finderInput.addEventListener('input', applyFilters)
+
+finderClear.addEventListener('click', () => {
+  finderInput.value = ''
+  applyFilters()
+  finderInput.focus()
+})
+
+/** 感覚語ボタン：押すと検索語に追加、もう一度押すと外す */
+const toggleFeel = (word: string) => {
+  const words = finderInput.value.trim().split(/\s+/).filter(Boolean)
+  const exists = words.some((item) => normalize(item) === normalize(word))
+  finderInput.value = (exists ? words.filter((item) => normalize(item) !== normalize(word)) : [...words, word]).join(' ')
+  applyFilters()
+}
+
+finderChips.forEach((chip) => chip.addEventListener('click', () => toggleFeel(chip.dataset.feel!)))
+
+/** カード内の感覚語：その言葉だけで探し直し、検索欄まで戻る */
+document.querySelectorAll<HTMLButtonElement>('.feel-tag').forEach((tag) => {
+  tag.addEventListener('click', () => {
+    finderInput.value = tag.dataset.feel!
+    applyFilters()
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    document.querySelector('.finder')!.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' })
   })
 })
 
