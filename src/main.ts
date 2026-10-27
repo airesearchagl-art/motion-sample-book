@@ -93,7 +93,7 @@ const cardId = (sample: Sample) => `<span class="card-id"><span class="number">$
 
 type Setting = 'speed' | 'strength' | 'direction'
 const settingOptions: Record<Setting, { label: string, options: [string, string][] }> = {
-  speed: { label: '速度', options: [['0.25', '×0.25'], ['0.5', '×0.5'], ['1', '×1'], ['1.5', '×1.5']] },
+  speed: { label: '速度', options: [['0.5', '×0.5'], ['1', '×1'], ['1.5', '×1.5']] },
   strength: { label: '強さ', options: [['0.5', '弱'], ['1', '標準'], ['1.6', '強']] },
   direction: { label: '向き', options: [['normal', '標準'], ['reverse', '反対']] },
 }
