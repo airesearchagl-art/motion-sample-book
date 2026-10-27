@@ -55,12 +55,15 @@ const textSamples: Sample[] = [
 ]
 
 const totalSamples = samples.length + videoSamples.length + textSamples.length
+/** 番号（01 / V01 / T01）から見本を引く。比較パネルで使う */
+const sampleByNumber = new Map<string, Sample>([...samples, ...videoSamples, ...textSamples].map((sample) => [sample.number, sample]))
 const libraryCount = 3
 
 const usageRows = (sample: Sample, hintLabel: string) => `
     <div class="usage"><span>${hintLabel}</span><strong>${sample.hint}</strong></div>
     <div class="usage usage-avoid"><span>避けたい場面</span><strong>${sample.avoid}</strong></div>
-    <div class="feel-tags" aria-label="感覚語">${sample.feel.map((word) => `<button class="feel-tag" type="button" data-feel="${word}">#${word}</button>`).join('')}</div>`
+    <div class="feel-tags" aria-label="感覚語">${sample.feel.map((word) => `<button class="feel-tag" type="button" data-feel="${word}">#${word}</button>`).join('')}</div>
+    <button class="compare-toggle" type="button" data-compare="${sample.number}" aria-pressed="false">＋ 比較に追加</button>`
 
 /** 全角・半角、大文字・小文字、ひらがな・カタカナの違いを吸収して比較する */
 const normalize = (text: string) => text
@@ -168,6 +171,30 @@ app.innerHTML = `
       <p class="empty-note" hidden>このタブには該当する見本がありません。上の件数を見て、ほかのタブを開いてください。</p>
     </section>
   </main>
+
+  <div class="compare-tray" role="region" aria-label="比較する見本" hidden>
+    <p class="compare-tray-text" aria-live="polite"></p>
+    <div class="compare-tray-actions">
+      <button class="compare-open" type="button" disabled>並べて見る</button>
+      <button class="compare-reset" type="button">解除</button>
+    </div>
+  </div>
+
+  <dialog class="compare-dialog" aria-labelledby="compare-title">
+    <div class="compare-dialog-body">
+    <div class="compare-dialog-head">
+      <div>
+        <p class="eyebrow">COMPARE</p>
+        <h2 id="compare-title">2つの動きを比べる</h2>
+      </div>
+      <div class="compare-dialog-actions">
+        <button class="compare-close" type="button">閉じる</button>
+        <button class="compare-play-both" type="button">2つ同時に再生</button>
+      </div>
+    </div>
+    <div class="compare-columns"></div>
+    </div>
+  </dialog>
 
   <footer>
     <p>Motion Sample Book — a small reference for better interactions and edits.</p>
@@ -403,17 +430,24 @@ document.querySelectorAll<HTMLButtonElement>('.feel-tag').forEach((tag) => {
   })
 })
 
-document.querySelectorAll<HTMLButtonElement>('.motion-stage').forEach((stage) => {
-  stage.addEventListener('click', () => {
-    stage.classList.remove('is-playing')
-    requestAnimationFrame(() => stage.classList.add('is-playing'))
-    window.setTimeout(() => stage.classList.remove('is-playing'), 900)
-  })
-})
-
+const motionPlaybackTimers = new WeakMap<HTMLButtonElement, number>()
 const previewPlaybackTimers = new WeakMap<HTMLButtonElement, number>()
 const canHover = window.matchMedia('(hover: hover) and (pointer: fine)')
 
+/** UIモーション：クリックで0.9秒だけ再生（ホバーはCSSで反応） */
+const playMotion = (stage: HTMLButtonElement) => {
+  const activeTimer = motionPlaybackTimers.get(stage)
+  if (activeTimer !== undefined) window.clearTimeout(activeTimer)
+  stage.classList.remove('is-playing')
+  void stage.offsetWidth
+  stage.classList.add('is-playing')
+  motionPlaybackTimers.set(stage, window.setTimeout(() => {
+    stage.classList.remove('is-playing')
+    motionPlaybackTimers.delete(stage)
+  }, 900))
+}
+
+/** 動画・文字：ホバー／タップ／フォーカスで2.4秒再生。連続再生しても前のタイマーで止まらない */
 const playPreview = (stage: HTMLButtonElement) => {
   const activeTimer = previewPlaybackTimers.get(stage)
   if (activeTimer !== undefined) window.clearTimeout(activeTimer)
@@ -429,16 +463,111 @@ const playPreview = (stage: HTMLButtonElement) => {
   previewPlaybackTimers.set(stage, timer)
 }
 
-document.querySelectorAll<HTMLButtonElement>('.preview-stage').forEach((stage) => {
-  stage.addEventListener('pointerenter', () => {
-    if (canHover.matches) playPreview(stage)
-  })
+const playStage = (stage: HTMLButtonElement) => {
+  if (stage.classList.contains('preview-stage')) playPreview(stage)
+  else playMotion(stage)
+}
 
-  stage.addEventListener('focus', () => {
-    window.requestAnimationFrame(() => {
-      if (stage.matches(':focus-visible')) playPreview(stage)
+const bindStage = (stage: HTMLButtonElement) => {
+  if (stage.classList.contains('preview-stage')) {
+    stage.addEventListener('pointerenter', () => {
+      if (canHover.matches) playPreview(stage)
     })
-  })
+    stage.addEventListener('focus', () => {
+      window.requestAnimationFrame(() => {
+        if (stage.matches(':focus-visible')) playPreview(stage)
+      })
+    })
+  }
+  stage.addEventListener('click', () => playStage(stage))
+}
 
-  stage.addEventListener('click', () => playPreview(stage))
+document.querySelectorAll<HTMLButtonElement>('.motion-stage, .preview-stage').forEach(bindStage)
+
+/* v0.4-2 Compare: 2つまで選び、横並びで同時に再生する */
+const compareSelection: string[] = []
+const compareTray = document.querySelector<HTMLDivElement>('.compare-tray')!
+const compareTrayText = document.querySelector<HTMLParagraphElement>('.compare-tray-text')!
+const compareOpen = document.querySelector<HTMLButtonElement>('.compare-open')!
+const compareDialog = document.querySelector<HTMLDialogElement>('.compare-dialog')!
+const compareColumns = document.querySelector<HTMLDivElement>('.compare-columns')!
+const compareToggles = [...document.querySelectorAll<HTMLButtonElement>('.compare-toggle')]
+
+const sampleTitle = (number: string) => `${number} ${sampleByNumber.get(number)!.name}`
+
+const updateCompare = () => {
+  compareToggles.forEach((toggle) => {
+    const selected = compareSelection.includes(toggle.dataset.compare!)
+    toggle.setAttribute('aria-pressed', String(selected))
+    toggle.classList.toggle('is-selected', selected)
+    toggle.textContent = selected ? '✓ 比較に追加済み' : '＋ 比較に追加'
+  })
+  compareTray.hidden = compareSelection.length === 0
+  document.body.classList.toggle('has-compare-tray', compareSelection.length > 0)
+  compareOpen.disabled = compareSelection.length < 2
+  compareTrayText.textContent = compareSelection.length < 2
+    ? `${compareSelection.map(sampleTitle).join('')} を選択中。もう1つ選んでください。`
+    : `${compareSelection.map(sampleTitle).join(' ／ ')}`
+}
+
+compareToggles.forEach((toggle) => {
+  toggle.addEventListener('click', () => {
+    const number = toggle.dataset.compare!
+    const index = compareSelection.indexOf(number)
+    if (index >= 0) compareSelection.splice(index, 1)
+    else {
+      // 3つ目を選んだときは、古い方と入れ替える
+      if (compareSelection.length === 2) compareSelection.shift()
+      compareSelection.push(number)
+    }
+    updateCompare()
+  })
 })
+
+document.querySelector('.compare-reset')!.addEventListener('click', () => {
+  compareSelection.length = 0
+  updateCompare()
+})
+
+const compareStages = () => [...compareColumns.querySelectorAll<HTMLButtonElement>('.motion-stage, .preview-stage')]
+
+compareOpen.addEventListener('click', () => {
+  compareColumns.innerHTML = ''
+  compareSelection.forEach((number) => {
+    const sample = sampleByNumber.get(number)!
+    const original = document.querySelector<HTMLButtonElement>(`.compare-toggle[data-compare="${number}"]`)!
+      .closest('.sample-card')!
+      .querySelector<HTMLButtonElement>('.motion-stage, .preview-stage')!
+    const stage = original.cloneNode(true) as HTMLButtonElement
+    stage.classList.remove('is-playing')
+
+    const column = document.createElement('section')
+    column.className = 'compare-column'
+    column.innerHTML = `
+      <div class="card-top"><span class="number">${sample.number}</span><span class="tag">${sample.categoryLabel}</span></div>
+      <div class="compare-stage-slot"></div>
+      <div class="card-copy">
+        <p class="english">${sample.english}</p>
+        <h3>${sample.name}</h3>
+        <p>${sample.description}</p>
+      </div>
+      <dl class="compare-facts">
+        <div><dt>向いている場面</dt><dd>${sample.hint}</dd></div>
+        <div><dt>避けたい場面</dt><dd>${sample.avoid}</dd></div>
+        <div><dt>感覚語</dt><dd>${sample.feel.join('・')}</dd></div>
+      </dl>`
+    column.querySelector('.compare-stage-slot')!.append(stage)
+    bindStage(stage)
+    compareColumns.append(column)
+  })
+  compareDialog.showModal()
+  window.setTimeout(() => compareStages().forEach(playStage), 200)
+})
+
+document.querySelector('.compare-play-both')!.addEventListener('click', () => compareStages().forEach(playStage))
+document.querySelector('.compare-close')!.addEventListener('click', () => compareDialog.close())
+compareDialog.addEventListener('click', (event) => {
+  // 背景（ダイアログの外側）を押したら閉じる
+  if (event.target === compareDialog) compareDialog.close()
+})
+compareDialog.addEventListener('close', () => { compareColumns.innerHTML = '' })
