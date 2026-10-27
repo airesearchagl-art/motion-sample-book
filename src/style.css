@@ -12,6 +12,8 @@
   --coral: #ea6b4d;
   --sage: #7d8f75;
   --blue: #315c70;
+  /* v0.4-3 強さ（0.5 / 1 / 1.6）。JSで切り替える */
+  --strength: 1;
 }
 
 * { box-sizing: border-box; }
@@ -106,6 +108,21 @@ body.has-compare-tray footer { padding-bottom: 110px; }
 .compare-facts dt { color: #827c70; }
 .compare-facts dd { margin: 0; font-weight: 500; text-align: right; }
 
+/* v0.4-3 Playback controls */
+.playback-bar { position: sticky; top: 0; z-index: 15; padding: 12px 5vw; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 24px; background: rgba(244,240,230,.94); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+.playback-controls { display: flex; flex-wrap: wrap; gap: 8px 22px; }
+.segment { display: flex; align-items: center; gap: 4px; }
+.segment-label { margin-right: 6px; font-size: .72rem; font-weight: 600; letter-spacing: .08em; color: #746e62; }
+.segment button { min-width: 44px; min-height: 34px; padding: 0 10px; border: 1px solid var(--line); background: transparent; border-radius: 999px; font-size: .8rem; cursor: pointer; transition: color .2s, background .2s, border-color .2s; }
+.segment button:hover { border-color: var(--ink); }
+.segment button.is-active { background: var(--ink); border-color: var(--ink); color: var(--cream); }
+.segment button:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+.playback-note { margin: 0; font-size: .74rem; color: #827c70; }
+.compare-dialog .playback-controls { margin-bottom: 18px; }
+.card-id { display: inline-flex; align-items: center; gap: 8px; }
+.adjust-badges { display: inline-flex; gap: 4px; }
+.adjust-badges i { font-style: normal; font-size: .62rem; padding: 2px 6px; border: 1px solid rgba(49,92,112,.35); color: var(--blue); border-radius: 4px; }
+
 .library-tabs {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -163,9 +180,9 @@ body.has-compare-tray footer { padding-bottom: 110px; }
 .usage-avoid strong { color: #8a5a4c; }
 
 /* 01 Float */
-.effect-float:hover .demo-object, .effect-float:focus-visible .demo-object, .effect-float.is-playing .demo-object { transform: translateY(-10px); box-shadow: 0 18px 28px rgba(45,40,31,.18); }
+.effect-float:hover .demo-object, .effect-float:focus-visible .demo-object, .effect-float.is-playing .demo-object { transform: translateY(calc(-10px * var(--strength))); box-shadow: 0 18px 28px rgba(45,40,31,.18); }
 /* 02 Scale */
-.effect-scale:hover .demo-object, .effect-scale:focus-visible .demo-object, .effect-scale.is-playing .demo-object { transform: scale(1.12); }
+.effect-scale:hover .demo-object, .effect-scale:focus-visible .demo-object, .effect-scale.is-playing .demo-object { transform: scale(calc(1 + .12 * var(--strength))); }
 /* 03 Press */
 .effect-press:hover .demo-object { box-shadow: 0 8px 0 #c4b9a6; }
 .effect-press:active .demo-object, .effect-press.is-playing .demo-object { transform: translateY(7px); box-shadow: 0 1px 0 #c4b9a6; }
@@ -175,7 +192,7 @@ body.has-compare-tray footer { padding-bottom: 110px; }
 .effect-shake:hover .demo-object, .effect-shake:focus-visible .demo-object, .effect-shake.is-playing .demo-object { animation: shake .5s ease both; }
 /* 06 Tilt */
 .effect-tilt { perspective: 700px; }
-.effect-tilt:hover .demo-object, .effect-tilt:focus-visible .demo-object, .effect-tilt.is-playing .demo-object { transform: rotate(-5deg) rotateY(12deg) translateY(-3px); box-shadow: 14px 16px 0 rgba(49,92,112,.18); }
+.effect-tilt:hover .demo-object, .effect-tilt:focus-visible .demo-object, .effect-tilt.is-playing .demo-object { transform: rotate(calc(-5deg * var(--strength))) rotateY(calc(12deg * var(--strength))) translateY(-3px); box-shadow: 14px 16px 0 rgba(49,92,112,.18); }
 /* 07 Underline */
 .effect-underline .demo-label::after { content: ''; position: absolute; left: 0; right: 0; bottom: -8px; height: 3px; background: var(--coral); transform: scaleX(0); transform-origin: left; transition: transform .35s cubic-bezier(.2,.8,.2,1); }
 .effect-underline:hover .demo-label::after, .effect-underline:focus-visible .demo-label::after, .effect-underline.is-playing .demo-label::after { transform: scaleX(1); }
@@ -335,21 +352,45 @@ body.has-compare-tray footer { padding-bottom: 110px; }
 footer { min-height: 140px; padding: 40px 5vw; border-top: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; gap: 30px; color: #6f695e; font-size: .78rem; }
 footer a { color: var(--ink); text-decoration: none; font-weight: 600; }
 
+/* v0.4-3 向き「反対」：動きの向きだけを逆にする */
+[data-direction="reverse"] .effect-underline .demo-label::after,
+[data-direction="reverse"] .effect-fill .demo-object::before { transform-origin: right; }
+[data-direction="reverse"] .effect-shine .demo-object::before { left: 125%; transform: skewX(18deg); }
+[data-direction="reverse"] .effect-shine:hover .demo-object::before,
+[data-direction="reverse"] .effect-shine:focus-visible .demo-object::before,
+[data-direction="reverse"] .effect-shine.is-playing .demo-object::before { left: -55%; }
+[data-direction="reverse"] .video-effect-wipe .scene-b { clip-path: inset(0 0 0 100%); }
+[data-direction="reverse"] .video-effect-wipe.is-playing .scene-b { animation-name: video-wipe-reverse; }
+/* パン・チルト・オービット・トラックは、待機位置を終点側に置き、逆再生で反対へ動かす */
+[data-direction="reverse"] .video-effect-pan .pan-track { transform: translateX(-42.85%); }
+[data-direction="reverse"] .tilt-track { transform: translateY(0); }
+[data-direction="reverse"] .orbit-cube { transform: translateY(-6px) rotateX(-16deg) rotateY(-118deg); }
+[data-direction="reverse"] .orbit-bg { transform: translateX(18%); }
+[data-direction="reverse"] .track-far { transform: translateX(-8%); }
+[data-direction="reverse"] .track-ground { transform: translateX(-20%); }
+[data-direction="reverse"] .track-near { transform: translateX(-42%); }
+[data-direction="reverse"] .video-effect-pan.is-playing .pan-track,
+[data-direction="reverse"] .video-effect-tilt.is-playing .tilt-track,
+[data-direction="reverse"] .video-effect-orbit.is-playing .orbit-cube,
+[data-direction="reverse"] .video-effect-orbit.is-playing .orbit-bg,
+[data-direction="reverse"] .video-effect-track.is-playing .camera-layer { animation-direction: reverse; }
+[data-direction="reverse"] .text-effect-mask.is-playing .text-line { animation-name: text-mask-down; }
+
 @keyframes mark { to { height: 5px; } }
-@keyframes bounce { 0%,100% { transform: translateY(0) scale(1); } 40% { transform: translateY(-16px) scale(1.04,.96); } 68% { transform: translateY(3px) scale(.98,1.02); } }
-@keyframes shake { 0%,100% { transform: translateX(0); } 20%,60% { transform: translateX(-8px); } 40%,80% { transform: translateX(8px); } }
+@keyframes bounce { 0%,100% { transform: translateY(0) scale(1); } 40% { transform: translateY(calc(-16px * var(--strength))) scale(1.04,.96); } 68% { transform: translateY(calc(3px * var(--strength))) scale(.98,1.02); } }
+@keyframes shake { 0%,100% { transform: translateX(0); } 20%,60% { transform: translateX(calc(-8px * var(--strength))); } 40%,80% { transform: translateX(calc(8px * var(--strength))); } }
 @keyframes ripple { from { transform: scale(0); opacity: .8; } to { transform: scale(13); opacity: 0; } }
 @keyframes video-cut { 0%,45% { opacity: 0; } 46%,100% { opacity: 1; } }
 @keyframes video-fade-out { 0%,20% { opacity: 1; } 80%,100% { opacity: 0; } }
 @keyframes video-fade-in { 0%,20% { opacity: 0; } 80%,100% { opacity: 1; } }
 @keyframes video-wipe { 0%,12% { clip-path: inset(0 100% 0 0); } 88%,100% { clip-path: inset(0); } }
-@keyframes video-zoom { from { transform: scale(1); } to { transform: scale(1.28); } }
+@keyframes video-zoom { from { transform: scale(1); } to { transform: scale(calc(1 + .28 * var(--strength))); } }
 @keyframes video-zoom-shape { from { transform: rotate(45deg) scale(1); } to { transform: rotate(45deg) scale(1.12); } }
 @keyframes video-pan { from { transform: translateX(0); } to { transform: translateX(-42.85%); } }
 @keyframes camera-tilt { 0%,10% { transform: translateY(-42.857%); } 90%,100% { transform: translateY(0); } }
-@keyframes camera-dolly-far { 0%,10% { transform: scale(1); } 90%,100% { transform: scale(1.1); } }
-@keyframes camera-dolly-subject { 0%,10% { transform: scale(1); } 90%,100% { transform: scale(1.45); } }
-@keyframes camera-dolly-near { 0%,10% { transform: scale(1); } 90%,100% { transform: scale(2.4); } }
+@keyframes camera-dolly-far { 0%,10% { transform: scale(1); } 90%,100% { transform: scale(calc(1 + .1 * var(--strength))); } }
+@keyframes camera-dolly-subject { 0%,10% { transform: scale(1); } 90%,100% { transform: scale(calc(1 + .45 * var(--strength))); } }
+@keyframes camera-dolly-near { 0%,10% { transform: scale(1); } 90%,100% { transform: scale(calc(1 + 1.4 * var(--strength))); } }
 @keyframes camera-orbit { 0%,10% { transform: translateY(-6px) rotateX(-16deg) rotateY(-28deg); } 90%,100% { transform: translateY(-6px) rotateX(-16deg) rotateY(-118deg); } }
 @keyframes camera-orbit-bg { 0%,10% { transform: translateX(0); } 90%,100% { transform: translateX(18%); } }
 @keyframes camera-track-far { 0%,10% { transform: translateX(0); } 90%,100% { transform: translateX(-8%); } }
@@ -357,12 +398,14 @@ footer a { color: var(--ink); text-decoration: none; font-weight: 600; }
 @keyframes camera-track-near { 0%,10% { transform: translateX(0); } 90%,100% { transform: translateX(-42%); } }
 @keyframes camera-rack-far { 0%,25% { filter: blur(6px); } 65%,100% { filter: blur(0); } }
 @keyframes camera-rack-near { 0%,25% { filter: blur(0); } 65%,100% { filter: blur(7px); } }
-@keyframes text-fade-in { from { opacity: 0; transform: translateY(.25em); filter: blur(6px); } to { opacity: 1; transform: none; filter: blur(0); } }
+@keyframes text-fade-in { from { opacity: 0; transform: translateY(calc(.25em * var(--strength))); filter: blur(calc(6px * var(--strength))); } to { opacity: 1; transform: none; filter: blur(0); } }
 @keyframes text-type { from { opacity: 0; } to { opacity: 1; } }
 @keyframes text-caret-move { from { transform: translateX(0); } to { transform: translateX(7.28em); } }
 @keyframes text-caret-blink { 0% { background: var(--coral); } 50% { background: transparent; } }
-@keyframes text-rise { from { opacity: 0; transform: translateY(.9em); } to { opacity: 1; transform: none; } }
-@keyframes text-assemble { 0%,12% { opacity: .35; transform: translate(var(--x), var(--y)) rotate(var(--r)); } 100% { opacity: 1; transform: none; } }
+@keyframes text-rise { from { opacity: 0; transform: translateY(calc(.9em * var(--strength))); } to { opacity: 1; transform: none; } }
+@keyframes text-assemble { 0%,12% { opacity: .35; transform: translate(calc(var(--x) * var(--strength)), calc(var(--y) * var(--strength))) rotate(calc(var(--r) * var(--strength))); } 100% { opacity: 1; transform: none; } }
+@keyframes video-wipe-reverse { 0%,12% { clip-path: inset(0 0 0 100%); } 88%,100% { clip-path: inset(0); } }
+@keyframes text-mask-down { from { transform: translateY(-115%); } to { transform: translateY(0); } }
 @keyframes text-mask-up { from { transform: translateY(115%); } to { transform: translateY(0); } }
 
 @media (max-width: 760px) {
@@ -396,6 +439,8 @@ footer a { color: var(--ink); text-decoration: none; font-weight: 600; }
   .compare-column .card-copy p:not(.english) { font-size: .8rem; line-height: 1.6; }
   .compare-facts div { flex-direction: column; gap: 2px; }
   .compare-facts dd { text-align: left; }
+  .playback-bar { position: static; padding: 14px 20px; }
+  .playback-note { width: 100%; }
   .library-tabs { grid-template-columns: 1fr; }
   .library-tab { min-height: 70px; padding: 16px 20px; border-right: 0; border-bottom: 1px solid var(--line); }
   .library-tab:last-child { border-bottom: 0; }

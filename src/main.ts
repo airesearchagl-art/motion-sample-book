@@ -77,6 +77,37 @@ const searchText = (sample: Sample) => normalize([
 
 const finderWords = ['ふわっと', '一瞬で', '高級感', '勢いがある', '上品', '奥行き', '注目させる', 'リズム']
 
+/* v0.4-3 再生の調整：速度はすべての見本、強さ・向きは意味のある見本だけに効く */
+const strengthSamples = new Set(['01', '02', '04', '05', '06', 'V04', 'V07', 'T01', 'T03', 'T04'])
+const directionSamples = new Set(['07', '08', '09', 'V03', 'V05', 'V06', 'V08', 'V09', 'T05'])
+
+const adjustBadges = (sample: Sample) => {
+  const labels = [
+    strengthSamples.has(sample.number) ? '強さ' : '',
+    directionSamples.has(sample.number) ? '向き' : '',
+  ].filter(Boolean)
+  return labels.length ? `<span class="adjust-badges" title="「強さ」「向き」の調整が効く見本">${labels.map((label) => `<i>${label}</i>`).join('')}</span>` : ''
+}
+
+const cardId = (sample: Sample) => `<span class="card-id"><span class="number">${sample.number}</span>${adjustBadges(sample)}</span>`
+
+type Setting = 'speed' | 'strength' | 'direction'
+const settingOptions: Record<Setting, { label: string, options: [string, string][] }> = {
+  speed: { label: '速度', options: [['0.5', '×0.5'], ['1', '×1'], ['1.5', '×1.5']] },
+  strength: { label: '強さ', options: [['0.5', '弱'], ['1', '標準'], ['1.6', '強']] },
+  direction: { label: '向き', options: [['normal', '標準'], ['reverse', '反対']] },
+}
+const defaultSettings: Record<Setting, string> = { speed: '1', strength: '1', direction: 'normal' }
+
+const playbackControls = (idPrefix: string) => `
+  <div class="playback-controls" role="group" aria-label="再生の調整">
+    ${(Object.keys(settingOptions) as Setting[]).map((setting) => `
+      <div class="segment" role="radiogroup" aria-labelledby="${idPrefix}-${setting}">
+        <span class="segment-label" id="${idPrefix}-${setting}">${settingOptions[setting].label}</span>
+        ${settingOptions[setting].options.map(([value, label]) => `<button type="button" role="radio" aria-checked="false" data-setting="${setting}" data-value="${value}">${label}</button>`).join('')}
+      </div>`).join('')}
+  </div>`
+
 const app = document.querySelector<HTMLDivElement>('#app')!
 
 app.innerHTML = `
@@ -113,6 +144,11 @@ app.innerHTML = `
         ${finderWords.map((word) => `<button class="finder-chip" type="button" data-feel="${word}">${word}</button>`).join('')}
       </div>
       <p class="finder-status" aria-live="polite"></p>
+    </section>
+
+    <section class="playback-bar" aria-label="再生の調整">
+      ${playbackControls('page')}
+      <p class="playback-note">速度はすべての見本に、「強さ」「向き」は印の付いた見本に効きます。</p>
     </section>
 
     <nav class="library-tabs" aria-label="見本帳を切り替える" role="tablist">
@@ -192,6 +228,7 @@ app.innerHTML = `
         <button class="compare-play-both" type="button">2つ同時に再生</button>
       </div>
     </div>
+    ${playbackControls('compare')}
     <div class="compare-columns"></div>
     </div>
   </dialog>
@@ -207,7 +244,7 @@ const grid = document.querySelector<HTMLDivElement>('#motion-grid')!
 grid.innerHTML = samples.map((sample) => `
   <article class="sample-card" data-category="${sample.category}" data-search="${searchText(sample)}">
     <div class="card-top">
-      <span class="number">${sample.number}</span>
+      ${cardId(sample)}
       <span class="tag">${sample.categoryLabel}</span>
     </div>
     <button class="motion-stage effect-${sample.id}" type="button" aria-label="${sample.name}の動きを試す">
@@ -267,7 +304,7 @@ const videoGrid = document.querySelector<HTMLDivElement>('#video-grid')!
 videoGrid.innerHTML = videoSamples.map((sample) => `
   <article class="sample-card video-card" data-search="${searchText(sample)}">
     <div class="card-top">
-      <span class="number">${sample.number}</span>
+      ${cardId(sample)}
       <span class="tag video-tag">${sample.categoryLabel}</span>
     </div>
     <button class="video-stage preview-stage video-effect-${sample.id}" type="button" aria-label="${sample.name}のプレビューを再生">
@@ -302,7 +339,7 @@ const textGrid = document.querySelector<HTMLDivElement>('#text-grid')!
 textGrid.innerHTML = textSamples.map((sample) => `
   <article class="sample-card text-card" data-search="${searchText(sample)}">
     <div class="card-top">
-      <span class="number">${sample.number}</span>
+      ${cardId(sample)}
       <span class="tag text-tag">${sample.categoryLabel}</span>
     </div>
     <button class="text-stage preview-stage text-effect-${sample.id}" type="button" aria-label="${sample.name}のプレビューを再生">
@@ -430,6 +467,52 @@ document.querySelectorAll<HTMLButtonElement>('.feel-tag').forEach((tag) => {
   })
 })
 
+const settings: Record<Setting, string> = { ...defaultSettings }
+const speed = () => Number(settings.speed)
+
+/** 端末内に保存（使えない環境では毎回標準に戻るだけ） */
+try {
+  const saved = JSON.parse(window.localStorage.getItem('motion-sample-book:playback') ?? '{}') as Partial<Record<Setting, string>>
+  ;(Object.keys(settingOptions) as Setting[]).forEach((setting) => {
+    const value = saved[setting]
+    if (value && settingOptions[setting].options.some(([option]) => option === value)) settings[setting] = value
+  })
+} catch { /* 保存できない環境では標準のまま */ }
+
+const applySettings = () => {
+  const root = document.documentElement
+  root.style.setProperty('--strength', settings.strength)
+  root.dataset.direction = settings.direction
+  document.querySelectorAll<HTMLButtonElement>('[data-setting]').forEach((button) => {
+    const checked = settings[button.dataset.setting as Setting] === button.dataset.value
+    button.setAttribute('aria-checked', String(checked))
+    button.classList.toggle('is-active', checked)
+  })
+  try { window.localStorage.setItem('motion-sample-book:playback', JSON.stringify(settings)) } catch { /* 無視 */ }
+}
+
+/** 再生中のアニメーションへ速度を反映する（遅延も含めて伸び縮みする） */
+const applySpeed = (element: Element, subtree = true) => {
+  element.getAnimations({ subtree }).forEach((animation) => { animation.playbackRate = speed() })
+}
+
+document.addEventListener('click', (event) => {
+  const button = (event.target as Element).closest<HTMLButtonElement>('[data-setting]')
+  if (!button) return
+  settings[button.dataset.setting as Setting] = button.dataset.value!
+  applySettings()
+})
+
+// ホバーで始まるUIモーション（CSSのtransition／animation）にも速度を効かせる
+;['transitionrun', 'animationstart'].forEach((type) => {
+  document.addEventListener(type, (event) => {
+    const target = event.target as Element
+    if (target.closest('.motion-stage, .preview-stage')) applySpeed(target, false)
+  })
+})
+
+applySettings()
+
 const motionPlaybackTimers = new WeakMap<HTMLButtonElement, number>()
 const previewPlaybackTimers = new WeakMap<HTMLButtonElement, number>()
 const canHover = window.matchMedia('(hover: hover) and (pointer: fine)')
@@ -441,10 +524,11 @@ const playMotion = (stage: HTMLButtonElement) => {
   stage.classList.remove('is-playing')
   void stage.offsetWidth
   stage.classList.add('is-playing')
+  applySpeed(stage)
   motionPlaybackTimers.set(stage, window.setTimeout(() => {
     stage.classList.remove('is-playing')
     motionPlaybackTimers.delete(stage)
-  }, 900))
+  }, 900 / speed()))
 }
 
 /** 動画・文字：ホバー／タップ／フォーカスで2.4秒再生。連続再生しても前のタイマーで止まらない */
@@ -455,11 +539,12 @@ const playPreview = (stage: HTMLButtonElement) => {
   stage.classList.remove('is-playing')
   void stage.offsetWidth
   stage.classList.add('is-playing')
+  applySpeed(stage)
 
   const timer = window.setTimeout(() => {
     stage.classList.remove('is-playing')
     previewPlaybackTimers.delete(stage)
-  }, 2400)
+  }, 2400 / speed())
   previewPlaybackTimers.set(stage, timer)
 }
 
@@ -544,7 +629,7 @@ compareOpen.addEventListener('click', () => {
     const column = document.createElement('section')
     column.className = 'compare-column'
     column.innerHTML = `
-      <div class="card-top"><span class="number">${sample.number}</span><span class="tag">${sample.categoryLabel}</span></div>
+      <div class="card-top">${cardId(sample)}<span class="tag">${sample.categoryLabel}</span></div>
       <div class="compare-stage-slot"></div>
       <div class="card-copy">
         <p class="english">${sample.english}</p>
