@@ -63,7 +63,10 @@ const usageRows = (sample: Sample, hintLabel: string) => `
     <div class="usage"><span>${hintLabel}</span><strong>${sample.hint}</strong></div>
     <div class="usage usage-avoid"><span>避けたい場面</span><strong>${sample.avoid}</strong></div>
     <div class="feel-tags" aria-label="感覚語">${sample.feel.map((word) => `<button class="feel-tag" type="button" data-feel="${word}">#${word}</button>`).join('')}</div>
-    <button class="compare-toggle" type="button" data-compare="${sample.number}" aria-pressed="false">＋ 比較に追加</button>`
+    <div class="card-buttons">
+      <button class="save-toggle" type="button" data-save="${sample.number}" aria-pressed="false">☆ 保存</button>
+      <button class="compare-toggle" type="button" data-compare="${sample.number}" aria-pressed="false">＋ 比較に追加</button>
+    </div>`
 
 /** 全角・半角、大文字・小文字、ひらがな・カタカナの違いを吸収して比較する */
 const normalize = (text: string) => text
@@ -161,6 +164,9 @@ app.innerHTML = `
       <button class="library-tab" type="button" role="tab" data-library="text" aria-controls="text-library" aria-selected="false">
         <span>文字</span><strong data-tab-count>${textSamples.length}</strong>
       </button>
+      <button class="library-tab saved-tab" type="button" role="tab" data-library="saved" aria-controls="saved-library" aria-selected="false">
+        <span>保存</span><strong data-saved-count>0</strong>
+      </button>
     </nav>
 
     <section class="catalog library-panel" id="ui-library" role="tabpanel" data-library-panel="ui" aria-labelledby="catalog-title">
@@ -205,6 +211,25 @@ app.innerHTML = `
       <p class="result" aria-live="polite"><span data-result-count>${textSamples.length}</span>件を表示</p>
       <div class="grid" id="text-grid"></div>
       <p class="empty-note" hidden>このタブには該当する見本がありません。上の件数を見て、ほかのタブを開いてください。</p>
+    </section>
+
+    <section class="catalog library-panel saved-panel" id="saved-library" role="tabpanel" data-library-panel="saved" aria-labelledby="saved-title" hidden>
+      <div class="catalog-head">
+        <div>
+          <p class="eyebrow">MY COLLECTIONS</p>
+          <h2 id="saved-title">保存した見本</h2>
+        </div>
+        <form class="collection-form">
+          <label class="visually-hidden" for="collection-name">新しいコレクション名</label>
+          <input id="collection-name" type="text" maxlength="20" placeholder="新しいコレクション名（例：提案用）" autocomplete="off">
+          <button type="submit">作成</button>
+        </form>
+      </div>
+      <p class="saved-note">保存した内容は、この端末のブラウザの中だけに残ります。ほかの端末とは共有されません。</p>
+      <div class="collection-filter" role="group" aria-label="表示するコレクション"></div>
+      <div class="collection-suggest"></div>
+      <div class="grid saved-grid"></div>
+      <p class="empty-note saved-empty" hidden></p>
     </section>
   </main>
 
@@ -393,6 +418,7 @@ const applyFilters = () => {
 
   libraryPanels.forEach((panel) => {
     const library = panel.dataset.libraryPanel!
+    if (!(library in libraryNames)) return
     let visible = 0
     panel.querySelectorAll<HTMLElement>('.sample-card').forEach((card) => {
       const text = card.dataset.search ?? ''
@@ -408,7 +434,8 @@ const applyFilters = () => {
   })
 
   libraryTabs.forEach((tab) => {
-    tab.querySelector('[data-tab-count]')!.textContent = String(counts[tab.dataset.library!])
+    const count = counts[tab.dataset.library!]
+    if (count !== undefined) tab.querySelector('[data-tab-count]')!.textContent = String(count)
   })
 
   finderClear.hidden = terms.length === 0
@@ -656,3 +683,189 @@ compareDialog.addEventListener('click', (event) => {
   if (event.target === compareDialog) compareDialog.close()
 })
 compareDialog.addEventListener('close', () => { compareColumns.innerHTML = '' })
+
+/* v0.4-4 保存とコレクション：端末内（localStorage）に保存する */
+type Collection = { id: string, name: string, items: string[] }
+type SavedState = { saved: string[], collections: Collection[] }
+
+const savedKey = 'motion-sample-book:saved'
+/** 用途別コレクションの候補（ROADMAP v1.0の4領域に合わせる） */
+const suggestedCollections = ['Web', '動画', 'プレゼン', '建築CG']
+
+const loadSaved = (): SavedState => {
+  try {
+    const raw = JSON.parse(window.localStorage.getItem(savedKey) ?? '{}') as Partial<SavedState>
+    const saved = (raw.saved ?? []).filter((number) => sampleByNumber.has(number))
+    const collections = (raw.collections ?? [])
+      .filter((collection) => collection && typeof collection.name === 'string')
+      .map((collection) => ({ ...collection, items: (collection.items ?? []).filter((number) => saved.includes(number)) }))
+    return { saved, collections }
+  } catch {
+    return { saved: [], collections: [] }
+  }
+}
+
+const savedState = loadSaved()
+let activeCollection = 'all'
+
+const persistSaved = () => {
+  try { window.localStorage.setItem(savedKey, JSON.stringify(savedState)) } catch { /* 保存できない環境ではこのページを開いている間だけ有効 */ }
+}
+
+const escapeHtml = (text: string) => text.replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]!))
+
+const savedGrid = document.querySelector<HTMLDivElement>('.saved-grid')!
+const savedEmpty = document.querySelector<HTMLParagraphElement>('.saved-empty')!
+const collectionFilter = document.querySelector<HTMLDivElement>('.collection-filter')!
+const collectionSuggest = document.querySelector<HTMLDivElement>('.collection-suggest')!
+const collectionForm = document.querySelector<HTMLFormElement>('.collection-form')!
+const collectionInput = document.querySelector<HTMLInputElement>('#collection-name')!
+
+const addCollection = (name: string) => {
+  const trimmed = name.trim().slice(0, 20)
+  if (!trimmed) return
+  const existing = savedState.collections.find((collection) => collection.name === trimmed)
+  if (existing) {
+    activeCollection = existing.id
+    return
+  }
+  const id = `c${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`
+  savedState.collections.push({ id, name: trimmed, items: [] })
+  activeCollection = id
+}
+
+const renderSaved = () => {
+  // カード側の「保存」ボタンとタブの件数
+  document.querySelectorAll<HTMLButtonElement>('.save-toggle').forEach((toggle) => {
+    const saved = savedState.saved.includes(toggle.dataset.save!)
+    toggle.setAttribute('aria-pressed', String(saved))
+    toggle.classList.toggle('is-saved', saved)
+    toggle.textContent = saved ? '★ 保存済み' : '☆ 保存'
+  })
+  document.querySelector('[data-saved-count]')!.textContent = String(savedState.saved.length)
+
+  if (activeCollection !== 'all' && !savedState.collections.some((collection) => collection.id === activeCollection)) activeCollection = 'all'
+  const current = savedState.collections.find((collection) => collection.id === activeCollection)
+
+  collectionFilter.innerHTML = [
+    `<button class="collection-tab${activeCollection === 'all' ? ' is-active' : ''}" type="button" data-show-collection="all" aria-pressed="${activeCollection === 'all'}">すべての保存 <span>${savedState.saved.length}</span></button>`,
+    ...savedState.collections.map((collection) => `<button class="collection-tab${collection.id === activeCollection ? ' is-active' : ''}" type="button" data-show-collection="${collection.id}" aria-pressed="${collection.id === activeCollection}">${escapeHtml(collection.name)} <span>${collection.items.length}</span></button>`),
+    current ? `<button class="collection-delete" type="button" data-delete-collection="${current.id}">「${escapeHtml(current.name)}」を削除</button>` : '',
+  ].join('')
+
+  const missing = suggestedCollections.filter((name) => !savedState.collections.some((collection) => collection.name === name))
+  collectionSuggest.innerHTML = missing.length
+    ? `<span>用途別の候補：</span>${missing.map((name) => `<button type="button" data-suggest-collection="${name}">＋ ${name}</button>`).join('')}`
+    : ''
+
+  const visible = current ? savedState.saved.filter((number) => current.items.includes(number)) : savedState.saved
+  savedGrid.innerHTML = ''
+  visible.forEach((number) => {
+    const sample = sampleByNumber.get(number)!
+    const original = document.querySelector<HTMLButtonElement>(`.save-toggle[data-save="${number}"]`)!
+      .closest('.sample-card')!
+      .querySelector<HTMLButtonElement>('.motion-stage, .preview-stage')!
+    const stage = original.cloneNode(true) as HTMLButtonElement
+    stage.classList.remove('is-playing')
+
+    const card = document.createElement('article')
+    card.className = 'saved-card'
+    card.innerHTML = `
+      <div class="card-top">${cardId(sample)}<button class="save-remove" type="button" data-unsave="${number}">保存から外す</button></div>
+      <div class="saved-stage-slot"></div>
+      <div class="card-copy">
+        <p class="english">${sample.english}</p>
+        <h3>${sample.name}</h3>
+      </div>
+      <div class="collection-chips" role="group" aria-label="${sample.name}を入れるコレクション">
+        ${savedState.collections.length
+          ? savedState.collections.map((collection) => {
+            const inside = collection.items.includes(number)
+            return `<button class="collection-chip${inside ? ' is-active' : ''}" type="button" data-collection="${collection.id}" data-item="${number}" aria-pressed="${inside}">${inside ? '✓ ' : '＋ '}${escapeHtml(collection.name)}</button>`
+          }).join('')
+          : '<span class="collection-hint">コレクションを作ると、ここで振り分けられます。</span>'}
+      </div>`
+    card.querySelector('.saved-stage-slot')!.append(stage)
+    bindStage(stage)
+    savedGrid.append(card)
+  })
+
+  savedEmpty.hidden = visible.length > 0
+  savedEmpty.textContent = savedState.saved.length === 0
+    ? 'まだ保存した見本はありません。各カードの「☆ 保存」を押すと、ここに集まります。'
+    : 'このコレクションにはまだ見本がありません。「すべての保存」から振り分けてください。'
+}
+
+const updateSaved = () => {
+  persistSaved()
+  renderSaved()
+}
+
+document.addEventListener('click', (event) => {
+  const target = event.target as Element
+
+  const saveToggle = target.closest<HTMLButtonElement>('.save-toggle')
+  if (saveToggle) {
+    const number = saveToggle.dataset.save!
+    if (savedState.saved.includes(number)) {
+      savedState.saved = savedState.saved.filter((item) => item !== number)
+      savedState.collections.forEach((collection) => { collection.items = collection.items.filter((item) => item !== number) })
+    } else {
+      savedState.saved.push(number)
+    }
+    updateSaved()
+    return
+  }
+
+  const unsave = target.closest<HTMLButtonElement>('[data-unsave]')
+  if (unsave) {
+    const number = unsave.dataset.unsave!
+    savedState.saved = savedState.saved.filter((item) => item !== number)
+    savedState.collections.forEach((collection) => { collection.items = collection.items.filter((item) => item !== number) })
+    updateSaved()
+    return
+  }
+
+  const chip = target.closest<HTMLButtonElement>('.collection-chip')
+  if (chip) {
+    const collection = savedState.collections.find((item) => item.id === chip.dataset.collection)
+    if (!collection) return
+    const number = chip.dataset.item!
+    collection.items = collection.items.includes(number)
+      ? collection.items.filter((item) => item !== number)
+      : [...collection.items, number]
+    updateSaved()
+    return
+  }
+
+  const show = target.closest<HTMLButtonElement>('[data-show-collection]')
+  if (show) {
+    activeCollection = show.dataset.showCollection!
+    renderSaved()
+    return
+  }
+
+  const remove = target.closest<HTMLButtonElement>('[data-delete-collection]')
+  if (remove) {
+    // コレクションだけを消す。見本の保存はそのまま残す
+    savedState.collections = savedState.collections.filter((collection) => collection.id !== remove.dataset.deleteCollection)
+    activeCollection = 'all'
+    updateSaved()
+    return
+  }
+
+  const suggest = target.closest<HTMLButtonElement>('[data-suggest-collection]')
+  if (suggest) {
+    addCollection(suggest.dataset.suggestCollection!)
+    updateSaved()
+  }
+})
+
+collectionForm.addEventListener('submit', (event) => {
+  event.preventDefault()
+  addCollection(collectionInput.value)
+  collectionInput.value = ''
+  updateSaved()
+})
+
+renderSaved()
