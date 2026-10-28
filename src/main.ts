@@ -460,6 +460,35 @@ const textChars = [...sampleText].map((char, index) => {
 
 const textGrid = document.querySelector<HTMLDivElement>('#text-grid')!
 
+/** 見本の倍増（建築寄り）で追加した文字の見本（T06〜T10）。共通の「動きで見つける」とは別の画面を持つ */
+const textScenes: Record<string, string> = {
+  tracking: `
+      <span class="tk-frame" aria-hidden="true">
+        <span class="tk-title">SEASIDE HOUSE</span>
+        <span class="tk-sub">竣工 2026 ／ 設計：モーション見本帳</span>
+      </span>`,
+  strokedraw: `
+      <svg class="sd-svg" viewBox="0 0 320 120" aria-hidden="true">
+        <text x="160" y="78" text-anchor="middle">美術館</text>
+      </svg>
+      <span class="sd-sub" aria-hidden="true">ART MUSEUM</span>`,
+  counter: `
+      <span class="ct-grid" aria-hidden="true">
+        <span><small>延床面積</small><b><span data-count-to="12480">12,480</span><em>㎡</em></b></span>
+        <span><small>階数</small><b><span data-count-to="24">24</span><em>F</em></b></span>
+        <span><small>高さ</small><b><span data-count-to="98.5" data-decimals="1">98.5</span><em>m</em></b></span>
+      </span>`,
+  dimension: `
+      <span class="dm-frame" aria-hidden="true">
+        <i class="dm-wall left"></i><i class="dm-wall right"></i><i class="dm-room"></i>
+        <span class="dm-dim"><i class="dm-ext left"></i><i class="dm-ext right"></i><i class="dm-line"></i><i class="dm-tick left"></i><i class="dm-tick right"></i><b class="dm-value">7,200</b></span>
+      </span>`,
+  callout: `
+      <span class="co-photo" aria-hidden="true"><i class="ph-sky"></i><i class="ph-far"></i><i class="ph-building"></i><i class="ph-ground"></i></span>
+      <span class="co-note n1" aria-hidden="true"><i class="co-dot"></i><i class="co-leader"></i><b class="co-label">Low-E複層ガラス</b></span>
+      <span class="co-note n2" aria-hidden="true"><i class="co-dot"></i><i class="co-leader"></i><b class="co-label">木製ルーバー</b></span>`,
+}
+
 textGrid.innerHTML = textSamples.map((sample) => `
   <article class="sample-card text-card" data-search="${searchText(sample)}">
     <div class="card-top">
@@ -467,10 +496,10 @@ textGrid.innerHTML = textSamples.map((sample) => `
       <span class="tag text-tag">${sample.categoryLabel}</span>
     </div>
     <button class="text-stage preview-stage text-effect-${sample.id}" type="button" aria-label="${sample.name}のプレビューを再生">
-      <span class="text-frame">
+      ${textScenes[sample.id] ?? `<span class="text-frame">
         <span class="text-mask"><span class="text-line" aria-hidden="true">${textChars}<i class="caret"></i></span></span>
         <span class="text-sub" aria-hidden="true">FIND BY MOTION</span>
-      </span>
+      </span>`}
       <span class="interaction-label">HOVER / TAP</span>
     </button>
     <div class="card-copy">
@@ -658,6 +687,35 @@ const playMotion = (stage: HTMLButtonElement) => {
 }
 
 /** 動画・文字：ホバー／タップ／フォーカスで2.4秒再生。連続再生しても前のタイマーで止まらない */
+/** 数字のカウントアップ（T08）。CSSでは数えられないので、再生のたびにJSで0から数える */
+const counterFrames = new WeakMap<HTMLElement, number>()
+const runCounters = (stage: HTMLElement) => {
+  stage.querySelectorAll<HTMLElement>('[data-count-to]').forEach((element) => {
+    const to = Number(element.dataset.countTo)
+    const decimals = Number(element.dataset.decimals ?? 0)
+    const format = (value: number) => value.toLocaleString('ja-JP', { minimumFractionDigits: decimals, maximumFractionDigits: decimals })
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const previous = counterFrames.get(element)
+    if (previous !== undefined) window.cancelAnimationFrame(previous)
+    if (reduce) {
+      element.textContent = format(to)
+      return
+    }
+    const delay = 200 / speed()
+    const duration = 1600 / speed()
+    const start = performance.now() + delay
+    const step = (now: number) => {
+      const progress = Math.min(Math.max((now - start) / duration, 0), 1)
+      const eased = 1 - (1 - progress) ** 3
+      element.textContent = format(to * eased)
+      if (progress < 1) counterFrames.set(element, window.requestAnimationFrame(step))
+      else counterFrames.delete(element)
+    }
+    element.textContent = format(0)
+    counterFrames.set(element, window.requestAnimationFrame(step))
+  })
+}
+
 const playPreview = (stage: HTMLButtonElement) => {
   const activeTimer = previewPlaybackTimers.get(stage)
   if (activeTimer !== undefined) window.clearTimeout(activeTimer)
@@ -666,6 +724,7 @@ const playPreview = (stage: HTMLButtonElement) => {
   void stage.offsetWidth
   stage.classList.add('is-playing')
   applySpeed(stage)
+  runCounters(stage)
 
   const timer = window.setTimeout(() => {
     stage.classList.remove('is-playing')
