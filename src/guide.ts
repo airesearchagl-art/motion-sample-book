@@ -4,6 +4,7 @@ import {
   samples, videoSamples, textSamples, allSamples,
   finderWords, strengthSamples, directionSamples, settingOptions, suggestedCollections,
 } from './data'
+import { recipeTools } from './recipes'
 
 /**
  * 使い方ページ。
@@ -54,7 +55,7 @@ const sections: Section[] = [
     body: `
       <div class="g-cards">
         <div><h4>UIモーション <small>${samples.length}</small></h4><p>ボタンやカードの反応。雰囲気「静か／はっきり／装飾」で絞り込めます。</p></div>
-        <div><h4>動画・カメラ <small>${videoSamples.length}</small></h4><p>カット・フェードなどのつなぎと、ズーム・パン・ドリーなどのカメラワーク。</p></div>
+        <div><h4>動画・カメラ <small>${videoSamples.length}</small></h4><p>カット・フェードなどのつなぎ、ズーム・パン・ドリーなどのカメラワーク、断面カットなどの建築CG。</p></div>
         <div><h4>文字 <small>${textSamples.length}</small></h4><p>見出しやテロップの出し方。フェードイン、タイプ表示など。</p></div>
       </div>
       <p>4つ目の「保存」タブには、自分で保存した見本が集まります（<a href="#save">保存とコレクション</a>）。</p>`,
@@ -124,6 +125,31 @@ const sections: Section[] = [
       <p class="g-note"><strong>保存先について</strong>　保存した見本・コレクション・調整の設定は、<strong>この端末のブラウザの中だけ</strong>に残ります。PCとスマートフォンの間では共有されません。ブラウザの履歴やサイトデータを消すと、保存も消えます。</p>`,
   },
   {
+    id: 'reuse',
+    title: '再現情報をコピーする',
+    lead: '気に入った動きを、Webや動画編集、PowerPoint、建築CGで作るための手がかりです。',
+    body: `
+      <ol class="g-steps">
+        <li><strong>開く</strong><span>カードの <kbd>⧉ 再現情報を見る</kbd> を押します。右側の小さな印は、情報がある道具です。</span></li>
+        <li><strong>選ぶ</strong><span>使いたい道具の欄の <kbd>コピー</kbd> を押します。<kbd>すべてコピー</kbd> で全部をまとめてコピーできます。</span></li>
+        <li><strong>貼り付ける</strong><span>コード、編集ソフトでの探し方、生成AIへの指示文として、そのまま使えます。</span></li>
+      </ol>
+      <table class="g-table">
+        <thead><tr><th>欄</th><th>中身</th></tr></thead>
+        <tbody>
+          <tr><td>依頼文（日本語）</td><td>名前・説明・向いている場面・避けたい場面・印象をまとめた文。人に作業を頼むときに使います。</td></tr>
+          ${recipeTools.map((tool) => `<tr><td>${tool.label}</td><td>${{
+            css: 'Webで作るときの短いコード例。',
+            edit: 'エフェクトやトランジションの名前と、主な操作。',
+            powerpoint: '近いアニメーション（開始効果・強調・画面切り替え）と設定。',
+            cg: 'カメラパス、断面、時刻など、建築CGソフトでの作り方。カメラワークと建築CGの見本にあります。',
+            prompt: '動画・画像生成AIへ渡す英語の指示文。',
+          }[tool.key]}</td></tr>`).join('')}
+        </tbody>
+      </table>
+      <p class="g-tip"><strong>メモ</strong>　PowerPointや編集ソフトの欄は「近い表現」です。まったく同じ動きにならない場合は、速度や強さを見本と見比べて調整してください。</p>`,
+  },
+  {
     id: 'reduced-motion',
     title: '動きを減らす設定',
     lead: '端末で「視差効果を減らす」「アニメーションを減らす」を有効にしている場合の表示です。',
@@ -155,6 +181,7 @@ const sections: Section[] = [
 
 /** 更新履歴。新しいものを上に追加する */
 const changelog: [string, string][] = [
+  ['v0.5', '再現情報（CSS、編集ソフト、PowerPoint、建築CG、生成AI）のコピー。建築CGの見本「断面カット」「デイ・トゥ・ナイト」を試験追加'],
   ['v0.4', '感覚語検索、2案比較、速度・強さ・向きの調整、保存とコレクション、使い方ページ'],
   ['v0.3', 'カメラワーク5種類と文字5種類を追加し、合計25種類に。「避けたい場面」を追加'],
   ['v0.2', '動画・カメラタブ（カット、フェード、ワイプ、ズーム、パン）'],

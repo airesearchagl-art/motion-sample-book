@@ -164,6 +164,28 @@ body.has-compare-tray footer { padding-bottom: 110px; }
 .collection-chip:focus-visible, .collection-tab:focus-visible, .save-remove:focus-visible, .collection-delete:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
 .collection-hint { font-size: .76rem; color: #827c70; }
 
+/* v0.5 Recipe (reuse) */
+.recipe-open { margin-top: 8px; width: 100%; min-height: 42px; padding: 0 14px; display: flex; align-items: center; justify-content: space-between; gap: 10px; border: 1px solid var(--ink); background: var(--ink); color: var(--cream); font-size: .82rem; cursor: pointer; transition: background .2s, color .2s; }
+.recipe-open:hover, .recipe-open:focus-visible { background: #3a3730; }
+.recipe-open:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+.recipe-tools { display: inline-flex; gap: 4px; }
+.recipe-tools i { font-style: normal; font-size: .62rem; letter-spacing: .04em; padding: 2px 5px; border: 1px solid rgba(255,253,247,.4); border-radius: 3px; }
+.recipe-dialog { width: min(820px, calc(100% - 32px)); max-height: calc(100% - 32px); padding: 0; border: 0; background: var(--paper); color: var(--ink); box-shadow: 0 30px 80px rgba(0,0,0,.35); }
+.recipe-dialog::backdrop { background: rgba(23,25,27,.62); }
+.recipe-dialog .compare-dialog-head { margin-bottom: 12px; }
+.recipe-english { margin: 6px 0 0; color: var(--coral); font-size: .76rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; }
+.recipe-note { margin: 0 0 18px; font-size: .84rem; color: #5b574e; line-height: 1.7; }
+.recipe-body { display: grid; gap: 12px; }
+.recipe-block { border: 1px solid var(--line); background: rgba(255,253,247,.6); }
+.recipe-block-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 14px; border-bottom: 1px solid var(--line); }
+.recipe-block-head h3 { margin: 0; font-size: .86rem; }
+.recipe-copy, .recipe-copy-all { border: 1px solid var(--line); background: transparent; border-radius: 999px; padding: 6px 14px; font-size: .78rem; cursor: pointer; white-space: nowrap; }
+.recipe-copy:hover, .recipe-copy:focus-visible { border-color: var(--ink); }
+.recipe-copy.is-copied, .recipe-copy-all.is-copied { background: var(--blue); border-color: var(--blue); color: var(--cream); }
+.recipe-dialog .compare-dialog-actions .recipe-copy-all { background: var(--ink); border-color: var(--ink); color: var(--cream); font-weight: 600; padding: 10px 18px; font-size: .9rem; }
+.recipe-dialog .compare-dialog-actions .recipe-copy-all.is-copied { background: var(--blue); border-color: var(--blue); }
+.recipe-block pre { margin: 0; padding: 12px 14px; overflow-x: auto; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .78rem; line-height: 1.65; white-space: pre-wrap; word-break: break-word; color: #3f3c36; }
+
 .library-tabs {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -402,6 +424,15 @@ footer a { color: var(--ink); text-decoration: none; font-weight: 600; }
 [data-direction="reverse"] .effect-shine.is-playing .demo-object::before { left: -55%; }
 [data-direction="reverse"] .video-effect-wipe .scene-b { clip-path: inset(0 0 0 100%); }
 [data-direction="reverse"] .video-effect-wipe.is-playing .scene-b { animation-name: video-wipe-reverse; }
+/* デイ・トゥ・ナイト「反対」：夜の状態で待機し、夜→朝へ逆再生する */
+[data-direction="reverse"] .dn-night { opacity: 1; }
+[data-direction="reverse"] .dn-building { background: #2b3440; }
+[data-direction="reverse"] .dn-ground { background: #2a3329; }
+[data-direction="reverse"] .dn-building i { background: #ffd27a; box-shadow: 0 0 10px rgba(255,210,122,.8); }
+[data-direction="reverse"] .video-effect-daynight.is-playing .dn-sky i,
+[data-direction="reverse"] .video-effect-daynight.is-playing .dn-building,
+[data-direction="reverse"] .video-effect-daynight.is-playing .dn-ground,
+[data-direction="reverse"] .video-effect-daynight.is-playing .dn-building i { animation-direction: reverse; }
 /* パン・チルト・オービット・トラックは、待機位置を終点側に置き、逆再生で反対へ動かす */
 [data-direction="reverse"] .video-effect-pan .pan-track { transform: translateX(-42.85%); }
 [data-direction="reverse"] .tilt-track { transform: translateY(0); }
@@ -416,6 +447,44 @@ footer a { color: var(--ink); text-decoration: none; font-weight: 600; }
 [data-direction="reverse"] .video-effect-orbit.is-playing .orbit-bg,
 [data-direction="reverse"] .video-effect-track.is-playing .camera-layer { animation-direction: reverse; }
 [data-direction="reverse"] .text-effect-mask.is-playing .text-line { animation-name: text-mask-down; }
+
+/* v0.5 トライアル：建築CG */
+.scene-caption { position: absolute; left: 18px; bottom: 16px; z-index: 6; font-size: .62rem; letter-spacing: .15em; font-weight: 600; opacity: .75; }
+
+/* V11 断面カット：切断線が左から右へ進み、外壁を取り去って内部を見せる */
+.video-effect-section .video-viewport { background: #dfe7ea; }
+.sec-ground { top: auto; height: 16%; background: #9aa58f; }
+.sec-building { position: absolute; left: 22%; width: 56%; top: 16%; bottom: 16%; display: block; }
+.sec-interior, .sec-facade { position: absolute; inset: 0; display: block; }
+.sec-interior { background: #f4efe4; border: 2px solid #25231f; }
+.sec-interior i { position: absolute; display: block; }
+.sec-room { background: rgba(207,121,95,.35); }
+.sec-room.r1 { left: 4%; width: 40%; top: 4%; height: 21%; }
+.sec-room.r2 { left: 56%; width: 40%; top: 29%; height: 21%; background: rgba(49,92,112,.3); }
+.sec-room.r3 { left: 4%; width: 40%; top: 54%; height: 21%; background: rgba(125,143,117,.4); }
+.sec-room.r4 { left: 56%; width: 40%; top: 79%; height: 17%; }
+.sec-void { left: 46%; width: 8%; top: 0; bottom: 0; background: repeating-linear-gradient(45deg, transparent 0 5px, rgba(37,35,31,.12) 5px 6px); }
+.sec-stair { left: 4%; width: 22%; top: 79%; height: 17%; background: repeating-linear-gradient(135deg, transparent 0 6px, #25231f 6px 8px); opacity: .6; }
+.sec-slab { left: 0; right: 0; height: 4px; background: #25231f; }
+.sec-slab.s1 { top: 25%; } .sec-slab.s2 { top: 50%; } .sec-slab.s3 { top: 75%; }
+.sec-facade { background: repeating-linear-gradient(90deg, transparent 0 18%, rgba(255,255,255,.55) 18% 20%), repeating-linear-gradient(180deg, #8ea5b0 0 21%, #6f8792 21% 25%); border: 2px solid #25231f; clip-path: inset(0 0 0 0); }
+.sec-line { position: absolute; top: -10%; bottom: -10%; left: 0; width: 0; border-left: 2px dashed #d23b1f; opacity: 0; display: block; }
+.video-effect-section.is-playing .sec-facade { animation: section-facade 2.2s cubic-bezier(.45,0,.25,1) both; }
+.video-effect-section.is-playing .sec-line { animation: section-line 2.2s cubic-bezier(.45,0,.25,1) both; }
+
+/* V12 デイ・トゥ・ナイト：空が夕景から夜へ、窓の明かりが順に点く */
+.video-effect-daynight .video-viewport { background: #9cc3d5; }
+.dn-sky i { position: absolute; inset: 0; display: block; opacity: 0; }
+.dn-dusk { background: linear-gradient(180deg, #5d6b9a 0%, #e48b6b 62%, #f6c27d 100%); }
+.dn-night { background: radial-gradient(1px 1px at 20% 20%, #fff 50%, transparent), radial-gradient(1px 1px at 70% 12%, #fff 50%, transparent), radial-gradient(1px 1px at 85% 30%, #fff 50%, transparent), linear-gradient(180deg, #0f1730 0%, #24304f 100%); }
+.dn-building { position: absolute; left: 30%; width: 40%; top: 20%; bottom: 14%; z-index: 2; display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(4, 1fr); gap: 10% 12%; padding: 10% 12%; background: #c9b79a; border: 2px solid rgba(37,35,31,.5); }
+.dn-building i { display: block; background: #a9bcc4; }
+.dn-ground { top: auto; height: 14%; z-index: 1; background: #7d8f75; }
+.video-effect-daynight.is-playing .dn-dusk { animation: dn-dusk 2.2s ease-in-out both; }
+.video-effect-daynight.is-playing .dn-night { animation: dn-night 2.2s ease-in-out both; }
+.video-effect-daynight.is-playing .dn-building { animation: dn-building 2.2s ease-in-out both; }
+.video-effect-daynight.is-playing .dn-ground { animation: dn-ground 2.2s ease-in-out both; }
+.video-effect-daynight.is-playing .dn-building i { animation: dn-window .3s ease-out both; animation-delay: calc(1.05s + var(--d) * .07s); }
 
 @keyframes mark { to { height: 5px; } }
 @keyframes bounce { 0%,100% { transform: translateY(0) scale(1); } 40% { transform: translateY(calc(-16px * var(--strength))) scale(1.04,.96); } 68% { transform: translateY(calc(3px * var(--strength))) scale(.98,1.02); } }
@@ -447,6 +516,13 @@ footer a { color: var(--ink); text-decoration: none; font-weight: 600; }
 @keyframes text-assemble { 0%,12% { opacity: .35; transform: translate(calc(var(--x) * var(--strength)), calc(var(--y) * var(--strength))) rotate(calc(var(--r) * var(--strength))); } 100% { opacity: 1; transform: none; } }
 @keyframes video-wipe-reverse { 0%,12% { clip-path: inset(0 0 0 100%); } 88%,100% { clip-path: inset(0); } }
 @keyframes text-mask-down { from { transform: translateY(-115%); } to { transform: translateY(0); } }
+@keyframes section-facade { 0%,12% { clip-path: inset(0 0 0 0); } 88%,100% { clip-path: inset(0 0 0 100%); } }
+@keyframes section-line { 0% { left: 0; opacity: 0; } 12% { left: 0; opacity: 1; } 88% { left: 100%; opacity: 1; } 100% { left: 100%; opacity: 0; } }
+@keyframes dn-dusk { 0%,8% { opacity: 0; } 42% { opacity: 1; } 78%,100% { opacity: 0; } }
+@keyframes dn-night { 0%,38% { opacity: 0; } 82%,100% { opacity: 1; } }
+@keyframes dn-building { 0%,30% { background: #c9b79a; } 60% { background: #8a6f62; } 90%,100% { background: #2b3440; } }
+@keyframes dn-ground { 0%,30% { background: #7d8f75; } 90%,100% { background: #2a3329; } }
+@keyframes dn-window { from { background: #a9bcc4; box-shadow: none; } to { background: #ffd27a; box-shadow: 0 0 10px rgba(255,210,122,.8); } }
 @keyframes text-mask-up { from { transform: translateY(115%); } to { transform: translateY(0); } }
 
 @media (max-width: 760px) {
