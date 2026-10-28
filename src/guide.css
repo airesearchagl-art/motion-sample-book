@@ -4,6 +4,34 @@
 .guide-hero .eyebrow { color: var(--coral); }
 .guide-hero h1 { font-size: clamp(2.6rem, 6vw, 5rem); margin: 14px 0 20px; }
 
+/* 画面マップ */
+.guide-map { padding: 48px 5vw 56px; border-bottom: 1px solid var(--line); scroll-margin-top: 8px; }
+.guide-map-head { max-width: 760px; margin-bottom: 24px; }
+.guide-map-head .eyebrow { margin: 0 0 8px; color: var(--coral); }
+.guide-map-head h2 { margin: 0 0 10px; font-size: clamp(1.6rem, 3vw, 2.3rem); letter-spacing: -.03em; }
+.guide-map-head p:last-child { margin: 0; color: #5b574e; line-height: 1.8; font-size: .95rem; }
+.guide-map-layout { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(280px, 1fr); gap: clamp(20px, 3vw, 40px); align-items: start; }
+.map-figure { position: relative; margin: 0; border: 1px solid var(--line); background: var(--cream); box-shadow: 0 14px 40px rgba(37,35,31,.08); }
+.map-figure img { display: block; width: 100%; height: auto; }
+.map-area { position: absolute; border: 2px solid var(--coral); background: rgba(234,107,77,.1); border-radius: 4px; opacity: 0; transition: opacity .15s; pointer-events: none; }
+.map-area.is-active { opacity: 1; }
+.map-pin { position: absolute; z-index: 2; transform: translate(-60%, -50%); display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--coral); color: #fff; font-size: .74rem; font-weight: 700; text-decoration: none; box-shadow: 0 0 0 3px rgba(255,253,247,.9), 0 4px 10px rgba(0,0,0,.25); transition: transform .15s; }
+.map-pin:hover, .map-pin:focus-visible, .map-pin.is-active { transform: translate(-60%, -50%) scale(1.18); background: var(--ink); }
+.map-pin:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
+.map-legend { position: sticky; top: 16px; margin: 0; padding: 0; list-style: none; display: grid; gap: 4px; }
+.map-legend a { display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; gap: 10px; align-items: start; padding: 10px 12px; border: 1px solid transparent; border-radius: 6px; color: var(--ink); text-decoration: none; }
+.map-legend li.is-active a, .map-legend a:hover, .map-legend a:focus-visible { border-color: var(--line); background: rgba(255,253,247,.8); }
+.map-legend a:focus-visible { outline: 2px solid var(--blue); outline-offset: 1px; }
+.map-num { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--coral); color: #fff; font-size: .72rem; font-weight: 700; }
+.map-text { display: grid; gap: 2px; }
+.map-text strong { font-size: .9rem; }
+.map-text span { font-size: .8rem; line-height: 1.6; color: #5b574e; }
+.map-more { font-size: .74rem; color: var(--blue); white-space: nowrap; padding-top: 3px; }
+
+.g-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.back-to-map { font-size: .78rem; color: var(--blue); text-decoration: none; padding: 4px 10px; border: 1px solid rgba(49,92,112,.3); border-radius: 999px; white-space: nowrap; }
+.back-to-map:hover, .back-to-map:focus-visible { background: rgba(49,92,112,.08); }
+
 .guide-layout { display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: clamp(32px, 5vw, 72px); padding: 0 5vw; }
 .guide-toc { position: sticky; top: 0; align-self: start; padding: 40px 0; max-height: 100vh; overflow-y: auto; }
 .guide-toc .eyebrow { margin: 0 0 14px; color: #746e62; }
@@ -63,7 +91,15 @@ kbd { display: inline-block; padding: 1px 8px; margin: 1px 0; border: 1px solid 
 
 .guide-back { padding-top: 40px; }
 
+@media (max-width: 960px) {
+  .guide-map-layout { grid-template-columns: 1fr; }
+  .map-legend { position: static; }
+}
+
 @media (max-width: 760px) {
+  .guide-map { padding: 36px 20px 40px; }
+  .map-pin { width: 20px; height: 20px; font-size: .62rem; box-shadow: 0 0 0 2px rgba(255,253,247,.9), 0 2px 6px rgba(0,0,0,.25); }
+  .map-more { display: none; }
   .guide-hero { padding-inline: 20px; }
   .guide-layout { grid-template-columns: 1fr; gap: 0; padding: 0 20px; }
   .guide-toc { position: static; max-height: none; padding: 28px 0 8px; border-bottom: 1px solid var(--line); }

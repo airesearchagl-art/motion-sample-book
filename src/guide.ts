@@ -5,6 +5,7 @@ import {
   finderWords, strengthSamples, directionSamples, settingOptions, suggestedCollections,
 } from './data'
 import { recipeTools } from './recipes'
+import mapData from './guide-map.json'
 
 /**
  * 使い方ページ。
@@ -20,6 +21,61 @@ const names = (numbers: Set<string>) => allSamples
   .join('')
 
 const optionLabels = (setting: keyof typeof settingOptions) => settingOptions[setting].options.map(([, label]) => `<kbd>${label}</kbd>`).join(' ')
+
+/**
+ * 画面マップ。番号の位置は scripts/capture-guide-map.cjs が src/guide-map.json に書き出す。
+ * ここでは番号ごとの名前・ひとこと説明・詳しい説明の項目を決める。
+ */
+/** side：番号を部分の左右どちらに付けるか（重ならないように分ける） */
+const mapItems: { n: number, title: string, summary: string, section: string, side?: 'left' | 'right' }[] = [
+  { n: 1, title: '検索欄', summary: '「ふわっと」「ボタン」など、思い浮かんだ言葉で3つの見本帳をまとめて探す', section: 'search' },
+  { n: 2, title: '感覚語のボタン', summary: 'よく使う言葉を押すだけで検索に追加。もう一度押すと外れる', section: 'search' },
+  { n: 3, title: '調整バー', summary: '速度・強さ・向きを変える。比較画面とも連動する', section: 'adjust' },
+  { n: 4, title: 'タブ', summary: 'UI／動画・カメラ／文字／保存を切り替える。数字は件数', section: 'libraries' },
+  { n: 5, title: '雰囲気の絞り込み', summary: 'UIモーションを「静か・はっきり・装飾」で絞る', section: 'libraries' },
+  { n: 6, title: 'プレビュー', summary: 'カーソルを重ねる、またはタップすると再生', section: 'play', side: 'right' },
+  { n: 7, title: '強さ・向きの印', summary: '調整バーの「強さ」「向き」が効く見本に付く', section: 'adjust', side: 'right' },
+  { n: 8, title: '向いている／避けたい場面', summary: '使いどころの目安', section: 'play', side: 'right' },
+  { n: 9, title: '感覚語のタグ', summary: '押すと、その言葉で探し直す', section: 'search' },
+  { n: 10, title: '保存', summary: '「保存」タブに集め、用途別のコレクションに分ける', section: 'save' },
+  { n: 11, title: '比較に追加', summary: '2つ選んで、横に並べて同時に再生する', section: 'compare', side: 'right' },
+  { n: 12, title: '再現情報を見る', summary: 'CSS・編集ソフト・PowerPoint・建築CG・生成AI向けの情報をコピーする', section: 'reuse', side: 'right' },
+]
+
+const markerByNumber = new Map(mapData.markers.map((marker) => [marker.n, marker]))
+
+const mapSection = `
+  <section class="guide-map" id="map" aria-labelledby="map-title">
+    <div class="guide-map-head">
+      <p class="eyebrow">SCREEN MAP</p>
+      <h2 id="map-title">画面の見方</h2>
+      <p>番号を押すと、その部分の詳しい説明へ移動します。各説明の「画面マップへ戻る」で、ここに戻れます。</p>
+    </div>
+    <div class="guide-map-layout">
+      <figure class="map-figure">
+        <img src="/guide/map.jpg" width="${mapData.width}" height="${mapData.height}" alt="見本帳の画面。検索欄、調整バー、タブ、見本のカードが並んでいる" loading="eager">
+        ${mapItems.map((item) => {
+          const marker = markerByNumber.get(item.n)
+          if (!marker) return ''
+          return `
+          <span class="map-area" data-map="${item.n}" style="left:${marker.x}%;top:${marker.y}%;width:${marker.w}%;height:${marker.h}%" aria-hidden="true"></span>
+          <a class="map-pin" data-map="${item.n}" href="#${item.section}" style="left:${Math.min(Math.max(item.side === 'right' ? marker.x + marker.w : marker.x, 2.5), 97.5)}%;top:${marker.y + marker.h / 2}%" aria-label="${item.n} ${item.title}の説明へ">${item.n}</a>`
+        }).join('')}
+      </figure>
+      <ol class="map-legend">
+        ${mapItems.map((item) => `
+          <li data-map="${item.n}">
+            <a href="#${item.section}">
+              <span class="map-num">${item.n}</span>
+              <span class="map-text"><strong>${item.title}</strong><span>${item.summary}</span></span>
+              <span class="map-more" aria-hidden="true">詳しく →</span>
+            </a>
+          </li>`).join('')}
+      </ol>
+    </div>
+  </section>`
+
+const backToMap = '<a class="back-to-map" href="#map">↑ 画面マップへ戻る</a>'
 
 const sections: Section[] = [
   {
@@ -201,13 +257,16 @@ document.querySelector<HTMLDivElement>('#guide')!.innerHTML = `
     <section class="guide-hero">
       <p class="eyebrow">HOW TO USE</p>
       <h1>使い方</h1>
-      <p class="lead">見本の再生、検索、比較、調整、保存のしかたをまとめています。</p>
+      <p class="lead">見本の再生、検索、比較、調整、保存、再現情報のコピーのしかたをまとめています。まずは下の画面マップで、どこに何があるかを確かめてください。</p>
     </section>
+
+    ${mapSection}
 
     <div class="guide-layout">
       <nav class="guide-toc" aria-label="目次">
         <p class="eyebrow">CONTENTS</p>
         <ol>
+          <li><a href="#map">画面の見方</a></li>
           ${sections.map((section) => `<li><a href="#${section.id}">${section.title}</a></li>`).join('')}
           <li><a href="#changelog">更新履歴</a></li>
         </ol>
@@ -216,7 +275,10 @@ document.querySelector<HTMLDivElement>('#guide')!.innerHTML = `
       <div class="guide-body">
         ${sections.map((section, index) => `
           <section class="guide-section" id="${section.id}" aria-labelledby="${section.id}-title">
-            <p class="g-index">${String(index + 1).padStart(2, '0')}</p>
+            <div class="g-head">
+              <p class="g-index">${String(index + 1).padStart(2, '0')}</p>
+              ${backToMap}
+            </div>
             <h2 id="${section.id}-title">${section.title}</h2>
             ${section.lead ? `<p class="g-lead">${section.lead}</p>` : ''}
             ${section.body}
@@ -250,3 +312,16 @@ scrollToHash()
 window.addEventListener('load', scrollToHash)
 // Webフォントの読み込みで行の高さが変わるため、読み込み後にもう一度合わせる
 void document.fonts?.ready.then(scrollToHash)
+
+// 凡例と番号を連動させ、どの部分の説明かを画像の上で強調する
+const setActive = (n: string | null) => {
+  document.querySelectorAll<HTMLElement>('[data-map]').forEach((element) => {
+    element.classList.toggle('is-active', element.dataset.map === n)
+  })
+}
+document.querySelectorAll<HTMLElement>('.map-legend li, .map-pin').forEach((element) => {
+  element.addEventListener('mouseenter', () => setActive(element.dataset.map ?? null))
+  element.addEventListener('mouseleave', () => setActive(null))
+  element.addEventListener('focusin', () => setActive(element.dataset.map ?? null))
+  element.addEventListener('focusout', () => setActive(null))
+})
