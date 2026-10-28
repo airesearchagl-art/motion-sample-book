@@ -28,30 +28,39 @@ const optionLabels = (setting: keyof typeof settingOptions) => settingOptions[se
  */
 /** side：番号を部分の左右どちらに付けるか（重ならないように分ける） */
 const mapItems: { n: number, title: string, summary: string, section: string, side?: 'left' | 'right' }[] = [
-  { n: 1, title: '検索欄', summary: '「ふわっと」「ボタン」など、思い浮かんだ言葉で3つの見本帳をまとめて探す', section: 'search' },
-  { n: 2, title: '感覚語のボタン', summary: 'よく使う言葉を押すだけで検索に追加。もう一度押すと外れる', section: 'search' },
-  { n: 3, title: '調整バー', summary: '速度・強さ・向きを変える。比較画面とも連動する', section: 'adjust' },
-  { n: 4, title: 'タブ', summary: 'UI／動画・カメラ／文字／保存を切り替える。数字は件数', section: 'libraries' },
-  { n: 5, title: '雰囲気の絞り込み', summary: 'UIモーションを「静か・はっきり・装飾」で絞る', section: 'libraries' },
-  { n: 6, title: 'プレビュー', summary: 'カーソルを重ねる、またはタップすると再生', section: 'play', side: 'right' },
-  { n: 7, title: '強さ・向きの印', summary: '調整バーの「強さ」「向き」が効く見本に付く', section: 'adjust', side: 'right' },
+  { n: 1, title: '検索欄', summary: '思い浮かんだ言葉で3つの見本帳を探す', section: 'search' },
+  { n: 2, title: '感覚語のボタン', summary: '押すだけで検索語に追加・解除', section: 'search' },
+  { n: 3, title: '調整バー', summary: '速度・強さ・向きを変える', section: 'adjust' },
+  { n: 4, title: 'タブ', summary: '見本帳と保存を切り替える（数字は件数）', section: 'libraries' },
+  { n: 5, title: '雰囲気の絞り込み', summary: 'UIを「静か・はっきり・装飾」で絞る', section: 'libraries' },
+  { n: 6, title: 'プレビュー', summary: '重ねる・タップで再生', section: 'play', side: 'right' },
+  { n: 7, title: '強さ・向きの印', summary: '調整が効く見本の目印', section: 'adjust', side: 'right' },
   { n: 8, title: '向いている／避けたい場面', summary: '使いどころの目安', section: 'play', side: 'right' },
-  { n: 9, title: '感覚語のタグ', summary: '押すと、その言葉で探し直す', section: 'search' },
-  { n: 10, title: '保存', summary: '「保存」タブに集め、用途別のコレクションに分ける', section: 'save' },
-  { n: 11, title: '比較に追加', summary: '2つ選んで、横に並べて同時に再生する', section: 'compare', side: 'right' },
-  { n: 12, title: '再現情報を見る', summary: 'CSS・編集ソフト・PowerPoint・建築CG・生成AI向けの情報をコピーする', section: 'reuse', side: 'right' },
+  { n: 9, title: '感覚語のタグ', summary: '押すとその言葉で探し直す', section: 'search' },
+  { n: 10, title: '保存', summary: '保存タブに集め、用途別に分ける', section: 'save' },
+  { n: 11, title: '比較に追加', summary: '2つを横並びで同時に再生', section: 'compare', side: 'right' },
+  { n: 12, title: '再現情報を見る', summary: 'CSS・編集・PPT・CG・AI向け情報をコピー', section: 'reuse', side: 'right' },
 ]
 
 const markerByNumber = new Map(mapData.markers.map((marker) => [marker.n, marker]))
 
-const mapSection = `
+/** マップの記号はアルファベット（A, B, …）。説明の項目番号（01, 02, …）と区別する */
+const letterOf = (n: number) => String.fromCharCode(64 + n)
+
+/** 説明の項目番号と見出し。マップの凡例に「→ 05 印象の言葉で探す」のように表示する */
+const sectionLabel = (id: string) => {
+  const index = sections.findIndex((section) => section.id === id)
+  return index < 0 ? '' : `${String(index + 1).padStart(2, '0')} ${sections[index].title}`
+}
+
+const renderMap = () => `
   <section class="guide-map" id="map" aria-labelledby="map-title">
     <div class="guide-map-head">
       <p class="eyebrow">SCREEN MAP</p>
       <h2 id="map-title">画面の見方</h2>
-      <p>番号を押すと、その部分の詳しい説明へ移動します。各説明の「画面マップへ戻る」で、ここに戻れます。</p>
+      <p>記号（A〜${letterOf(mapItems.length)}）を押すと、その部分の詳しい説明へ移動します。説明側の「画面マップへ戻る」で、ここに戻れます。</p>
     </div>
-    <div class="guide-map-layout">
+    <div class="guide-map-layout" style="--map-ratio: ${(mapData.width / mapData.height).toFixed(4)}">
       <figure class="map-figure">
         <img src="/guide/map.jpg" width="${mapData.width}" height="${mapData.height}" alt="見本帳の画面。検索欄、調整バー、タブ、見本のカードが並んでいる" loading="eager">
         ${mapItems.map((item) => {
@@ -59,23 +68,28 @@ const mapSection = `
           if (!marker) return ''
           return `
           <span class="map-area" data-map="${item.n}" style="left:${marker.x}%;top:${marker.y}%;width:${marker.w}%;height:${marker.h}%" aria-hidden="true"></span>
-          <a class="map-pin" data-map="${item.n}" href="#${item.section}" style="left:${Math.min(Math.max(item.side === 'right' ? marker.x + marker.w : marker.x, 2.5), 97.5)}%;top:${marker.y + marker.h / 2}%" aria-label="${item.n} ${item.title}の説明へ">${item.n}</a>`
+          <a class="map-pin" data-map="${item.n}" href="#${item.section}" style="left:${Math.min(Math.max(item.side === 'right' ? marker.x + marker.w : marker.x, 2.5), 97.5)}%;top:${marker.y + marker.h / 2}%" aria-label="${letterOf(item.n)} ${item.title}の説明へ">${letterOf(item.n)}</a>`
         }).join('')}
       </figure>
       <ol class="map-legend">
         ${mapItems.map((item) => `
           <li data-map="${item.n}">
             <a href="#${item.section}">
-              <span class="map-num">${item.n}</span>
-              <span class="map-text"><strong>${item.title}</strong><span>${item.summary}</span></span>
-              <span class="map-more" aria-hidden="true">詳しく →</span>
+              <span class="map-num">${letterOf(item.n)}</span>
+              <strong class="map-title">${item.title}</strong>
+              <span class="map-dest" title="${sectionLabel(item.section)}">→ ${sectionLabel(item.section).slice(0, 2)}</span>
+              <span class="map-summary">${item.summary}</span>
             </a>
           </li>`).join('')}
       </ol>
     </div>
   </section>`
 
-const backToMap = '<a class="back-to-map" href="#map">↑ 画面マップへ戻る</a>'
+/** 各説明の上に置く「マップへ戻る」と、その説明を指しているマップの記号 */
+const backToMap = (sectionId: string) => {
+  const letters = mapItems.filter((item) => item.section === sectionId).map((item) => `<span class="map-num small">${letterOf(item.n)}</span>`).join('')
+  return `<a class="back-to-map" href="#map">${letters ? `<span class="back-letters" aria-label="マップの記号">${letters}</span>` : ''}↑ 画面マップへ戻る</a>`
+}
 
 const sections: Section[] = [
   {
@@ -260,13 +274,13 @@ document.querySelector<HTMLDivElement>('#guide')!.innerHTML = `
       <p class="lead">見本の再生、検索、比較、調整、保存、再現情報のコピーのしかたをまとめています。まずは下の画面マップで、どこに何があるかを確かめてください。</p>
     </section>
 
-    ${mapSection}
+    ${renderMap()}
 
     <div class="guide-layout">
       <nav class="guide-toc" aria-label="目次">
         <p class="eyebrow">CONTENTS</p>
         <ol>
-          <li><a href="#map">画面の見方</a></li>
+          <li class="toc-map"><a href="#map">画面の見方</a></li>
           ${sections.map((section) => `<li><a href="#${section.id}">${section.title}</a></li>`).join('')}
           <li><a href="#changelog">更新履歴</a></li>
         </ol>
@@ -277,7 +291,7 @@ document.querySelector<HTMLDivElement>('#guide')!.innerHTML = `
           <section class="guide-section" id="${section.id}" aria-labelledby="${section.id}-title">
             <div class="g-head">
               <p class="g-index">${String(index + 1).padStart(2, '0')}</p>
-              ${backToMap}
+              ${backToMap(section.id)}
             </div>
             <h2 id="${section.id}-title">${section.title}</h2>
             ${section.lead ? `<p class="g-lead">${section.lead}</p>` : ''}
