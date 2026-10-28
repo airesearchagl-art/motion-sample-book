@@ -500,6 +500,61 @@ footer a { color: var(--ink); text-decoration: none; font-weight: 600; }
 .video-effect-daynight.is-playing .dn-ground { animation: dn-ground 2.2s ease-in-out both; }
 .video-effect-daynight.is-playing .dn-building i { animation: dn-window .3s ease-out both; animation-delay: calc(1.05s + var(--d) * .07s); }
 
+/* 見本の倍増（建築寄り）：文字 T06〜T10 */
+.text-stage .tk-frame, .text-stage .ct-grid, .text-stage .dm-frame { position: relative; }
+/* T06 字間が開く */
+.tk-frame { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+.tk-title { font-family: 'DM Sans', 'Noto Sans JP', sans-serif; font-weight: 600; font-size: clamp(1.1rem, 2.4vw, 1.7rem); letter-spacing: calc(.1em + .3em * var(--strength)); white-space: nowrap; }
+.tk-sub { font-size: .66rem; letter-spacing: .2em; color: #8a8478; }
+.text-effect-tracking.is-playing .tk-title { animation: tk-track 2.1s cubic-bezier(.2,.7,.2,1) both; }
+.text-effect-tracking.is-playing .tk-sub { animation: text-type .6s ease both 1.2s; }
+/* T07 線で描かれる文字 */
+.sd-svg { width: 78%; max-width: 360px; overflow: visible; }
+.sd-svg text { font-family: 'Noto Sans JP', sans-serif; font-weight: 700; font-size: 74px; fill: var(--ink); stroke: var(--ink); stroke-width: 1.4; stroke-dasharray: 600; stroke-dashoffset: 0; letter-spacing: .08em; }
+.sd-sub { position: absolute; left: 0; right: 0; bottom: 22%; text-align: center; font-size: .62rem; letter-spacing: .3em; font-weight: 600; color: #8a8478; }
+.text-effect-strokedraw.is-playing .sd-svg text { animation: sd-stroke 2.2s ease both; }
+/* T08 数字のカウントアップ */
+.ct-grid { display: grid; grid-template-columns: repeat(3, auto); gap: clamp(14px, 3vw, 34px); align-items: end; }
+.ct-grid > span { display: flex; flex-direction: column; gap: 6px; }
+.ct-grid small { font-size: .64rem; letter-spacing: .12em; color: #8a8478; }
+.ct-grid b { font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: clamp(1.3rem, 2.8vw, 2rem); font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
+.ct-grid em { font-style: normal; font-size: .5em; margin-left: 3px; color: #635e54; }
+.text-effect-counter.is-playing .ct-grid > span { animation: text-rise .5s cubic-bezier(.2,.8,.2,1) both; }
+.text-effect-counter.is-playing .ct-grid > span:nth-child(2) { animation-delay: .1s; }
+.text-effect-counter.is-playing .ct-grid > span:nth-child(3) { animation-delay: .2s; }
+/* T09 寸法線と一緒に表示 */
+.dm-frame { display: block; width: 72%; height: 66%; }
+.dm-frame i, .dm-frame b { position: absolute; display: block; }
+.dm-wall { top: 0; height: 52%; width: 9%; background: repeating-linear-gradient(45deg, transparent 0 4px, rgba(37,35,31,.5) 4px 5px), #f4efe4; border: 2px solid #25231f; }
+.dm-wall.left { left: 4%; } .dm-wall.right { right: 4%; }
+.dm-room { left: 13%; right: 13%; top: 0; height: 52%; border-top: 1px dashed rgba(37,35,31,.3); border-bottom: 1px dashed rgba(37,35,31,.3); }
+.dm-dim { position: absolute; display: block; left: 8.5%; right: 8.5%; top: 52%; bottom: 0; }
+.dm-ext { top: 0; height: 78%; width: 0; border-left: 1px solid #d23b1f; transform-origin: top; }
+.dm-ext.left { left: 0; } .dm-ext.right { right: 0; }
+.dm-line { left: 0; right: 0; top: 62%; height: 0; border-top: 1.5px solid #d23b1f; transform-origin: center; }
+.dm-tick { top: calc(62% - 6px); width: 0; height: 12px; border-left: 1.5px solid #d23b1f; transform: rotate(45deg); }
+.dm-tick.left { left: 0; } .dm-tick.right { right: 0; }
+.dm-value { left: 0; right: 0; top: calc(62% - 1.9em); text-align: center; font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 1.05rem; letter-spacing: .04em; color: #d23b1f; }
+.text-effect-dimension.is-playing .dm-ext { animation: dm-ext 2.2s ease both; }
+.text-effect-dimension.is-playing .dm-line { animation: dm-line 2.2s cubic-bezier(.2,.8,.2,1) both; }
+.text-effect-dimension.is-playing .dm-tick { animation: dm-tick 2.2s ease both; }
+.text-effect-dimension.is-playing .dm-value { animation: dm-value 2.2s ease both; }
+/* T10 引き出し線の注記 */
+.co-photo { position: absolute; inset: 0; display: block; overflow: hidden; }
+.co-photo i { position: absolute; display: block; }
+.co-note { position: absolute; display: block; width: 0; height: 0; z-index: 3; }
+.co-note.n1 { left: 56%; top: 36%; } .co-note.n2 { left: 40%; top: 64%; }
+.co-note i, .co-note b { position: absolute; display: block; }
+.co-dot { left: -5px; top: -5px; width: 10px; height: 10px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 2px var(--ink); }
+.co-leader { left: 4px; top: 0; width: 70px; height: 0; border-top: 1.5px solid var(--ink); --angle: -24deg; transform: rotate(var(--angle)); transform-origin: left; }
+.co-note.n2 .co-leader { width: 110px; --angle: 16deg; }
+.co-label { left: 66px; top: -42px; white-space: nowrap; padding: 4px 9px; background: rgba(255,253,247,.95); border: 1px solid var(--ink); font-size: .68rem; font-weight: 600; color: var(--ink); }
+.co-note.n2 .co-label { left: 104px; top: 22px; }
+.text-effect-callout.is-playing .co-dot { animation: co-dot 2.2s ease both; }
+.text-effect-callout.is-playing .co-leader { animation: co-leader 2.2s ease both; }
+.text-effect-callout.is-playing .co-label { animation: co-label 2.2s ease both; }
+.text-effect-callout.is-playing .n2 .co-dot, .text-effect-callout.is-playing .n2 .co-leader, .text-effect-callout.is-playing .n2 .co-label { animation-delay: .45s; }
+
 /* 見本の倍増（建築寄り）：UI 11〜20。画面全体を使う場面型のUIモーション */
 .motion-stage.ui-scene { display: block; padding: 0; background: #e8e1d4; color: var(--ink); }
 .ui-scene > span, .ui-scene > small { position: absolute; display: block; }
@@ -821,6 +876,15 @@ footer a { color: var(--ink); text-decoration: none; font-weight: 600; }
 @keyframes hs-progress { 0%,8% { transform: scaleX(.2); } 92%,100% { transform: scaleX(1); } }
 @keyframes pin-drop { 0% { transform: translateY(-70px) rotate(-45deg); opacity: 0; } 55% { opacity: 1; } 100% { transform: translateY(0) rotate(-45deg); opacity: 1; } }
 @keyframes pin-shadow { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+@keyframes tk-track { from { letter-spacing: -.04em; opacity: 0; } 25% { opacity: 1; } to { letter-spacing: calc(.1em + .3em * var(--strength)); opacity: 1; } }
+@keyframes sd-stroke { 0% { stroke-dashoffset: 600; fill: transparent; } 55% { stroke-dashoffset: 0; fill: transparent; } 85%,100% { stroke-dashoffset: 0; fill: var(--ink); } }
+@keyframes dm-ext { 0% { transform: scaleY(0); } 20%,100% { transform: scaleY(1); } }
+@keyframes dm-line { 0%,15% { transform: scaleX(0); } 55%,100% { transform: scaleX(1); } }
+@keyframes dm-tick { 0%,50% { opacity: 0; } 60%,100% { opacity: 1; } }
+@keyframes dm-value { 0%,58% { opacity: 0; transform: translateY(6px); } 80%,100% { opacity: 1; transform: none; } }
+@keyframes co-dot { 0%,8% { transform: scale(0); } 18%,100% { transform: scale(1); } }
+@keyframes co-leader { 0%,16% { transform: rotate(var(--angle, -24deg)) scaleX(0); } 40%,100% { transform: rotate(var(--angle, -24deg)) scaleX(1); } }
+@keyframes co-label { 0%,38% { opacity: 0; transform: translateX(-6px); } 55%,100% { opacity: 1; transform: none; } }
 @keyframes text-mask-up { from { transform: translateY(115%); } to { transform: translateY(0); } }
 
 @media (max-width: 760px) {
@@ -868,6 +932,9 @@ footer a { color: var(--ink); text-decoration: none; font-weight: 600; }
   .grid { grid-template-columns: 1fr; }
   .motion-stage { height: 205px; }
   .video-stage, .text-stage { height: 220px; }
+  .co-note.n1 { left: 42%; } .co-note.n1 .co-leader { width: 46px; } .co-note.n1 .co-label { left: 44px; top: -34px; }
+  .co-note.n2 { left: 28%; top: 60%; } .co-note.n2 .co-leader { width: 64px; --angle: 8deg; } .co-note.n2 .co-label { left: 62px; top: 0; }
+  .co-label { font-size: .62rem; padding: 3px 7px; }
   footer { padding-inline: 20px; align-items: flex-start; flex-direction: column; }
 }
 
