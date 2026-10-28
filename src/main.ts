@@ -3,11 +3,26 @@ import {
   type Sample, type Setting, samples, videoSamples, textSamples, allSamples,
   finderWords, strengthSamples, directionSamples, settingOptions, defaultSettings, suggestedCollections,
 } from './data'
+import { type Recipe, recipes, recipeTools, missingRecipes } from './recipes'
 
 const totalSamples = samples.length + videoSamples.length + textSamples.length
 /** 番号（01 / V01 / T01）から見本を引く。比較パネルで使う */
 const sampleByNumber = new Map<string, Sample>(allSamples.map((sample) => [sample.number, sample]))
 const libraryCount = 3
+
+// 開発中だけ、再現情報が欠けている見本を知らせる（見本を足したときの書き忘れ防止）
+if (import.meta.env.DEV) {
+  const missing = missingRecipes(allSamples.map((sample) => sample.number))
+  if (missing.length) console.warn(`再現情報（src/recipes.ts）がない見本: ${missing.join(', ')}`)
+}
+
+/** 再現情報を開くボタン。どの道具の情報があるかを小さく添える */
+const recipeButton = (sample: Sample) => {
+  const recipe = recipes[sample.number]
+  if (!recipe) return ''
+  const tools = recipeTools.filter((tool) => recipe[tool.key]).map((tool) => `<i>${tool.short}</i>`).join('')
+  return `<button class="recipe-open" type="button" data-recipe="${sample.number}"><span>⧉ 再現情報を見る</span><span class="recipe-tools" aria-label="対応する道具">${tools}</span></button>`
+}
 
 const usageRows = (sample: Sample, hintLabel: string) => `
     <div class="usage"><span>${hintLabel}</span><strong>${sample.hint}</strong></div>
@@ -16,7 +31,8 @@ const usageRows = (sample: Sample, hintLabel: string) => `
     <div class="card-buttons">
       <button class="save-toggle" type="button" data-save="${sample.number}" aria-pressed="false">☆ 保存</button>
       <button class="compare-toggle" type="button" data-compare="${sample.number}" aria-pressed="false">＋ 比較に追加</button>
-    </div>`
+    </div>
+    ${recipeButton(sample)}`
 
 /** 全角・半角、大文字・小文字、ひらがな・カタカナの違いを吸収して比較する */
 const normalize = (text: string) => text
@@ -200,6 +216,25 @@ app.innerHTML = `
     </div>
   </dialog>
 
+  <dialog class="recipe-dialog" aria-labelledby="recipe-title">
+    <div class="compare-dialog-body">
+      <div class="compare-dialog-head">
+        <div>
+          <p class="eyebrow">REUSE</p>
+          <h2 id="recipe-title"></h2>
+          <p class="recipe-english"></p>
+        </div>
+        <div class="compare-dialog-actions">
+          <button class="recipe-close" type="button">閉じる</button>
+          <button class="recipe-copy-all" type="button">すべてコピー</button>
+        </div>
+      </div>
+      <p class="recipe-note">別の道具で同じ動きを作るための手がかりです。各欄の「コピー」で貼り付けて使えます。</p>
+      <div class="recipe-body"></div>
+      <p class="recipe-status visually-hidden" aria-live="polite"></p>
+    </div>
+  </dialog>
+
   <footer>
     <p>Motion Sample Book — a small reference for better interactions and edits.</p>
     <a href="#top">ページ上部へ <span aria-hidden="true">↑</span></a>
@@ -264,6 +299,19 @@ const cameraScenes: Record<string, string> = {
   rack: `
         <span class="camera-layer rack-far" aria-hidden="true"><i></i></span>
         <span class="camera-layer rack-near" aria-hidden="true"><i></i></span>`,
+  // v0.5 トライアル：建築CG
+  section: `
+        <span class="camera-layer sec-ground" aria-hidden="true"></span>
+        <span class="sec-building" aria-hidden="true">
+          <span class="sec-interior"><i class="sec-room r1"></i><i class="sec-room r2"></i><i class="sec-room r3"></i><i class="sec-room r4"></i><i class="sec-void"></i><i class="sec-stair"></i><i class="sec-slab s1"></i><i class="sec-slab s2"></i><i class="sec-slab s3"></i></span>
+          <span class="sec-facade"></span>
+          <span class="sec-line"></span>
+        </span>
+        <small class="scene-caption">SECTION</small>`,
+  daynight: `
+        <span class="camera-layer dn-sky" aria-hidden="true"><i class="dn-dusk"></i><i class="dn-night"></i></span>
+        <span class="dn-building" aria-hidden="true">${Array.from({ length: 12 }, (_, index) => `<i style="--d:${[3, 7, 1, 10, 5, 0, 8, 2, 11, 6, 4, 9][index]}"></i>`).join('')}</span>
+        <span class="camera-layer dn-ground" aria-hidden="true"></span>`,
 }
 
 const videoGrid = document.querySelector<HTMLDivElement>('#video-grid')!
@@ -809,3 +857,102 @@ collectionForm.addEventListener('submit', (event) => {
 })
 
 renderSaved()
+
+/* v0.5 再現情報：別の道具で同じ動きを作るための手がかりを表示し、コピーできるようにする */
+const recipeDialog = document.querySelector<HTMLDialogElement>('.recipe-dialog')!
+const recipeBody = document.querySelector<HTMLDivElement>('.recipe-body')!
+const recipeStatus = document.querySelector<HTMLParagraphElement>('.recipe-status')!
+let recipeTexts: { label: string, text: string }[] = []
+
+/** 見本の情報から、そのまま人に渡せる日本語の依頼文を作る */
+const briefText = (sample: Sample) => [
+  `「${sample.name}」（${sample.english}）の動きでお願いします。`,
+  sample.description,
+  `向いている場面：${sample.hint}`,
+  `避けたい場面：${sample.avoid}`,
+  `印象：${sample.feel.join('・')}`,
+].join('\n')
+
+const copyText = async (text: string) => {
+  try {
+    await navigator.clipboard.writeText(text)
+    return true
+  } catch {
+    // クリップボードAPIが使えない環境向け
+    const area = document.createElement('textarea')
+    area.value = text
+    area.setAttribute('readonly', '')
+    area.style.position = 'fixed'
+    area.style.opacity = '0'
+    document.body.append(area)
+    area.select()
+    const ok = document.execCommand('copy')
+    area.remove()
+    return ok
+  }
+}
+
+const flashCopied = (button: HTMLButtonElement, ok: boolean) => {
+  const original = button.dataset.label ?? button.textContent ?? ''
+  button.dataset.label = original
+  button.textContent = ok ? 'コピーしました' : 'コピーできませんでした'
+  button.classList.toggle('is-copied', ok)
+  recipeStatus.textContent = button.textContent
+  window.setTimeout(() => {
+    button.textContent = original
+    button.classList.remove('is-copied')
+  }, 1600)
+}
+
+const openRecipe = (number: string) => {
+  const sample = sampleByNumber.get(number)
+  const recipe = recipes[number]
+  if (!sample || !recipe) return
+
+  recipeTexts = [
+    { label: '依頼文（日本語）', text: briefText(sample) },
+    ...recipeTools
+      .filter((tool) => recipe[tool.key as keyof Recipe])
+      .map((tool) => ({ label: tool.label, text: recipe[tool.key as keyof Recipe]! })),
+  ]
+
+  document.querySelector('#recipe-title')!.textContent = `${sample.number} ${sample.name}`
+  document.querySelector('.recipe-english')!.textContent = sample.english
+  recipeBody.innerHTML = recipeTexts.map((item, index) => `
+    <section class="recipe-block">
+      <div class="recipe-block-head">
+        <h3>${item.label}</h3>
+        <button class="recipe-copy" type="button" data-copy-index="${index}">コピー</button>
+      </div>
+      <pre><code>${escapeHtml(item.text)}</code></pre>
+    </section>`).join('')
+  recipeDialog.showModal()
+}
+
+document.addEventListener('click', async (event) => {
+  const target = event.target as Element
+
+  const open = target.closest<HTMLButtonElement>('.recipe-open')
+  if (open) {
+    openRecipe(open.dataset.recipe!)
+    return
+  }
+
+  const copy = target.closest<HTMLButtonElement>('.recipe-copy')
+  if (copy) {
+    flashCopied(copy, await copyText(recipeTexts[Number(copy.dataset.copyIndex)].text))
+    return
+  }
+
+  const copyAll = target.closest<HTMLButtonElement>('.recipe-copy-all')
+  if (copyAll) {
+    const title = document.querySelector('#recipe-title')!.textContent
+    const all = [`# ${title}`, ...recipeTexts.map((item) => `## ${item.label}\n${item.text}`)].join('\n\n')
+    flashCopied(copyAll, await copyText(all))
+  }
+})
+
+document.querySelector('.recipe-close')!.addEventListener('click', () => recipeDialog.close())
+recipeDialog.addEventListener('click', (event) => {
+  if (event.target === recipeDialog) recipeDialog.close()
+})

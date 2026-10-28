@@ -48,6 +48,9 @@ export const videoSamples: Sample[] = [
   { id: 'orbit', number: 'V08', name: 'オービット', english: 'Orbit', description: '被写体の周りを回り込み、立体の形を見せる。', categoryLabel: 'カメラ', hint: '外観・プロダクト', avoid: '正面だけ見せたい物', feel: ['立体的', '高級感', '見回す'] },
   { id: 'track', number: 'V09', name: 'トラック', english: 'Truck / Tracking', description: 'カメラが横へ移動し、手前ほど速く流れるずれで奥行きを出す。', categoryLabel: 'カメラ', hint: '街並み・並走', avoid: '一点を注視させたい場面', feel: ['並走', '奥行き', '軽快'] },
   { id: 'rack', number: 'V10', name: 'ラックフォーカス', english: 'Rack focus', description: 'ピントを手前から奥へ移し、視線の先を切り替える。', categoryLabel: 'カメラ', hint: '主役の切替・ディテール', avoid: '全体を一度に見せたい画', feel: ['視線誘導', '繊細', '映画的'] },
+  // v0.5 トライアル：建築CGの見本。後から建築系の見本を差し込むときの形を確かめる
+  { id: 'section', number: 'V11', name: '断面カット', english: 'Section cut', description: '切断線が建物を横切り、外壁を取り去って内部の階や部屋を見せる。', categoryLabel: '建築CG', hint: '断面計画・吹抜けや設備の説明', avoid: '外観の印象を伝えたい場面', feel: ['内部を見せる', '構成', '分かりやすい'] },
+  { id: 'daynight', number: 'V12', name: 'デイ・トゥ・ナイト', english: 'Day to night', description: '空が夕景から夜へ変わり、窓の明かりが順に点いていく。', categoryLabel: '建築CG', hint: '照明計画・外観の夜景', avoid: '昼の外観だけで足りる場面', feel: ['時間経過', 'ドラマチック', '照明'] },
 ]
 
 export const textSamples: Sample[] = [
@@ -64,7 +67,7 @@ export const finderWords = ['ふわっと', '一瞬で', '高級感', '勢いが
 
 /* v0.4-3 再生の調整：速度はすべての見本、強さ・向きは意味のある見本だけに効く */
 export const strengthSamples = new Set(['01', '02', '04', '05', '06', 'V04', 'V07', 'T01', 'T03', 'T04'])
-export const directionSamples = new Set(['07', '08', '09', 'V03', 'V05', 'V06', 'V08', 'V09', 'T05'])
+export const directionSamples = new Set(['07', '08', '09', 'V03', 'V05', 'V06', 'V08', 'V09', 'V12', 'T05'])
 
 export type Setting = 'speed' | 'strength' | 'direction'
 export const settingOptions: Record<Setting, { label: string, options: [string, string][] }> = {

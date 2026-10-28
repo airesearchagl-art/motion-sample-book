@@ -4,6 +4,35 @@
 .guide-hero .eyebrow { color: var(--coral); }
 .guide-hero h1 { font-size: clamp(2.6rem, 6vw, 5rem); margin: 14px 0 20px; }
 
+/* 画面マップ：16:9前後の画面で、画像と凡例がスクロールせずに収まる大きさにする */
+.guide-map { padding: 32px 5vw 44px; border-bottom: 1px solid var(--line); scroll-margin-top: 0; }
+.guide-map-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 20px; margin-bottom: 18px; }
+.guide-map-head .eyebrow { width: 100%; margin: 0; color: var(--coral); }
+.guide-map-head h2 { margin: 0; font-size: clamp(1.5rem, 2.6vw, 2.1rem); letter-spacing: -.03em; }
+.guide-map-head p:last-child { margin: 0; color: #5b574e; line-height: 1.7; font-size: .9rem; }
+.guide-map-layout { display: grid; grid-template-columns: auto minmax(300px, 1fr); gap: clamp(20px, 2.4vw, 36px); align-items: start; }
+/* 画像の幅は「画面の高さから見出し分を引いた高さ」×縦横比まで。横幅は最大で全体の62% */
+.map-figure { position: relative; margin: 0; width: min(58vw, calc((100svh - 180px) * var(--map-ratio))); border: 1px solid var(--line); background: var(--cream); box-shadow: 0 14px 40px rgba(37,35,31,.08); }
+.map-figure img { display: block; width: 100%; height: auto; }
+.map-area { position: absolute; border: 2px solid var(--coral); background: rgba(234,107,77,.1); border-radius: 4px; opacity: 0; transition: opacity .15s; pointer-events: none; }
+.map-area.is-active { opacity: 1; }
+.map-pin { position: absolute; z-index: 2; transform: translate(-60%, -50%); display: grid; place-items: center; width: 24px; height: 24px; border-radius: 6px; background: var(--coral); color: #fff; font-size: .74rem; font-weight: 700; text-decoration: none; box-shadow: 0 0 0 2px rgba(255,253,247,.95), 0 3px 8px rgba(0,0,0,.25); transition: transform .15s; }
+.map-pin:hover, .map-pin:focus-visible, .map-pin.is-active { transform: translate(-60%, -50%) scale(1.18); background: var(--ink); }
+.map-pin:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
+.map-legend { margin: 0; padding: 0; list-style: none; display: grid; gap: 0; }
+.map-legend a { display: grid; grid-template-columns: 24px minmax(0, 1fr) auto; grid-template-areas: "num title dest" "num summary summary"; column-gap: 12px; row-gap: 0; padding: 4px 10px; border: 1px solid transparent; border-radius: 6px; color: var(--ink); text-decoration: none; }
+.map-legend li.is-active a, .map-legend a:hover, .map-legend a:focus-visible { border-color: var(--line); background: rgba(255,253,247,.85); }
+.map-legend a:focus-visible { outline: 2px solid var(--blue); outline-offset: 1px; }
+.map-num { grid-area: num; display: grid; place-items: center; width: 24px; height: 24px; border-radius: 6px; background: var(--coral); color: #fff; font-size: .72rem; font-weight: 700; }
+.map-num.small { width: 18px; height: 18px; font-size: .62rem; border-radius: 4px; }
+.map-title { grid-area: title; font-size: .86rem; line-height: 1.45; }
+.map-summary { grid-area: summary; font-size: .76rem; line-height: 1.45; color: #5b574e; }
+.map-dest { grid-area: dest; align-self: center; font-size: .72rem; font-weight: 600; color: var(--blue); padding: 1px 8px; border: 1px solid rgba(49,92,112,.3); border-radius: 999px; white-space: nowrap; }
+
+.g-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.back-to-map { display: inline-flex; align-items: center; gap: 8px; font-size: .78rem; color: var(--blue); text-decoration: none; padding: 4px 10px; border: 1px solid rgba(49,92,112,.3); border-radius: 999px; white-space: nowrap; }
+.back-to-map:hover, .back-to-map:focus-visible { background: rgba(49,92,112,.08); }
+
 .guide-layout { display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: clamp(32px, 5vw, 72px); padding: 0 5vw; }
 .guide-toc { position: sticky; top: 0; align-self: start; padding: 40px 0; max-height: 100vh; overflow-y: auto; }
 .guide-toc .eyebrow { margin: 0 0 14px; color: #746e62; }
@@ -63,7 +92,14 @@ kbd { display: inline-block; padding: 1px 8px; margin: 1px 0; border: 1px solid 
 
 .guide-back { padding-top: 40px; }
 
+@media (max-width: 960px) {
+  .guide-map-layout { grid-template-columns: 1fr; }
+  .map-figure { width: 100%; }
+}
+
 @media (max-width: 760px) {
+  .guide-map { padding: 36px 20px 40px; }
+  .map-pin { width: 20px; height: 20px; font-size: .62rem; box-shadow: 0 0 0 2px rgba(255,253,247,.9), 0 2px 6px rgba(0,0,0,.25); }
   .guide-hero { padding-inline: 20px; }
   .guide-layout { grid-template-columns: 1fr; gap: 0; padding: 0 20px; }
   .guide-toc { position: static; max-height: none; padding: 28px 0 8px; border-bottom: 1px solid var(--line); }
@@ -75,3 +111,7 @@ kbd { display: inline-block; padding: 1px 8px; margin: 1px 0; border: 1px solid 
   .g-table td:first-child { white-space: normal; }
   .site-header .guide-link { padding: 7px 12px; font-size: .8rem; }
 }
+
+.back-letters { display: inline-flex; gap: 3px; }
+.guide-toc .toc-map { counter-increment: none; }
+.guide-toc .toc-map a::before { content: 'MAP'; font-size: .62rem; letter-spacing: .06em; padding-top: 3px; }
