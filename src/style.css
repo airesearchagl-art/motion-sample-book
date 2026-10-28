@@ -425,6 +425,13 @@ footer a { color: var(--ink); text-decoration: none; font-weight: 600; }
 [data-direction="reverse"] .effect-shine.is-playing .demo-object::before { left: -55%; }
 [data-direction="reverse"] .video-effect-wipe .scene-b { clip-path: inset(0 0 0 100%); }
 [data-direction="reverse"] .video-effect-wipe.is-playing .scene-b { animation-name: video-wipe-reverse; }
+/* 日影の移動「反対」：夕方で待機し、夕→朝へ。クレーンアップ「反対」：上空で待機し、下降する */
+[data-direction="reverse"] .ss-shadow { transform: rotate(70deg) scaleY(1.6); }
+[data-direction="reverse"] .ss-sun-orbit { transform: rotate(70deg); }
+[data-direction="reverse"] .cr-near, [data-direction="reverse"] .cr-building, [data-direction="reverse"] .cr-skyline { transform: translateY(var(--to)); }
+[data-direction="reverse"] .video-effect-sunstudy.is-playing .ss-shadow,
+[data-direction="reverse"] .video-effect-sunstudy.is-playing .ss-sun-orbit,
+[data-direction="reverse"] .video-effect-crane.is-playing .camera-layer { animation-direction: reverse; }
 /* デイ・トゥ・ナイト「反対」：夜の状態で待機し、夜→朝へ逆再生する */
 [data-direction="reverse"] .dn-night { opacity: 1; }
 [data-direction="reverse"] .dn-building { background: #2b3440; }
@@ -487,6 +494,119 @@ footer a { color: var(--ink); text-decoration: none; font-weight: 600; }
 .video-effect-daynight.is-playing .dn-ground { animation: dn-ground 2.2s ease-in-out both; }
 .video-effect-daynight.is-playing .dn-building i { animation: dn-window .3s ease-out both; animation-delay: calc(1.05s + var(--d) * .07s); }
 
+/* 見本の倍増（建築寄り）：V13〜V20 */
+/* V13 日影の移動：真上から見た配置図で、影が朝→夕へ回る */
+.video-effect-sunstudy .video-viewport { background: #ddd8c8; }
+.ss-ground i { position: absolute; display: block; }
+.ss-road { left: 0; right: 0; top: 78%; height: 9%; background: #c4bead; }
+.ss-tree { width: 22px; height: 22px; border-radius: 50%; background: #8fa588; }
+.ss-tree.t1 { left: 14%; top: 20%; } .ss-tree.t2 { left: 80%; top: 26%; } .ss-tree.t3 { left: 22%; top: 58%; }
+.ss-site, .ss-sun-orbit { position: absolute; left: 50%; top: 46%; width: 0; height: 0; display: block; z-index: 2; }
+.ss-building { position: absolute; display: block; width: 70px; height: 48px; left: -35px; top: -24px; background: #f4efe4; border: 2px solid #25231f; z-index: 2; }
+.ss-shadow { position: absolute; display: block; left: -30px; top: 0; width: 60px; height: 64px; background: rgba(37,35,31,.32); transform-origin: 50% 0; transform: rotate(-70deg) scaleY(1.6); border-radius: 0 0 4px 4px; }
+.ss-sun-orbit { transform: rotate(-70deg); z-index: 3; }
+.ss-sun { position: absolute; display: block; width: 20px; height: 20px; left: -10px; top: -108px; border-radius: 50%; background: #f6c27d; box-shadow: 0 0 0 6px rgba(246,194,125,.35); }
+.video-effect-sunstudy.is-playing .ss-shadow { animation: ss-shadow 2.2s ease-in-out both; }
+.video-effect-sunstudy.is-playing .ss-sun-orbit { animation: ss-orbit 2.2s ease-in-out both; }
+
+/* V14 平面図から立体へ：平面が傾き、壁が立ち上がる */
+.p3-bg { background: #eceee9; }
+.p3-stage { position: absolute; inset: 0; display: grid; place-items: center; perspective: 900px; }
+.p3-plan { position: relative; display: block; width: 190px; height: 124px; background: #fff; border: 2px solid #25231f; transform-style: preserve-3d; }
+.p3-plan i { position: absolute; display: block; }
+.p3-room { border: 1px solid rgba(37,35,31,.45); }
+.p3-room.r1 { left: 0; top: 0; width: 50%; height: 100%; background: rgba(207,121,95,.12); }
+.p3-room.r2 { left: 50%; top: 0; width: 50%; height: 55%; background: rgba(49,92,112,.1); }
+.p3-room.r3 { left: 50%; top: 55%; width: 50%; height: 45%; }
+.p3-wall { background: rgba(207,121,95,.88); border: 1px solid #25231f; }
+.p3-wall.w-front { left: 0; bottom: 0; width: 100%; height: 44px; transform-origin: bottom; --rot: rotateX(-90deg); }
+.p3-wall.w-back { left: 0; top: 0; width: 100%; height: 44px; transform-origin: top; --rot: rotateX(90deg); }
+.p3-wall.w-left { left: 0; top: 0; width: 44px; height: 100%; transform-origin: left; --rot: rotateY(-90deg); }
+.p3-wall.w-right { right: 0; top: 0; width: 44px; height: 100%; transform-origin: right; --rot: rotateY(90deg); }
+.p3-wall.w-mid { left: 50%; top: 0; width: 44px; height: 100%; transform-origin: left; --rot: rotateY(-90deg); background: rgba(244,239,228,.95); }
+.p3-wall.w-front, .p3-wall.w-back { transform: var(--rot) scaleY(0); }
+.p3-wall.w-left, .p3-wall.w-right, .p3-wall.w-mid { transform: var(--rot) scaleX(0); }
+.video-effect-plan3d.is-playing .p3-plan { animation: p3-tilt 2.2s cubic-bezier(.45,0,.25,1) both; }
+.video-effect-plan3d.is-playing .w-front, .video-effect-plan3d.is-playing .w-back { animation: p3-rise-y 2.2s ease-out both; }
+.video-effect-plan3d.is-playing .w-left, .video-effect-plan3d.is-playing .w-right, .video-effect-plan3d.is-playing .w-mid { animation: p3-rise-x 2.2s ease-out both; }
+
+/* V15 分解／組み上げ：各階が上下に離れて、また重なる */
+.ex-bg { background: #e8ebee; }
+.ex-stage { position: absolute; inset: 0; display: grid; place-items: center; perspective: 900px; padding-top: 30px; }
+.ex-axo { position: relative; display: block; width: 104px; height: 104px; transform-style: preserve-3d; transform: rotateX(58deg) rotateZ(-45deg); }
+.ex-layer { position: absolute; inset: 0; display: block; border: 2px solid #25231f; transform: translateZ(calc(var(--i) * 14px)); }
+.ex-layer.l0 { background: #9aa58f; }
+.ex-layer.l1 { background: #f4efe4; }
+.ex-layer.l2 { background: #f4efe4; box-shadow: inset 0 0 0 14px rgba(49,92,112,.18); }
+.ex-layer.l3 { background: #cf795f; }
+.video-effect-exploded.is-playing .ex-layer { animation: ex-explode 2.2s ease-in-out both; }
+
+/* V16 クレーンアップ：手前の木ほど大きく下へ流れ、建物の上部と街並みが現れる */
+.cr-sky { background: linear-gradient(180deg, #8fb3c6, #d5e4ea); }
+.cr-skyline i, .cr-building i, .cr-near i { position: absolute; display: block; }
+.cr-skyline i { bottom: 30%; width: 9%; background: #a7b8c0; }
+.cr-skyline i:nth-child(1) { left: 6%; height: 22%; } .cr-skyline i:nth-child(2) { left: 18%; height: 34%; } .cr-skyline i:nth-child(3) { left: 66%; height: 28%; } .cr-skyline i:nth-child(4) { left: 78%; height: 40%; } .cr-skyline i:nth-child(5) { left: 89%; height: 18%; }
+.cr-tower { left: 37%; width: 26%; top: -12%; bottom: 20%; background: repeating-linear-gradient(180deg, transparent 0 12px, rgba(255,255,255,.3) 12px 15px), #315c70; border: 2px solid rgba(255,255,255,.7); }
+.cr-ground { left: 0; right: 0; bottom: 0; height: 20%; background: #7d8f75; }
+.cr-near i { bottom: -22%; width: 34%; aspect-ratio: 1; border-radius: 50%; background: #4d6448; }
+.cr-near i:nth-child(1) { left: -8%; } .cr-near i:nth-child(2) { left: 20%; bottom: -30%; } .cr-near i:nth-child(3) { left: 50%; bottom: -26%; } .cr-near i:nth-child(4) { left: 76%; }
+.cr-near { --to: 75%; } .cr-building { --to: 22%; } .cr-skyline { --to: 8%; }
+.video-effect-crane.is-playing .cr-near, .video-effect-crane.is-playing .cr-building, .video-effect-crane.is-playing .cr-skyline { animation: cr-up 2.2s cubic-bezier(.45,0,.25,1) both; }
+
+/* V17 プルバック：ディテールの寄りから全体へ引く */
+.video-effect-pullback .video-viewport { background: #cfdde3; }
+.pb-scene { transform-origin: 63% 41%; transform: scale(calc(1 + 2.5 * var(--strength))); }
+.pb-scene i { position: absolute; display: block; }
+.pb-ground { left: -10%; right: -10%; bottom: 0; height: 22%; background: #9aa58f; }
+.pb-neighbor { bottom: 22%; background: #b9c2c6; }
+.pb-neighbor.n1 { left: 8%; width: 18%; height: 34%; } .pb-neighbor.n2 { right: 6%; width: 16%; height: 28%; }
+.pb-building { left: 38%; width: 40%; top: 18%; bottom: 22%; background: repeating-linear-gradient(90deg, transparent 0 22px, rgba(37,35,31,.25) 22px 24px), #e7dfcf; border: 2px solid #25231f; }
+.pb-detail { left: 58%; width: 10%; top: 34%; height: 14%; background: repeating-linear-gradient(90deg, #a8734f 0 3px, #bd875f 3px 7px); border: 1px solid #25231f; }
+.video-effect-pullback.is-playing .pb-scene { animation: pb-pull 2.2s cubic-bezier(.3,0,.2,1) both; }
+
+/* V18 フライスルー：入口の開口を抜けて内部へ */
+.ft-interior { background: #f1ece2; }
+.ft-interior i, .ft-facade i { position: absolute; display: block; }
+.ft-floor { left: 0; right: 0; bottom: 0; height: 34%; background: linear-gradient(180deg, #d9cbb3, #bfa98a); clip-path: polygon(30% 0, 70% 0, 100% 100%, 0 100%); }
+.ft-back { left: 30%; right: 30%; top: 22%; bottom: 34%; background: #e8e2d6; border: 1px solid rgba(37,35,31,.25); }
+.ft-window { left: 38%; right: 38%; top: 28%; bottom: 46%; background: #bfe0ee; box-shadow: 0 0 30px rgba(191,224,238,.9); }
+.ft-person { left: 54%; bottom: 34%; width: 8px; height: 26px; border-radius: 4px; background: #315c70; }
+.ft-wall { background: repeating-linear-gradient(0deg, transparent 0 18px, rgba(37,35,31,.12) 18px 19px), #c9c2b4; }
+.ft-wall.top { left: 0; right: 0; top: 0; height: 26%; } .ft-wall.bottom { left: 0; right: 0; bottom: 0; height: 18%; }
+.ft-wall.left { left: 0; width: 34%; top: 26%; bottom: 18%; } .ft-wall.right { right: 0; width: 34%; top: 26%; bottom: 18%; }
+.video-effect-flythrough.is-playing .ft-facade { animation: ft-pass 2.2s cubic-bezier(.5,0,.3,1) both; }
+.video-effect-flythrough.is-playing .ft-interior { animation: ft-enter 2.2s cubic-bezier(.5,0,.3,1) both; }
+
+/* V19 線画からレンダーへ：線が描かれ、色の層が溶けて現れる */
+.lr-paper { background: #fbfaf6; }
+.lr-sky { background: linear-gradient(180deg, #a9cbe0, #e7f0f3); }
+.lr-lines { position: absolute; inset: 8% 6% 4%; width: 88%; height: 88%; z-index: 2; overflow: visible; }
+.lr-lines path { fill: none; stroke: #25231f; stroke-width: 1.3; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 0; }
+.video-effect-linerender.is-playing .lr-lines path { animation: lr-draw 2.2s ease both; }
+.video-effect-linerender.is-playing .lr-lines path:nth-of-type(2) { animation-name: lr-draw-2; }
+.video-effect-linerender.is-playing .lr-lines path:nth-of-type(3) { animation-name: lr-draw-3; }
+.video-effect-linerender.is-playing .lr-lines path:nth-of-type(n+4) { animation-name: lr-draw-4; }
+.video-effect-linerender.is-playing .lr-fill, .video-effect-linerender.is-playing .lr-sky { animation: lr-fill 2.2s ease both; }
+
+/* V20 ミニチュア：上下をぼかし、彩度を上げて模型のように見せる */
+.video-effect-tiltshift .video-viewport { background: #9fae96; }
+.ts-city { transform: perspective(600px) rotateX(34deg) scale(1.35); transform-origin: 50% 60%; }
+.ts-city i { position: absolute; display: block; }
+.ts-block { left: calc(3% + var(--c) * 16%); top: calc(6% + var(--r) * 31%); width: 13%; height: 24%; background: #e6ded0; border: 1px solid rgba(37,35,31,.35); box-shadow: 3px 4px 0 rgba(37,35,31,.25); }
+.ts-block:nth-child(3n) { background: #cf795f; } .ts-block:nth-child(4n) { background: #9cc3d5; } .ts-block:nth-child(5n) { background: #7d8f75; }
+.ts-road { background: #6f6a62; }
+.ts-road.h { left: 0; right: 0; top: 33%; height: 5%; } .ts-road.v { top: 0; bottom: 0; left: 49%; width: 3%; }
+.ts-car { width: 2.4%; height: 2.4%; border-radius: 2px; }
+.ts-car.c1 { top: 33.6%; left: 6%; background: #f6c27d; } .ts-car.c2 { top: 35.4%; left: 70%; background: #fff; } .ts-car.c3 { left: 49.6%; top: 70%; width: 1.6%; height: 4%; background: #d23b1f; }
+.ts-blur { z-index: 3; backdrop-filter: blur(0); -webkit-backdrop-filter: blur(0); }
+.ts-blur.top { bottom: auto; height: 46%; mask-image: linear-gradient(180deg, #000 20%, transparent); -webkit-mask-image: linear-gradient(180deg, #000 20%, transparent); }
+.ts-blur.bottom { top: auto; height: 42%; mask-image: linear-gradient(0deg, #000 20%, transparent); -webkit-mask-image: linear-gradient(0deg, #000 20%, transparent); }
+.video-effect-tiltshift.is-playing .ts-blur { animation: ts-blur 2.2s ease-in-out both; }
+.video-effect-tiltshift.is-playing .ts-city { animation: ts-saturate 2.2s ease-in-out both; }
+.video-effect-tiltshift.is-playing .ts-car.c1 { animation: ts-car-x 2.2s linear both; }
+.video-effect-tiltshift.is-playing .ts-car.c2 { animation: ts-car-x-rev 2.2s linear both; }
+.video-effect-tiltshift.is-playing .ts-car.c3 { animation: ts-car-y 2.2s linear both; }
+
 @keyframes mark { to { height: 5px; } }
 @keyframes bounce { 0%,100% { transform: translateY(0) scale(1); } 40% { transform: translateY(calc(-16px * var(--strength))) scale(1.04,.96); } 68% { transform: translateY(calc(3px * var(--strength))) scale(.98,1.02); } }
 @keyframes shake { 0%,100% { transform: translateX(0); } 20%,60% { transform: translateX(calc(-8px * var(--strength))); } 40%,80% { transform: translateX(calc(8px * var(--strength))); } }
@@ -524,6 +644,26 @@ footer a { color: var(--ink); text-decoration: none; font-weight: 600; }
 @keyframes dn-building { 0%,30% { background: #c9b79a; } 60% { background: #8a6f62; } 90%,100% { background: #2b3440; } }
 @keyframes dn-ground { 0%,30% { background: #7d8f75; } 90%,100% { background: #2a3329; } }
 @keyframes dn-window { from { background: #a9bcc4; box-shadow: none; } to { background: #ffd27a; box-shadow: 0 0 10px rgba(255,210,122,.8); } }
+@keyframes ss-shadow { 0%,8% { transform: rotate(-70deg) scaleY(1.6); } 50% { transform: rotate(0deg) scaleY(.6); } 92%,100% { transform: rotate(70deg) scaleY(1.6); } }
+@keyframes ss-orbit { 0%,8% { transform: rotate(-70deg); } 92%,100% { transform: rotate(70deg); } }
+@keyframes p3-tilt { 0%,10% { transform: rotateX(0) rotateZ(0); } 48%,100% { transform: rotateX(58deg) rotateZ(-35deg); } }
+@keyframes p3-rise-y { 0%,45% { transform: var(--rot) scaleY(0); } 88%,100% { transform: var(--rot) scaleY(1); } }
+@keyframes p3-rise-x { 0%,45% { transform: var(--rot) scaleX(0); } 88%,100% { transform: var(--rot) scaleX(1); } }
+@keyframes ex-explode { 0%,12% { transform: translateZ(calc(var(--i) * 14px)); } 42%,60% { transform: translateZ(calc(var(--i) * 46px)); } 90%,100% { transform: translateZ(calc(var(--i) * 14px)); } }
+@keyframes cr-up { 0%,10% { transform: translateY(0); } 90%,100% { transform: translateY(var(--to)); } }
+@keyframes pb-pull { 0%,12% { transform: scale(calc(1 + 2.5 * var(--strength))); } 92%,100% { transform: scale(1); } }
+@keyframes ft-pass { 0%,10% { transform: scale(1); opacity: 1; } 72% { opacity: 1; } 100% { transform: scale(6); opacity: 0; } }
+@keyframes ft-enter { 0%,25% { transform: scale(1); } 100% { transform: scale(1.6); } }
+@keyframes lr-draw { 0% { stroke-dashoffset: 1; } 22%,100% { stroke-dashoffset: 0; } }
+@keyframes lr-draw-2 { 0%,10% { stroke-dashoffset: 1; } 32%,100% { stroke-dashoffset: 0; } }
+@keyframes lr-draw-3 { 0%,20% { stroke-dashoffset: 1; } 42%,100% { stroke-dashoffset: 0; } }
+@keyframes lr-draw-4 { 0%,30% { stroke-dashoffset: 1; } 50%,100% { stroke-dashoffset: 0; } }
+@keyframes lr-fill { 0%,50% { opacity: 0; } 88%,100% { opacity: 1; } }
+@keyframes ts-blur { 0%,15% { backdrop-filter: blur(0); -webkit-backdrop-filter: blur(0); } 60%,100% { backdrop-filter: blur(calc(6px * var(--strength))); -webkit-backdrop-filter: blur(calc(6px * var(--strength))); } }
+@keyframes ts-saturate { 0%,15% { filter: saturate(1); } 60%,100% { filter: saturate(1.45); } }
+@keyframes ts-car-x { to { transform: translateX(900%); } }
+@keyframes ts-car-x-rev { to { transform: translateX(-900%); } }
+@keyframes ts-car-y { to { transform: translateY(-500%); } }
 @keyframes text-mask-up { from { transform: translateY(115%); } to { transform: translateY(0); } }
 
 @media (max-width: 760px) {

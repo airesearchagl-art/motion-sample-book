@@ -51,6 +51,15 @@ export const videoSamples: Sample[] = [
   // v0.5 トライアル：建築CGの見本。後から建築系の見本を差し込むときの形を確かめる
   { id: 'section', number: 'V11', name: '断面カット', english: 'Section cut', description: '切断線が建物を横切り、外壁を取り去って内部の階や部屋を見せる。', categoryLabel: '建築CG', hint: '断面計画・吹抜けや設備の説明', avoid: '外観の印象を伝えたい場面', feel: ['内部を見せる', '構成', '分かりやすい'] },
   { id: 'daynight', number: 'V12', name: 'デイ・トゥ・ナイト', english: 'Day to night', description: '空が夕景から夜へ変わり、窓の明かりが順に点いていく。', categoryLabel: '建築CG', hint: '照明計画・外観の夜景', avoid: '昼の外観だけで足りる場面', feel: ['時間経過', 'ドラマチック', '照明'] },
+  // 見本の倍増（建築寄り）
+  { id: 'sunstudy', number: 'V13', name: '日影の移動', english: 'Sun & shadow study', description: '太陽の動きに合わせて、建物の影が朝から夕方へ回り込む。', categoryLabel: '建築CG', hint: '日影検討・配置計画の説明', avoid: '雰囲気だけを見せたい場面', feel: ['時間経過', '検討', '分かりやすい'] },
+  { id: 'plan3d', number: 'V14', name: '平面図から立体へ', english: 'Plan to 3D', description: '真上から見た平面図が傾き、壁が立ち上がって立体になる。', categoryLabel: '建築CG', hint: 'コンセプト説明・ボリューム検討', avoid: '完成した外観を見せたい場面', feel: ['組み上がる', '構成', '分かりやすい'] },
+  { id: 'exploded', number: 'V15', name: '分解／組み上げ', english: 'Exploded axonometric', description: '屋根・床・基礎が上下にばらけ、また重なって元に戻る。', categoryLabel: '建築CG', hint: '構成の説明・アクソメ図', avoid: '短い場面転換', feel: ['構成', '組み上がる', '立体的'] },
+  { id: 'crane', number: 'V16', name: 'クレーンアップ', english: 'Crane up', description: 'カメラが上昇し、手前の木々を越えて建物の全体と背景の街並みを見せる。', categoryLabel: 'カメラ', hint: '外観の導入カット', avoid: '室内の場面', feel: ['見渡す', '壮大', '導入'] },
+  { id: 'pullback', number: 'V17', name: 'プルバック', english: 'Pull-back reveal', description: 'ディテールの寄りから大きく引き、建物と周辺の全体を見せる。', categoryLabel: 'カメラ', hint: '素材やディテールから全体へ', avoid: '最初から全体を見せたい場面', feel: ['広がる', '発見', '余韻'] },
+  { id: 'flythrough', number: 'V18', name: 'フライスルー', english: 'Fly-through', description: '入口の開口を抜けて、建物の内部へ入り込む。', categoryLabel: 'カメラ', hint: 'エントランスから内部への導入', avoid: '外観だけで完結する場面', feel: ['没入', '引き込む', '奥行き'] },
+  { id: 'linerender', number: 'V19', name: '線画からレンダーへ', english: 'Line to render', description: '線画が描かれ、色の付いた完成イメージへ溶けて変わる。', categoryLabel: 'つなぎ', hint: 'スケッチから完成イメージへ', avoid: '写真同士のつなぎ', feel: ['組み上がる', '完成', 'ドラマチック'] },
+  { id: 'tiltshift', number: 'V20', name: 'ミニチュア（ティルトシフト）', english: 'Tilt-shift', description: '画面の上下をぼかし、街区を模型のように見せる。', categoryLabel: 'カメラ', hint: '街区・配置計画・敷地全体', avoid: '実物の大きさを伝えたい場面', feel: ['かわいい', '俯瞰', '模型'] },
 ]
 
 export const textSamples: Sample[] = [
@@ -66,8 +75,8 @@ export const allSamples: Sample[] = [...samples, ...videoSamples, ...textSamples
 export const finderWords = ['ふわっと', '一瞬で', '高級感', '勢いがある', '上品', '奥行き', '注目させる', 'リズム']
 
 /* v0.4-3 再生の調整：速度はすべての見本、強さ・向きは意味のある見本だけに効く */
-export const strengthSamples = new Set(['01', '02', '04', '05', '06', 'V04', 'V07', 'T01', 'T03', 'T04'])
-export const directionSamples = new Set(['07', '08', '09', 'V03', 'V05', 'V06', 'V08', 'V09', 'V12', 'T05'])
+export const strengthSamples = new Set(['01', '02', '04', '05', '06', 'V04', 'V07', 'V17', 'V20', 'T01', 'T03', 'T04'])
+export const directionSamples = new Set(['07', '08', '09', 'V03', 'V05', 'V06', 'V08', 'V09', 'V12', 'V13', 'V16', 'T05'])
 
 export type Setting = 'speed' | 'strength' | 'direction'
 export const settingOptions: Record<Setting, { label: string, options: [string, string][] }> = {
