@@ -44,6 +44,7 @@
 
 - 内容は `src/guide.ts` の `sections`（項目ごとの説明）と `changelog`（更新履歴）で管理しています。
 - 見本の件数や、「強さ」「向き」が効く見本の一覧は、見本帳と共通の `src/data.ts` から自動で反映されます。
+- 冒頭の「画面マップ」の画像と番号の位置は、画面の構成を変えたら `npm run guide:capture` で撮り直します（Playwrightが必要。手順は `scripts/capture-guide-map.cjs` の冒頭）。番号の説明文は `src/guide.ts` の `mapItems` にあります。
 - 機能を追加・変更したPRでは、使い方ページも同じPRで更新します（PRテンプレートで確認）。
 
 ## 見本を追加するとき
