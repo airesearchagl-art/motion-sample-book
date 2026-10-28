@@ -35,6 +35,17 @@ export const samples: MotionSample[] = [
   { id: 'fill', number: '08', name: '背景色が広がる', english: 'Background fill', description: '面が横に満ちる動きで、操作を強く誘導する。', category: 'decorative', categoryLabel: '装飾', hint: '主要ボタン', avoid: '補助的なリンク', feel: ['力強い', '誘導', 'はっきり'] },
   { id: 'shine', number: '09', name: '光が横切る', english: 'Shine', description: '光沢の移動で、特別感や新しさを表現する。', category: 'decorative', categoryLabel: '装飾', hint: 'おすすめ・新着', avoid: '常に並ぶ通常要素', feel: ['高級感', '特別', 'きらっと'] },
   { id: 'ripple', number: '10', name: '波紋が広がる', english: 'Ripple', description: '触れた位置から広がる印象で、入力を確認させる。', category: 'dynamic', categoryLabel: 'はっきり', hint: 'タップ操作', avoid: '静かな読み物画面', feel: ['手応え', '広がる', 'やわらかい'] },
+  // 見本の倍増（建築寄り）
+  { id: 'beforeafter', number: '11', name: '前後比較スライダー', english: 'Before / after slider', description: '境界のつまみを動かして、2枚の画像を左右で見比べる。', category: 'dynamic', categoryLabel: 'はっきり', hint: '改修前後・昼夜・A案B案', avoid: '違いが小さい2枚', feel: ['比べる', '分かりやすい', '変化'] },
+  { id: 'clipreveal', number: '12', name: '画像のクリップ表示', english: 'Clip reveal', description: '画像が帯状の枠から広がり、少し引きながら現れる。', category: 'quiet', categoryLabel: '静か', hint: '作品写真・トップ画像の登場', avoid: '何度も出入りする画像', feel: ['上品', '高級感', 'すっきり'] },
+  { id: 'parallax', number: '13', name: '視差（パララックス）', english: 'Parallax', description: '手前と奥の層がずれて動き、写真に奥行きが出る。', category: 'decorative', categoryLabel: '装飾', hint: '外観写真・ページの見出し', avoid: '文字を読ませる部分', feel: ['奥行き', '立体的', '没入'] },
+  { id: 'kenburns', number: '14', name: 'ゆっくり拡大（ケン・バーンズ）', english: 'Ken Burns', description: '写真がゆっくり寄りながら少し流れ、静止画に動きを与える。', category: 'quiet', categoryLabel: '静か', hint: '外観写真・スライドの背景', avoid: '細部を読ませたい図面', feel: ['落ち着いた', '余韻', 'しっとり'] },
+  { id: 'expand', number: '15', name: '詳細へ拡大', english: 'Expand to detail', description: '一覧のサムネイルがそのまま広がり、詳細の画面になる。', category: 'dynamic', categoryLabel: 'はっきり', hint: '作品一覧から詳細ページへ', avoid: '一覧の中で完結する情報', feel: ['つながり', '引き込む', '滑らか'] },
+  { id: 'flip', number: '16', name: 'カードの裏返し', english: 'Card flip', description: 'カードが回転して裏面を見せる。表と裏で情報を切り替える。', category: 'dynamic', categoryLabel: 'はっきり', hint: '外観と平面図・案の表裏', avoid: '両面を同時に見比べたい情報', feel: ['遊び心', '切り替え', '立体的'] },
+  { id: 'curtain', number: '17', name: 'カーテン遷移', english: 'Curtain transition', description: '幕が下から上がって画面を覆い、次の画面に替わる。', category: 'decorative', categoryLabel: '装飾', hint: 'ページ切り替え・章の区切り', avoid: '頻繁な画面の行き来', feel: ['区切り', '演出', 'はっきり'] },
+  { id: 'gridreflow', number: '18', name: 'グリッドの並び替え', english: 'Grid reflow', description: '絞り込むと、外れた画像が消え、残りが滑らかに詰まる。', category: 'quiet', categoryLabel: '静か', hint: '作品の用途別フィルター', avoid: '並び順に意味がある一覧', feel: ['整理', '滑らか', '分かりやすい'] },
+  { id: 'hscroll', number: '19', name: '横スクロール', english: 'Horizontal scroll', description: '縦にスクロールすると、パネルが横に流れていく。', category: 'decorative', categoryLabel: '装飾', hint: '作品の連続表示・工程の時系列', avoid: '長い文章', feel: ['流れ', '連続', '軽快'] },
+  { id: 'pindrop', number: '20', name: 'ピンが落ちる', english: 'Pin drop', description: '地図の上にマーカーが弾んで刺さり、位置を示す。', category: 'dynamic', categoryLabel: 'はっきり', hint: '敷地・物件の位置表示', avoid: '地点が多すぎる地図', feel: ['楽しい', '注目させる', '弾む'] },
 ]
 
 export const videoSamples: Sample[] = [
@@ -75,8 +86,8 @@ export const allSamples: Sample[] = [...samples, ...videoSamples, ...textSamples
 export const finderWords = ['ふわっと', '一瞬で', '高級感', '勢いがある', '上品', '奥行き', '注目させる', 'リズム']
 
 /* v0.4-3 再生の調整：速度はすべての見本、強さ・向きは意味のある見本だけに効く */
-export const strengthSamples = new Set(['01', '02', '04', '05', '06', 'V04', 'V07', 'V17', 'V20', 'T01', 'T03', 'T04'])
-export const directionSamples = new Set(['07', '08', '09', 'V03', 'V05', 'V06', 'V08', 'V09', 'V12', 'V13', 'V16', 'T05'])
+export const strengthSamples = new Set(['01', '02', '04', '05', '06', '13', '14', 'V04', 'V07', 'V17', 'V20', 'T01', 'T03', 'T04'])
+export const directionSamples = new Set(['07', '08', '09', '12', '17', '19', 'V03', 'V05', 'V06', 'V08', 'V09', 'V12', 'V13', 'V16', 'T05'])
 
 export type Setting = 'speed' | 'strength' | 'direction'
 export const settingOptions: Record<Setting, { label: string, options: [string, string][] }> = {

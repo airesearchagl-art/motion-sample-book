@@ -243,17 +243,63 @@ app.innerHTML = `
 
 const grid = document.querySelector<HTMLDivElement>('#motion-grid')!
 
+/**
+ * 見本の倍増で追加したUIモーション（11〜20）は、画面全体を使う場面型の見本。
+ * 動画・文字と同じく、ホバー／タップ／フォーカスで2.4秒再生する（preview-stage）。
+ */
+const uiPhoto = (extra = '') => `<span class="ui-photo ${extra}"><i class="ph-sky"></i><i class="ph-far"></i><i class="ph-building"></i><i class="ph-ground"></i></span>`
+const uiScenes: Record<string, string> = {
+  beforeafter: `
+      <span class="ba-before" aria-hidden="true"><i class="ba-bldg"></i><i class="ba-crack c1"></i><i class="ba-crack c2"></i></span>
+      <span class="ba-after" aria-hidden="true"><i class="ba-bldg"></i><i class="ba-tree"></i></span>
+      <span class="ba-handle" aria-hidden="true"><i></i></span>
+      <small class="ui-caption left">BEFORE</small><small class="ui-caption right">AFTER</small>`,
+  clipreveal: `<span class="ui-frame clip-frame" aria-hidden="true">${uiPhoto()}</span>`,
+  parallax: `
+      <span class="px-layer px-sky" aria-hidden="true"></span>
+      <span class="px-layer px-far" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span class="px-layer px-building" aria-hidden="true"><i></i></span>
+      <span class="px-layer px-near" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span class="px-scrollbar" aria-hidden="true"><i></i></span>`,
+  kenburns: `<span class="ui-frame kb-frame" aria-hidden="true">${uiPhoto('kb-photo')}</span>`,
+  expand: `
+      <span class="xp-grid" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></span>
+      <span class="xp-card" aria-hidden="true">${uiPhoto()}<b class="xp-title">PROJECT 03</b></span>`,
+  flip: `
+      <span class="fl-stage" aria-hidden="true"><span class="fl-card">
+        <span class="fl-face fl-front">${uiPhoto()}</span>
+        <span class="fl-face fl-back"><i class="fl-room r1"></i><i class="fl-room r2"></i><i class="fl-room r3"></i></span>
+      </span></span>`,
+  curtain: `
+      <span class="cu-page cu-a" aria-hidden="true"><b>01</b><i></i><i></i></span>
+      <span class="cu-page cu-b" aria-hidden="true"><b>02</b><i></i><i></i></span>
+      <span class="cu-curtain" aria-hidden="true"></span>`,
+  gridreflow: `
+      <span class="gr-filter" aria-hidden="true"><i>すべて</i><i>住宅</i></span>
+      <span class="gr-grid" aria-hidden="true">${Array.from({ length: 6 }, (_, index) => `<i class="gr-tile t${index + 1}"></i>`).join('')}</span>`,
+  hscroll: `
+      <span class="hs-track" aria-hidden="true">${Array.from({ length: 5 }, (_, index) => `<i class="hs-panel"><b>0${index + 1}</b></i>`).join('')}</span>
+      <span class="hs-progress" aria-hidden="true"><i></i></span>`,
+  pindrop: `
+      <span class="pd-map" aria-hidden="true"><i class="pd-road h"></i><i class="pd-road v"></i><i class="pd-park"></i><i class="pd-river"></i></span>
+      ${[[22, 38], [58, 30], [74, 62]].map(([x, y], index) => `<span class="pd-pin" style="--x:${x}%;--y:${y}%;--i:${index}" aria-hidden="true"><i class="pd-head"></i><i class="pd-shadow"></i></span>`).join('')}`,
+}
+
 grid.innerHTML = samples.map((sample) => `
   <article class="sample-card" data-category="${sample.category}" data-search="${searchText(sample)}">
     <div class="card-top">
       ${cardId(sample)}
       <span class="tag">${sample.categoryLabel}</span>
     </div>
-    <button class="motion-stage effect-${sample.id}" type="button" aria-label="${sample.name}の動きを試す">
+    ${uiScenes[sample.id]
+      ? `<button class="motion-stage preview-stage ui-scene ui-effect-${sample.id}" type="button" aria-label="${sample.name}の動きを試す">${uiScenes[sample.id]}
+      <span class="interaction-label">HOVER / TAP</span>
+    </button>`
+      : `<button class="motion-stage effect-${sample.id}" type="button" aria-label="${sample.name}の動きを試す">
       <span class="demo-object">
         <span class="demo-label">TRY ME</span>
       </span>
-    </button>
+    </button>`}
     <div class="card-copy">
       <p class="english">${sample.english}</p>
       <h3>${sample.name}</h3>

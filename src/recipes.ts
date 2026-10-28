@@ -92,6 +92,87 @@ export const recipes: Record<string, Recipe> = {
     prompt: 'A soft circular ripple expands from the tapped point on a button and fades out, material-style touch feedback',
   },
 
+  '11': {
+    css: `/* 後の画像を左から切り抜き、つまみの位置（--pos）に合わせる */
+.after { clip-path: inset(0 0 0 var(--pos, 50%)); }
+.handle { left: var(--pos, 50%); }
+/* input[type=range] の値を --pos に入れると、ドラッグで動かせる */`,
+    edit: 'After Effects：上の画像にマスク（または「リニアワイプ」）を付け、境界線のシェイプと一緒に左右へ動かす',
+    powerpoint: '前後の画像を重ね、上の画像に開始効果「ワイプ（左から）」、境界線を「アニメーションの軌跡（右へ）」で同時に',
+    prompt: 'Before and after comparison of a building renovation with a vertical divider sliding across the image, clean presentation style',
+  },
+  '12': {
+    css: `.photo { clip-path: inset(0 100% 0 0); transform: scale(1.15); transition: clip-path 1s cubic-bezier(.7,0,.2,1), transform 1.4s; }
+.photo.is-visible { clip-path: inset(0); transform: scale(1); }`,
+    edit: 'After Effects：画像にマスクを付けてマスクパスを広げ、同時にスケール115→100%',
+    powerpoint: '開始効果「ワイプ（左から）」＋強調「拡大/収縮」（縮小方向）を同時に',
+    prompt: 'An architectural photograph is revealed by an expanding rectangular mask while gently scaling down, elegant website intro',
+  },
+  '13': {
+    css: `/* スクロール量に応じて層ごとに動かす量を変える */
+.layer { transform: translateY(calc(var(--scroll) * var(--depth) * 1px)); }
+.sky { --depth: .1; } .building { --depth: .3; } .trees { --depth: .7; }`,
+    edit: 'After Effects：前景・建物・空を別レイヤーにし、位置Yの移動量を手前ほど大きくする（3Dレイヤー＋カメラでも可）',
+    powerpoint: '前景・建物・空を別画像にし、移動量を変えた「アニメーションの軌跡（上へ）」を同時に',
+    prompt: 'Parallax scrolling of a building photo split into sky, building and foreground trees layers moving at different speeds',
+  },
+  '14': {
+    css: `@keyframes ken-burns { from { transform: scale(1) translate(0, 0); } to { transform: scale(1.15) translate(-3%, -2%); } }
+.hero-photo { animation: ken-burns 8s ease-out both; }`,
+    edit: 'Premiere Pro：スケールと位置にキーフレーム（またはエフェクト「ゆっくりズーム」系のプリセット）／After Effects：スケール100→115%と位置',
+    powerpoint: '画像に強調「拡大/収縮」（110〜115%、時間を長く）＋「アニメーションの軌跡（少し斜め）」',
+    prompt: 'Slow Ken Burns zoom and drift across a still exterior photograph of a modern building at dusk',
+  },
+  '15': {
+    css: `/* FLIP：拡大前後の位置の差を transform で埋めて、滑らかにつなぐ */
+const first = thumb.getBoundingClientRect(); detail.classList.add('open');
+const last = detail.getBoundingClientRect();
+detail.animate([{ transform: \`translate(\${first.left - last.left}px, \${first.top - last.top}px) scale(\${first.width / last.width})\` }, { transform: 'none' }], 500);`,
+    edit: 'After Effects：サムネイルのレイヤーを、位置とスケールで画面いっぱいまで動かし、詳細の文字をあとから重ねる',
+    powerpoint: '一覧のスライドと詳細のスライドで同じ画像を使い、画面切り替え「変形」でつなぐ（画像の名前をそろえる）',
+    prompt: 'A thumbnail in an architecture portfolio grid smoothly expands to fill the screen and becomes the project detail page',
+  },
+  '16': {
+    css: `.card { transform-style: preserve-3d; transition: transform .7s; }
+.card.is-flipped { transform: rotateY(180deg); }
+.front, .back { backface-visibility: hidden; } .back { transform: rotateY(180deg); }`,
+    edit: 'After Effects：表と裏の2枚を3Dレイヤーにし、Y回転0→180°（裏は最初から180°回しておく）',
+    powerpoint: '表と裏の2枚のスライドを画面切り替え「フリップ」でつなぐ（またはオブジェクトに「変形」）',
+    prompt: 'A card showing a building exterior flips in 3D to reveal the floor plan on its back, smooth UI animation',
+  },
+  '17': {
+    css: `.curtain { transform: translateY(100%); }
+.is-leaving .curtain { animation: curtain 1.2s cubic-bezier(.7,0,.3,1) both; }
+@keyframes curtain { 50% { transform: translateY(0); } 100% { transform: translateY(-100%); } }`,
+    edit: 'After Effects：単色の平面を下から上へ通過させ、幕が画面を覆った瞬間に次の場面へカット',
+    powerpoint: '画面切り替え「カーテン」または「プッシュ（下から）」。単色の幕を挟むなら「ワイプ」2回',
+    prompt: 'A solid color curtain sweeps up across the screen and reveals the next page of an architecture website, bold transition',
+  },
+  '18': {
+    css: `/* FLIP：並び替え前の位置を記録し、並び替え後に差分から戻す */
+const before = new Map(items.map((el) => [el, el.getBoundingClientRect()]));
+applyFilter();
+items.forEach((el) => { const a = before.get(el), b = el.getBoundingClientRect(); el.animate([{ transform: \`translate(\${a.left - b.left}px, \${a.top - b.top}px)\` }, { transform: 'none' }], 400); });`,
+    edit: 'After Effects：外れる画像を不透明度で消し、残る画像の位置を新しい位置へ（イーズイン・アウト）',
+    powerpoint: '並び替え前後の2枚のスライドを画面切り替え「変形」でつなぐ（各画像の名前をそろえる）',
+    prompt: 'A grid of architecture project thumbnails animates as a filter is applied, unmatched items fade out and the rest slide into place',
+  },
+  '19': {
+    css: `/* 縦スクロール量を横移動に変える */
+.track { transform: translateX(calc(var(--progress) * -1 * (100% - 100vw))); }
+/* 対応ブラウザなら animation-timeline: scroll() でJSなしでも可 */`,
+    edit: 'After Effects：横長に並べたパネルの位置Xを動かし、下に進行バーを付ける',
+    powerpoint: '横長の画像に「アニメーションの軌跡（左へ）」、または「変形」でパネルを1枚ずつ送る',
+    prompt: 'Horizontal scrolling gallery of architecture project panels sliding sideways with a progress bar, smooth editorial website',
+  },
+  '20': {
+    css: `@keyframes drop { 0% { transform: translateY(-40px); opacity: 0; } 60% { transform: translateY(4px); opacity: 1; } 80% { transform: translateY(-2px); } 100% { transform: none; } }
+.pin { animation: drop .6s cubic-bezier(.3,1.4,.5,1) both; animation-delay: calc(var(--i) * .15s); }`,
+    edit: 'After Effects：ピンの位置Yを上から落とし、オーバーシュートで弾ませる。影のスケールを同時に変える',
+    powerpoint: 'ピンの図形に開始効果「バウンド」（地点ごとに遅延をずらす）',
+    prompt: 'Map markers drop and bounce onto a site plan to show building locations, playful but clean UI animation',
+  },
+
   /* ---------- 動画・カメラ ---------- */
   V01: {
     css: '/* 切り替え時に、次の画面を0秒で表示するだけ */\n.scene-b { opacity: 0; } .scene-b.is-active { opacity: 1; }',
