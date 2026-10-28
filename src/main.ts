@@ -312,6 +312,69 @@ const cameraScenes: Record<string, string> = {
         <span class="camera-layer dn-sky" aria-hidden="true"><i class="dn-dusk"></i><i class="dn-night"></i></span>
         <span class="dn-building" aria-hidden="true">${Array.from({ length: 12 }, (_, index) => `<i style="--d:${[3, 7, 1, 10, 5, 0, 8, 2, 11, 6, 4, 9][index]}"></i>`).join('')}</span>
         <span class="camera-layer dn-ground" aria-hidden="true"></span>`,
+  // 見本の倍増（建築寄り）
+  sunstudy: `
+        <span class="camera-layer ss-ground" aria-hidden="true"><i class="ss-road"></i><i class="ss-tree t1"></i><i class="ss-tree t2"></i><i class="ss-tree t3"></i></span>
+        <span class="ss-site" aria-hidden="true"><i class="ss-shadow"></i><i class="ss-building"></i></span>
+        <span class="ss-sun-orbit" aria-hidden="true"><i class="ss-sun"></i></span>
+        <small class="scene-caption">SUN STUDY</small>`,
+  plan3d: `
+        <span class="camera-layer p3-bg" aria-hidden="true"></span>
+        <span class="p3-stage" aria-hidden="true">
+          <span class="p3-plan">
+            <i class="p3-room r1"></i><i class="p3-room r2"></i><i class="p3-room r3"></i>
+            <i class="p3-wall w-front"></i><i class="p3-wall w-back"></i><i class="p3-wall w-left"></i><i class="p3-wall w-right"></i><i class="p3-wall w-mid"></i>
+          </span>
+        </span>
+        <small class="scene-caption">PLAN → 3D</small>`,
+  exploded: `
+        <span class="camera-layer ex-bg" aria-hidden="true"></span>
+        <span class="ex-stage" aria-hidden="true">
+          <span class="ex-axo">
+            <i class="ex-layer l0" style="--i:0"></i><i class="ex-layer l1" style="--i:1"></i><i class="ex-layer l2" style="--i:2"></i><i class="ex-layer l3" style="--i:3"></i>
+          </span>
+        </span>
+        <small class="scene-caption">AXONOMETRIC</small>`,
+  crane: `
+        <span class="camera-layer cr-sky" aria-hidden="true"></span>
+        <span class="camera-layer cr-skyline" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+        <span class="camera-layer cr-building" aria-hidden="true"><i class="cr-tower"></i><i class="cr-ground"></i></span>
+        <span class="camera-layer cr-near" aria-hidden="true"><i></i><i></i><i></i><i></i></span>`,
+  pullback: `
+        <span class="camera-layer pb-scene" aria-hidden="true">
+          <i class="pb-ground"></i><i class="pb-neighbor n1"></i><i class="pb-neighbor n2"></i>
+          <i class="pb-building"></i><i class="pb-detail"></i>
+        </span>`,
+  flythrough: `
+        <span class="camera-layer ft-interior" aria-hidden="true"><i class="ft-floor"></i><i class="ft-back"></i><i class="ft-window"></i><i class="ft-person"></i></span>
+        <span class="camera-layer ft-facade" aria-hidden="true"><i class="ft-wall top"></i><i class="ft-wall bottom"></i><i class="ft-wall left"></i><i class="ft-wall right"></i></span>`,
+  linerender: `
+        <span class="camera-layer lr-paper" aria-hidden="true"></span>
+        <span class="camera-layer lr-sky" aria-hidden="true"></span>
+        <svg class="lr-lines" viewBox="0 0 200 120" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+          <g class="lr-fill">
+            <rect x="-60" y="100" width="320" height="30" fill="#9aa58f" />
+            <rect x="60" y="58" width="80" height="42" fill="#f4efe4" />
+            <polygon points="52,60 100,30 148,60" fill="#cf795f" />
+            <rect x="74" y="74" width="18" height="26" fill="#7d5a44" />
+            <rect x="104" y="72" width="26" height="16" fill="#9cc3d5" />
+          </g>
+          <path pathLength="1" d="M10 100 H190" />
+          <path pathLength="1" d="M60 100 V58 H140 V100" />
+          <path pathLength="1" d="M52 60 L100 30 L148 60" />
+          <path pathLength="1" d="M74 100 V74 H92 V100" />
+          <path pathLength="1" d="M104 72 H130 V88 H104 Z" />
+        </svg>
+        <small class="scene-caption">SKETCH → RENDER</small>`,
+  tiltshift: `
+        <span class="camera-layer ts-city" aria-hidden="true">
+          ${Array.from({ length: 18 }, (_, index) => `<i class="ts-block" style="--c:${index % 6};--r:${Math.floor(index / 6)}"></i>`).join('')}
+          <i class="ts-road h"></i><i class="ts-road v"></i>
+          <i class="ts-car c1"></i><i class="ts-car c2"></i><i class="ts-car c3"></i>
+        </span>
+        <span class="camera-layer ts-blur top" aria-hidden="true"></span>
+        <span class="camera-layer ts-blur bottom" aria-hidden="true"></span>
+        <small class="scene-caption">MINIATURE</small>`,
 }
 
 const videoGrid = document.querySelector<HTMLDivElement>('#video-grid')!

@@ -186,6 +186,82 @@ export const recipes: Record<string, Recipe> = {
     prompt: 'Time-lapse of a building facade from late afternoon to night, the sky deepens to dusk while interior lights switch on window by window',
   },
 
+  V13: {
+    css: `/* 影を建物の中心で回し、朝夕は長く・昼は短くする */
+.shadow { transform-origin: 50% 0; animation: sun 2.2s ease-in-out both; }
+@keyframes sun { 0% { transform: rotate(-70deg) scaleY(1.6); } 50% { transform: rotate(0) scaleY(.6); } 100% { transform: rotate(70deg) scaleY(1.6); } }`,
+    edit: 'After Effects：影のシェイプを建物の足元を中心に回転させ、スケールで長さを変える（太陽のアイコンを円弧のパスで動かす）',
+    powerpoint: '時刻ごとの日影図を並べ、画面切り替え「変形」でつなぐ（影の図形を同じ名前にしておくと滑らかに回る）',
+    cg: 'SketchUp：「影」パネルで日付と時刻を設定し、時刻を変えたシーンを並べてアニメーション／Lumion・Twinmotion：太陽の「時刻」をキーフレーム',
+    prompt: 'Top-down site plan animation of building shadows sweeping from morning to evening as the sun moves across the sky, clean architectural diagram',
+  },
+  V14: {
+    css: `/* 平面を傾け、壁を床面から立ち上げる */
+.plan { transform-style: preserve-3d; animation: tilt 2.2s both; }
+@keyframes tilt { to { transform: rotateX(58deg) rotateZ(-35deg); } }
+.wall { transform-origin: bottom; animation: rise 1s 1s both; }
+@keyframes rise { from { transform: rotateX(-90deg) scaleY(0); } to { transform: rotateX(-90deg) scaleY(1); } }`,
+    edit: 'After Effects：平面図のレイヤーを3D化して X回転で寝かせ、壁のレイヤーをアンカーポイントを下端にしてスケールYで立ち上げる',
+    powerpoint: '平面図とアイソメ図の2枚を画面切り替え「変形」でつなぐ。壁は開始効果「ワイプ（下から）」で追加',
+    cg: 'SketchUp：上面図のシーンと、壁を押し出した（プッシュ／プル）アイソメのシーンを用意してアニメーション。押し出し途中の段階をシーンで刻むと滑らか',
+    prompt: 'A flat architectural floor plan tilts into an isometric view and its walls extrude upward into a 3D model, clean white diagram style',
+  },
+  V15: {
+    css: `.axo { transform-style: preserve-3d; transform: rotateX(58deg) rotateZ(-45deg); }
+.layer { animation: explode 2.2s ease-in-out both; }
+@keyframes explode { 50% { transform: translateZ(calc(var(--i) * 46px)); } }`,
+    edit: 'After Effects：各階を3Dレイヤーにし、Z位置を階ごとに離してから戻す（ヌルを親にして全体をアイソメ角度に）',
+    powerpoint: '各階の図形を「アニメーションの軌跡（上へ）」で階ごとに距離を変えて同時に動かし、「自動で元に戻す」を有効にする',
+    cg: 'SketchUp：各階をグループにし、上下に離したシーンと重ねたシーンを作る（分解アクソメ）／Twinmotion：オブジェクトの「アニメーター（移動）」',
+    prompt: 'Exploded axonometric animation of a building: roof, floor slabs and foundation separate vertically and then reassemble, minimal diagram',
+  },
+  V16: {
+    css: `/* 層ごとに下へ流す量を変えて、上昇感を出す */
+.near { animation: up 2.2s both; --to: 70%; } .building { --to: 22%; } .skyline { --to: 6%; }
+@keyframes up { to { transform: translateY(var(--to)); } }`,
+    edit: 'After Effects：3DカメラのY位置を上げる（「カメラ：トラックY」）。手前の木を別レイヤーにすると視差が出る',
+    powerpoint: '手前・建物・背景を別画像にし、手前ほど大きく「アニメーションの軌跡（下へ）」で動かす',
+    cg: 'Lumion／Twinmotion／Enscape：カメラの高さを上げたキーフレーム（視線は建物に向けたまま）／SketchUp：視点の高さを変えたシーン',
+    prompt: 'Crane shot rising from eye level over foreground trees to reveal a building and the city skyline behind it, smooth vertical movement',
+  },
+  V17: {
+    css: `/* 寄りの状態から等倍へ。origin を見せたいディテールに合わせる */
+.scene { transform-origin: 62% 38%; animation: pull 2.2s cubic-bezier(.3,0,.2,1) both; }
+@keyframes pull { from { transform: scale(3.5); } to { transform: scale(1); } }`,
+    edit: 'After Effects：3Dカメラを後退（Z位置）、または高解像度の全景をスケール350→100%（アンカーポイントをディテールに）',
+    powerpoint: '全景の画像に強調「拡大/収縮」の逆（大きい状態から100%へ）、または寄りと引きの2枚を「変形」でつなぐ',
+    cg: 'Lumion／Twinmotion：ディテールに寄ったカメラから、建物全体が入る位置まで後退するキーフレーム',
+    prompt: 'Camera pulls back from a close-up of a facade material detail to reveal the entire building and its surroundings, slow and cinematic',
+  },
+  V18: {
+    css: `/* 開口の枠は大きく拡大して画面外へ、内部はゆっくり近づく */
+.frame { animation: pass 2.2s both; } .interior { animation: enter 2.2s both; }
+@keyframes pass { to { transform: scale(6); opacity: 0; } } @keyframes enter { to { transform: scale(1.5); } }`,
+    edit: 'After Effects：3Dカメラを開口に向けて前進。入口の枠を手前のレイヤーにすると「抜ける」感じが出る',
+    powerpoint: '外観と内観を画面切り替え「ズーム」系（または「フライスルー」）でつなぐ。開口の位置を合わせると自然',
+    cg: 'Lumion／Twinmotion／Enscape：入口の外から開口を通り、室内まで進むカメラパス（ドアは開けておく）／SketchUp：歩行ツールの視点でシーンを並べる',
+    prompt: 'Smooth fly-through camera move passing through the main entrance opening into a bright double-height lobby, architectural walkthrough',
+  },
+  V19: {
+    css: `/* SVGの線を描いてから、色の層をフェードで重ねる */
+.line path { stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw 1.1s ease forwards; }
+@keyframes draw { to { stroke-dashoffset: 0; } }
+.render { opacity: 0; animation: show .9s 1.1s forwards; } @keyframes show { to { opacity: 1; } }`,
+    edit: 'After Effects：線画に「線（ストローク）」エフェクトまたは「パスのトリミング」で描画し、レンダー画像を不透明度で重ねる／Premiere Pro：線画とレンダーを「クロスディゾルブ」',
+    powerpoint: '線画に開始効果「ワイプ」または「スケッチ」系の描画、続けてレンダー画像を開始効果「フェード」',
+    cg: 'SketchUp：スタイルを「線画（スケッチ風エッジ）」と「陰影付きテクスチャ」で切り替えたシーンをつなぐ（スタイルのフェードで溶ける）／Lumion：「スケッチ」エフェクトの強さをキー',
+    prompt: 'A hand-drawn architectural line sketch of a house draws itself and then dissolves into a fully colored photorealistic rendering',
+  },
+  V20: {
+    css: `/* 上下にぼかしの帯を重ね、彩度を少し上げる */
+.city { filter: saturate(1.3); }
+.blur-top, .blur-bottom { backdrop-filter: blur(6px); mask-image: linear-gradient(to bottom, #000, transparent); }`,
+    edit: 'After Effects：「ブラー（カメラレンズ）」をグラデーションのマップで上下だけに。彩度を上げ、再生速度を少し速めると模型らしくなる',
+    powerpoint: '同じ画像を2枚重ね、上の画像に「アート効果：ぼかし」をかけて中央だけトリミング（透明のグラデーション）',
+    cg: 'Lumion：エフェクト「ティルトシフト（ミニチュア）」／Twinmotion：被写界深度を強め、高い位置からの俯瞰カメラ',
+    prompt: 'High-angle tilt-shift shot of a city block with blurred top and bottom edges and saturated colors, looking like a miniature architectural model',
+  },
+
   /* ---------- 文字 ---------- */
   T01: {
     css: `@keyframes fade-in { from { opacity: 0; transform: translateY(.25em); filter: blur(6px); } }
