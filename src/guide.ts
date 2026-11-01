@@ -4,6 +4,7 @@ import {
   samples, videoSamples, textSamples, allSamples,
   finderWords, strengthSamples, directionSamples, settingOptions, suggestedCollections,
 } from './data'
+import { purposes, shotScaleNote } from './purposes'
 import { recipeTools } from './recipes'
 import mapData from './guide-map.json'
 
@@ -30,6 +31,7 @@ const optionLabels = (setting: keyof typeof settingOptions) => settingOptions[se
 const mapItems: { n: number, title: string, summary: string, section: string, side?: 'left' | 'right' }[] = [
   { n: 1, title: '検索欄', summary: '思い浮かんだ言葉で3つの見本帳を探す', section: 'search' },
   { n: 2, title: '感覚語のボタン', summary: '押すだけで検索語に追加・解除', section: 'search' },
+  { n: 13, title: '目的から選ぶ', summary: '伝えたいことから見本をしぼり、使う順に並べる', section: 'purpose' },
   { n: 3, title: '調整バー', summary: '速度・強さ・向きを変える', section: 'adjust' },
   { n: 4, title: 'タブ', summary: '見本帳と保存を切り替える（数字は件数）', section: 'libraries' },
   { n: 5, title: '雰囲気の絞り込み', summary: 'UIを「静か・はっきり・装飾」で絞る', section: 'libraries' },
@@ -45,7 +47,8 @@ const mapItems: { n: number, title: string, summary: string, section: string, si
 const markerByNumber = new Map(mapData.markers.map((marker) => [marker.n, marker]))
 
 /** マップの記号はアルファベット（A, B, …）。説明の項目番号（01, 02, …）と区別する */
-const letterOf = (n: number) => String.fromCharCode(64 + n)
+/** mapItems の並び（画面の上から順）で A, B, C … を振る */
+const letterOf = (n: number) => String.fromCharCode(65 + mapItems.findIndex((item) => item.n === n))
 
 /** 説明の項目番号と見出し。マップの凡例に「→ 05 印象の言葉で探す」のように表示する */
 const sectionLabel = (id: string) => {
@@ -58,7 +61,7 @@ const renderMap = () => `
     <div class="guide-map-head">
       <p class="eyebrow">SCREEN MAP</p>
       <h2 id="map-title">画面の見方</h2>
-      <p>記号（A〜${letterOf(mapItems.length)}）を押すと、その部分の詳しい説明へ移動します。説明側の「画面マップへ戻る」で、ここに戻れます。</p>
+      <p>記号（A〜${letterOf(mapItems[mapItems.length - 1].n)}）を押すと、その部分の詳しい説明へ移動します。説明側の「画面マップへ戻る」で、ここに戻れます。</p>
     </div>
     <div class="guide-map-layout" style="--map-ratio: ${(mapData.width / mapData.height).toFixed(4)}">
       <figure class="map-figure">
@@ -144,6 +147,20 @@ const sections: Section[] = [
         <li>ひらがな・カタカナ、全角・半角の違いは気にしなくて大丈夫です（「フワット」でも見つかります）。</li>
         <li>今のタブに結果がなく、ほかのタブにある場合は、結果のあるタブへ自動で切り替わります。</li>
       </ul>`,
+  },
+  {
+    id: 'purpose',
+    title: '目的から選ぶ',
+    lead: '建築プレゼンで何を伝えたいかから、使う見本を選べます。',
+    body: `
+      <p>検索欄の下にある5つの入口のどれかを押すと、3つの見本帳をまとめて絞り込みます。見本は、その目的で<strong>使う順のおすすめ</strong>に並びます。もう一度押すか「目的の選択を解除」で元に戻ります。検索語と組み合わせることもできます。</p>
+      <table class="g-table">
+        <thead><tr><th>目的</th><th>どんなときに使うか</th></tr></thead>
+        <tbody>${purposes.map((purpose) => `<tr><td>${purpose.name}</td><td>${purpose.description}</td></tr>`).join('')}</tbody>
+      </table>
+      <h4>カットの大きさの印</h4>
+      <p>カメラ系の見本には、番号の横にカットの大きさを示す印があります。「周囲 → 建物 → ディテール」のように、引きから寄りへ順に組むのが基本です。</p>
+      <ul class="g-list">${Object.entries(shotScaleNote).map(([scale, note]) => `<li><span class="scale-badge">${scale}</span>　${note}</li>`).join('')}</ul>`,
   },
   {
     id: 'compare',
@@ -251,6 +268,7 @@ const sections: Section[] = [
 
 /** 更新履歴。新しいものを上に追加する */
 const changelog: [string, string][] = [
+  ['v1.0（準備中）', '目的から選ぶ入口（敷地と全体像／空間の体験／素材とディテール／検討と比較／時間と光）と、カットの大きさの印（引き・中・寄り・目線）'],
   ['v0.6', '動画・カメラに建築寄りの8種類（日影の移動、平面図から立体へ、分解／組み上げ、クレーンアップ、プルバック、フライスルー、線画からレンダーへ、ミニチュア）、UIモーションに10種類（前後比較スライダー、画像のクリップ表示、視差、ケン・バーンズ、詳細へ拡大、カードの裏返し、カーテン遷移、グリッドの並び替え、横スクロール、ピンが落ちる）、文字に5種類（字間が開く、線で描かれる文字、数字のカウントアップ、寸法線と一緒に表示、引き出し線の注記）を追加し、合計50種類に'],
   ['v0.5', '再現情報（CSS、編集ソフト、PowerPoint、建築CG、生成AI）のコピー。建築CGの見本「断面カット」「デイ・トゥ・ナイト」を試験追加'],
   ['v0.4', '感覚語検索、2案比較、速度・強さ・向きの調整、保存とコレクション、使い方ページ'],
