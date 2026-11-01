@@ -6,6 +6,7 @@ import {
 import { type Recipe, recipes, recipeTools, missingRecipes } from './recipes'
 import { recipeChecks } from './recipe-checks'
 import { purposes, purposeById, purposesOf, shotScale, shotScaleNote } from './purposes'
+import { storyTemplates, storyTemplateById } from './storyboard'
 
 const totalSamples = samples.length + videoSamples.length + textSamples.length
 /** 番号（01 / V01 / T01）から見本を引く。比較パネルで使う */
@@ -157,6 +158,10 @@ app.innerHTML = `
           </button>`).join('')}
       </div>
       <p class="purpose-status" aria-live="polite" hidden><span></span><button class="purpose-clear" type="button">目的の選択を解除</button></p>
+      <div class="story-entry">
+        <div><strong>構成を組む</strong><span>型を選んで見本を並べ、カット割り表としてコピーできます。</span></div>
+        <div class="story-entry-buttons">${storyTemplates.map((template) => `<button class="story-open" type="button" data-story="${template.id}">${template.name}</button>`).join('')}</div>
+      </div>
     </section>
 
     <section class="playback-bar" aria-label="再生の調整">
@@ -265,6 +270,39 @@ app.innerHTML = `
     </div>
     ${playbackControls('compare')}
     <div class="compare-columns"></div>
+    </div>
+  </dialog>
+
+  <dialog class="story-dialog" aria-labelledby="story-title">
+    <div class="compare-dialog-body">
+      <div class="compare-dialog-head">
+        <div>
+          <p class="eyebrow">STORYBOARD</p>
+          <h2 id="story-title">構成を組む</h2>
+        </div>
+        <div class="compare-dialog-actions">
+          <button class="story-close" type="button">閉じる</button>
+          <button class="story-play" type="button">順に再生</button>
+        </div>
+      </div>
+      <div class="story-templates" role="tablist" aria-label="構成の型">
+        ${storyTemplates.map((template) => `<button class="story-template" type="button" role="tab" data-story-template="${template.id}" aria-selected="false">${template.name}</button>`).join('')}
+      </div>
+      <p class="story-description"></p>
+      <ol class="story-slots"></ol>
+      <div class="story-export">
+        <label>カット割り表に入れる再現情報
+          <select class="story-tool">
+            <option value="">入れない（見本の名前と説明だけ）</option>
+            <option value="powerpoint">PowerPoint</option>
+            <option value="edit">Premiere Pro／After Effects</option>
+            <option value="cg">建築CG（SketchUp／D5 Renderなど）</option>
+            <option value="prompt">生成AI向けの指示文</option>
+          </select>
+        </label>
+        <span class="story-total"></span>
+        <button class="story-copy" type="button">カット割り表をコピー</button>
+      </div>
     </div>
   </dialog>
 
@@ -1219,3 +1257,161 @@ document.querySelector('.recipe-close')!.addEventListener('click', () => recipeD
 recipeDialog.addEventListener('click', (event) => {
   if (event.target === recipeDialog) recipeDialog.close()
 })
+
+/* v1.0-2 構成を組む：型ごとに役割（カット）へ見本を割り当て、順に再生し、カット割り表をコピーする */
+const storyDialog = document.querySelector<HTMLDialogElement>('.story-dialog')!
+const storySlotsEl = document.querySelector<HTMLOListElement>('.story-slots')!
+const storyTool = document.querySelector<HTMLSelectElement>('.story-tool')!
+const storyKey = 'motion-sample-book:story'
+let storyTemplateId = storyTemplates[0].id
+/** 型ごとの選択（役割ごとの見本の番号と秒数）。端末内に保存して、次に開いたときも残す */
+let storyChoices: Record<string, { numbers: string[], seconds: number[] }> = {}
+try { storyChoices = JSON.parse(window.localStorage.getItem(storyKey) ?? '{}') } catch { storyChoices = {} }
+const saveStory = () => { try { window.localStorage.setItem(storyKey, JSON.stringify(storyChoices)) } catch { /* 保存できない環境では開いている間だけ */ } }
+
+const storyState = (templateId: string) => {
+  const template = storyTemplateById.get(templateId)!
+  const saved = storyChoices[templateId]
+  return {
+    numbers: template.slots.map((slot, index) => (saved?.numbers[index] && slot.candidates.includes(saved.numbers[index]) ? saved.numbers[index] : slot.candidates[0])),
+    seconds: template.slots.map((slot, index) => saved?.seconds[index] ?? slot.seconds),
+  }
+}
+
+const stageOf = (number: string) => document.querySelector<HTMLButtonElement>(`.sample-card[data-number="${number}"] .motion-stage, .sample-card[data-number="${number}"] .preview-stage`)
+
+const renderStory = () => {
+  const template = storyTemplateById.get(storyTemplateId)!
+  const state = storyState(storyTemplateId)
+  document.querySelectorAll<HTMLButtonElement>('.story-template').forEach((tab) => {
+    const selected = tab.dataset.storyTemplate === storyTemplateId
+    tab.classList.toggle('is-active', selected)
+    tab.setAttribute('aria-selected', String(selected))
+  })
+  document.querySelector('.story-description')!.textContent = template.description
+  storySlotsEl.innerHTML = ''
+  template.slots.forEach((slot, index) => {
+    const number = state.numbers[index]
+    const sample = sampleByNumber.get(number)!
+    const item = document.createElement('li')
+    item.className = 'story-slot'
+    item.dataset.index = String(index)
+    item.innerHTML = `
+      <div class="story-slot-head"><span class="story-num">${String(index + 1).padStart(2, '0')}</span><strong>${slot.role}</strong></div>
+      <p class="story-note">${slot.note}</p>
+      <div class="story-stage"></div>
+      <label class="story-field">見本
+        <select class="story-select" data-index="${index}">
+          ${slot.candidates.map((candidate, candidateIndex) => {
+            const option = sampleByNumber.get(candidate)!
+            const scale = shotScale[candidate] ? `・${shotScale[candidate]}` : ''
+            return `<option value="${candidate}" ${candidate === number ? 'selected' : ''}>${candidate} ${option.name}${scale}${candidateIndex === 0 ? '（おすすめ）' : ''}</option>`
+          }).join('')}
+        </select>
+      </label>
+      <label class="story-field seconds">秒数
+        <input class="story-seconds" type="number" min="1" max="30" step="1" value="${state.seconds[index]}" data-index="${index}">
+      </label>
+      <p class="story-sample">${sample.description}</p>`
+    const original = stageOf(number)
+    if (original) {
+      const stage = original.cloneNode(true) as HTMLButtonElement
+      stage.classList.remove('is-playing')
+      item.querySelector('.story-stage')!.append(stage)
+      bindStage(stage)
+    }
+    storySlotsEl.append(item)
+  })
+  const total = state.seconds.reduce((sum, value) => sum + value, 0)
+  document.querySelector('.story-total')!.textContent = `${template.slots.length}カット・合計 約${total}秒`
+}
+
+const updateStoryChoice = (index: number, change: { number?: string, seconds?: number }) => {
+  const state = storyState(storyTemplateId)
+  if (change.number) state.numbers[index] = change.number
+  if (change.seconds !== undefined) state.seconds[index] = Math.min(Math.max(Math.round(change.seconds), 1), 30)
+  storyChoices[storyTemplateId] = state
+  saveStory()
+  renderStory()
+}
+
+storySlotsEl.addEventListener('change', (event) => {
+  const target = event.target as HTMLElement
+  const index = Number(target.dataset.index)
+  if (target.matches('.story-select')) updateStoryChoice(index, { number: (target as HTMLSelectElement).value })
+  if (target.matches('.story-seconds')) updateStoryChoice(index, { seconds: Number((target as HTMLInputElement).value) || 1 })
+})
+
+document.querySelectorAll<HTMLButtonElement>('.story-template').forEach((tab) => {
+  tab.addEventListener('click', () => {
+    storyTemplateId = tab.dataset.storyTemplate!
+    renderStory()
+  })
+})
+
+document.querySelectorAll<HTMLButtonElement>('.story-open').forEach((button) => {
+  button.addEventListener('click', () => {
+    storyTemplateId = button.dataset.story!
+    renderStory()
+    storyDialog.showModal()
+  })
+})
+
+let storyTimers: number[] = []
+const stopStory = () => {
+  storyTimers.forEach((timer) => window.clearTimeout(timer))
+  storyTimers = []
+  storySlotsEl.querySelectorAll('.story-slot').forEach((slot) => slot.classList.remove('is-current'))
+}
+
+/** 役割の順に1つずつ再生する（プレビューは約2.4秒。速度の設定に合わせる） */
+document.querySelector('.story-play')!.addEventListener('click', () => {
+  stopStory()
+  const slots = [...storySlotsEl.querySelectorAll<HTMLElement>('.story-slot')]
+  const step = 2600 / speed()
+  slots.forEach((slot, index) => {
+    storyTimers.push(window.setTimeout(() => {
+      slots.forEach((item) => item.classList.toggle('is-current', item === slot))
+      slot.scrollIntoView({ block: 'nearest', inline: 'nearest' })
+      const stage = slot.querySelector<HTMLButtonElement>('.motion-stage, .preview-stage')
+      if (stage) playStage(stage)
+    }, index * step))
+  })
+  storyTimers.push(window.setTimeout(() => slots.forEach((item) => item.classList.remove('is-current')), slots.length * step))
+})
+
+const toolNames: Record<string, string> = { powerpoint: 'PowerPoint', edit: 'Premiere Pro／After Effects', cg: '建築CG', prompt: '生成AI向けの指示文' }
+const cell = (text: string) => text.replace(/\|/g, '／').replace(/\n/g, ' ')
+
+/** カット割り表（Markdownの表）。そのまま資料や指示書に貼れる */
+const storyTable = () => {
+  const template = storyTemplateById.get(storyTemplateId)!
+  const state = storyState(storyTemplateId)
+  const tool = storyTool.value as keyof Recipe | ''
+  const head = ['No.', '役割', '見本', 'カット', '秒数', '内容', ...(tool ? [toolNames[tool]] : [])]
+  const rows = template.slots.map((slot, index) => {
+    const number = state.numbers[index]
+    const sample = sampleByNumber.get(number)!
+    const recipeText = tool ? (recipes[number]?.[tool] ?? '（この見本には記載なし）') : ''
+    return [String(index + 1), slot.role, `${number} ${sample.name}（${sample.english}）`, shotScale[number] ?? '—', `${state.seconds[index]}秒`, sample.description, ...(tool ? [recipeText] : [])]
+  })
+  const total = state.seconds.reduce((sum, value) => sum + value, 0)
+  return [
+    `# 構成：${template.name}（${template.slots.length}カット・約${total}秒）`,
+    '',
+    template.description,
+    '',
+    `| ${head.join(' | ')} |`,
+    `| ${head.map(() => '---').join(' | ')} |`,
+    ...rows.map((row) => `| ${row.map(cell).join(' | ')} |`),
+    '',
+    '出典：モーション見本帳 https://motion-sample-book.vercel.app/',
+  ].join('\n')
+}
+
+document.querySelector('.story-copy')!.addEventListener('click', async (event) => {
+  flashCopied(event.currentTarget as HTMLButtonElement, await copyText(storyTable()))
+})
+document.querySelector('.story-close')!.addEventListener('click', () => storyDialog.close())
+storyDialog.addEventListener('click', (event) => { if (event.target === storyDialog) storyDialog.close() })
+storyDialog.addEventListener('close', () => { stopStory(); storySlotsEl.innerHTML = '' })

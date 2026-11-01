@@ -5,6 +5,7 @@ import {
   finderWords, strengthSamples, directionSamples, settingOptions, suggestedCollections,
 } from './data'
 import { purposes, shotScaleNote } from './purposes'
+import { storyTemplates } from './storyboard'
 import { recipeTools } from './recipes'
 import mapData from './guide-map.json'
 
@@ -32,6 +33,7 @@ const mapItems: { n: number, title: string, summary: string, section: string, si
   { n: 1, title: '検索欄', summary: '思い浮かんだ言葉で3つの見本帳を探す', section: 'search' },
   { n: 2, title: '感覚語のボタン', summary: '押すだけで検索語に追加・解除', section: 'search' },
   { n: 13, title: '目的から選ぶ', summary: '伝えたいことから見本をしぼり、使う順に並べる', section: 'purpose' },
+  { n: 14, title: '構成を組む', summary: '構成の型に見本を並べ、カット割り表をコピー', section: 'story' },
   { n: 3, title: '調整バー', summary: '速度・強さ・向きを変える', section: 'adjust' },
   { n: 4, title: 'タブ', summary: '見本帳と保存を切り替える（数字は件数）', section: 'libraries' },
   { n: 5, title: '雰囲気の絞り込み', summary: 'UIを「静か・はっきり・装飾」で絞る', section: 'libraries' },
@@ -163,6 +165,24 @@ const sections: Section[] = [
       <ul class="g-list">${Object.entries(shotScaleNote).map(([scale, note]) => `<li><span class="scale-badge">${scale}</span>　${note}</li>`).join('')}</ul>`,
   },
   {
+    id: 'story',
+    title: '構成を組んでカット割り表を作る',
+    lead: '見本を使う順に並べて、そのまま制作へ渡せるカット割り表にします。',
+    body: `
+      <ol class="g-steps">
+        <li><strong>型を選ぶ</strong><span>目的の入口の下にある ${storyTemplates.map((template) => `<kbd>${template.name}</kbd>`).join(' ')} のどれかを押すと、構成の画面が開きます。上のタブで型を切り替えられます。</span></li>
+        <li><strong>見本を選ぶ</strong><span>カットごとに、候補から見本を選びます。最初に入っているのがおすすめです。秒数も変えられます（1〜30秒）。</span></li>
+        <li><strong>通して見る</strong><span><kbd>順に再生</kbd> で、1カットずつ順番に再生して流れを確かめます。</span></li>
+        <li><strong>コピーする</strong><span>「カット割り表に入れる再現情報」で道具を選び、<kbd>カット割り表をコピー</kbd> を押します。表の形（Markdown）でコピーされ、NotionやObsidianに貼り付けると表になります。</span></li>
+      </ol>
+      <table class="g-table">
+        <thead><tr><th>構成の型</th><th>流れ</th></tr></thead>
+        <tbody>${storyTemplates.map((template) => `<tr><td>${template.name}</td><td>${template.description}</td></tr>`).join('')}</tbody>
+      </table>
+      <p class="g-tip"><strong>使い方の例</strong>　「計画の説明」で見本を選び、再現情報に「PowerPoint」を選んでコピーすると、スライドごとのアニメーション設定つきの構成表になります。生成AIを選ぶと、カットごとの英語の指示文が入ります。</p>
+      <p>選んだ見本と秒数は、型ごとにこの端末に保存されます。</p>`,
+  },
+  {
     id: 'compare',
     title: '2つを並べて比べる',
     lead: '似た動きの違いは、横に並べて同時に再生すると分かりやすくなります。',
@@ -274,7 +294,7 @@ const sections: Section[] = [
 
 /** 更新履歴。新しいものを上に追加する */
 const changelog: [string, string][] = [
-  ['v1.0（準備中）', '再現情報を実機で確認（PowerPoint 50件、SketchUp・D5 Render 22件）し、修正と確認状態の印を反映。建築CG欄にD5 Renderの手順を追加。目的から選ぶ入口（敷地と全体像／空間の体験／素材とディテール／検討と比較／時間と光）と、カットの大きさの印（引き・中・寄り・目線）'],
+  ['v1.0（準備中）', '構成を組む（全景から細部へ／訪問の順／計画の説明）と、カット割り表のコピー。再現情報を実機で確認（PowerPoint 50件、SketchUp・D5 Render 22件）し、修正と確認状態の印を反映。建築CG欄にD5 Renderの手順を追加。目的から選ぶ入口（敷地と全体像／空間の体験／素材とディテール／検討と比較／時間と光）と、カットの大きさの印（引き・中・寄り・目線）'],
   ['v0.6', '動画・カメラに建築寄りの8種類（日影の移動、平面図から立体へ、分解／組み上げ、クレーンアップ、プルバック、フライスルー、線画からレンダーへ、ミニチュア）、UIモーションに10種類（前後比較スライダー、画像のクリップ表示、視差、ケン・バーンズ、詳細へ拡大、カードの裏返し、カーテン遷移、グリッドの並び替え、横スクロール、ピンが落ちる）、文字に5種類（字間が開く、線で描かれる文字、数字のカウントアップ、寸法線と一緒に表示、引き出し線の注記）を追加し、合計50種類に'],
   ['v0.5', '再現情報（CSS、編集ソフト、PowerPoint、建築CG、生成AI）のコピー。建築CGの見本「断面カット」「デイ・トゥ・ナイト」を試験追加'],
   ['v0.4', '感覚語検索、2案比較、速度・強さ・向きの調整、保存とコレクション、使い方ページ'],

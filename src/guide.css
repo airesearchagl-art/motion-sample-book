@@ -25,8 +25,8 @@
 .map-legend a:focus-visible { outline: 2px solid var(--blue); outline-offset: 1px; }
 .map-num { grid-area: num; display: grid; place-items: center; width: 24px; height: 24px; border-radius: 6px; background: var(--coral); color: #fff; font-size: .72rem; font-weight: 700; }
 .map-num.small { width: 18px; height: 18px; font-size: .62rem; border-radius: 4px; }
-.map-title { grid-area: title; font-size: .86rem; line-height: 1.45; }
-.map-summary { grid-area: summary; font-size: .76rem; line-height: 1.45; color: #5b574e; }
+.map-title { grid-area: title; font-size: .86rem; line-height: 1.32; }
+.map-summary { grid-area: summary; font-size: .76rem; line-height: 1.32; color: #5b574e; }
 .map-dest { grid-area: dest; align-self: center; font-size: .72rem; font-weight: 600; color: var(--blue); padding: 1px 8px; border: 1px solid rgba(49,92,112,.3); border-radius: 999px; white-space: nowrap; }
 
 .g-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }

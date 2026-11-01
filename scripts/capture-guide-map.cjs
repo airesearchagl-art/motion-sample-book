@@ -22,6 +22,7 @@ const targets = [
   { n: 2, selector: '.finder-chips' },
   { n: 3, selector: '.playback-bar .playback-controls' },
   { n: 13, selector: '.purpose-list' },
+  { n: 14, selector: '.story-entry' },
   { n: 4, selector: '.library-tabs' },
   { n: 5, selector: '#ui-library .filters' },
   { n: 6, selector: '#motion-grid .sample-card:first-child .motion-stage' },
