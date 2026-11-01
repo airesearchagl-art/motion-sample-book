@@ -21,6 +21,7 @@ const targets = [
   { n: 1, selector: '.finder-field' },
   { n: 2, selector: '.finder-chips' },
   { n: 3, selector: '.playback-bar .playback-controls' },
+  { n: 13, selector: '.purpose-list' },
   { n: 4, selector: '.library-tabs' },
   { n: 5, selector: '#ui-library .filters' },
   { n: 6, selector: '#motion-grid .sample-card:first-child .motion-stage' },
@@ -49,6 +50,10 @@ const targets = [
     .playback-bar { padding-top: 8px !important; padding-bottom: 8px !important; }
     .library-tab { min-height: 62px !important; }
     .catalog-head .eyebrow { display: none !important; }
+    .purpose-bar { padding-top: 18px !important; padding-bottom: 18px !important; }
+    .purpose-head p:last-child, .purpose-head .eyebrow { display: none !important; }
+    .purpose-card { min-height: 0 !important; padding: 10px 14px !important; }
+    .purpose-card small { display: none !important; }
     .catalog { padding-top: 22px !important; }
     .catalog h2 { font-size: 1.7rem !important; margin-top: 0 !important; }
     .result { margin: 12px 0 10px !important; }

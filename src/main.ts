@@ -4,6 +4,7 @@ import {
   finderWords, strengthSamples, directionSamples, settingOptions, defaultSettings, suggestedCollections,
 } from './data'
 import { type Recipe, recipes, recipeTools, missingRecipes } from './recipes'
+import { purposes, purposeById, purposesOf, shotScale, shotScaleNote } from './purposes'
 
 const totalSamples = samples.length + videoSamples.length + textSamples.length
 /** 番号（01 / V01 / T01）から見本を引く。比較パネルで使う */
@@ -42,6 +43,7 @@ const normalize = (text: string) => text
 
 const searchText = (sample: Sample) => normalize([
   sample.name, sample.english, sample.description, sample.categoryLabel, sample.hint, ...sample.feel,
+  shotScale[sample.number] ?? '', ...purposesOf(sample.number).map((purpose) => purpose.name),
 ].join(' '))
 
 
@@ -54,7 +56,13 @@ const adjustBadges = (sample: Sample) => {
   return labels.length ? `<span class="adjust-badges" title="「強さ」「向き」の調整が効く見本">${labels.map((label) => `<i>${label}</i>`).join('')}</span>` : ''
 }
 
-const cardId = (sample: Sample) => `<span class="card-id"><span class="number">${sample.number}</span>${adjustBadges(sample)}</span>`
+/** カットの大きさの印（引き・中・寄り・目線）。カメラ系の見本だけに付く */
+const scaleBadge = (sample: Sample) => {
+  const scale = shotScale[sample.number]
+  return scale ? `<span class="scale-badge" title="カットの大きさ：${shotScaleNote[scale]}">${scale}</span>` : ''
+}
+
+const cardId = (sample: Sample) => `<span class="card-id"><span class="number">${sample.number}</span>${scaleBadge(sample)}${adjustBadges(sample)}</span>`
 
 
 const playbackControls = (idPrefix: string) => `
@@ -105,6 +113,23 @@ app.innerHTML = `
         ${finderWords.map((word) => `<button class="finder-chip" type="button" data-feel="${word}">${word}</button>`).join('')}
       </div>
       <p class="finder-status" aria-live="polite"></p>
+    </section>
+
+    <section class="purpose-bar" aria-labelledby="purpose-title">
+      <div class="purpose-head">
+        <p class="eyebrow">CHOOSE BY PURPOSE</p>
+        <h2 id="purpose-title">目的から選ぶ</h2>
+        <p>プレゼンで何を伝えたいかから、使う見本をしぼります。並びは、その目的で使う順のおすすめです。</p>
+      </div>
+      <div class="purpose-list" role="group" aria-label="目的">
+        ${purposes.map((purpose) => `
+          <button class="purpose-card" type="button" data-purpose="${purpose.id}" aria-pressed="false">
+            <strong>${purpose.name}</strong>
+            <span>${purpose.summary}</span>
+            <small>${purpose.samples.length}種類</small>
+          </button>`).join('')}
+      </div>
+      <p class="purpose-status" aria-live="polite" hidden><span></span><button class="purpose-clear" type="button">目的の選択を解除</button></p>
     </section>
 
     <section class="playback-bar" aria-label="再生の調整">
@@ -286,7 +311,7 @@ const uiScenes: Record<string, string> = {
 }
 
 grid.innerHTML = samples.map((sample) => `
-  <article class="sample-card" data-category="${sample.category}" data-search="${searchText(sample)}">
+  <article class="sample-card" data-number="${sample.number}" data-category="${sample.category}" data-search="${searchText(sample)}">
     <div class="card-top">
       ${cardId(sample)}
       <span class="tag">${sample.categoryLabel}</span>
@@ -426,7 +451,7 @@ const cameraScenes: Record<string, string> = {
 const videoGrid = document.querySelector<HTMLDivElement>('#video-grid')!
 
 videoGrid.innerHTML = videoSamples.map((sample) => `
-  <article class="sample-card video-card" data-search="${searchText(sample)}">
+  <article class="sample-card video-card" data-number="${sample.number}" data-search="${searchText(sample)}">
     <div class="card-top">
       ${cardId(sample)}
       <span class="tag video-tag">${sample.categoryLabel}</span>
@@ -490,7 +515,7 @@ const textScenes: Record<string, string> = {
 }
 
 textGrid.innerHTML = textSamples.map((sample) => `
-  <article class="sample-card text-card" data-search="${searchText(sample)}">
+  <article class="sample-card text-card" data-number="${sample.number}" data-search="${searchText(sample)}">
     <div class="card-top">
       ${cardId(sample)}
       <span class="tag text-tag">${sample.categoryLabel}</span>
@@ -536,6 +561,9 @@ const finderClear = document.querySelector<HTMLButtonElement>('.finder-clear')!
 const finderStatus = document.querySelector<HTMLParagraphElement>('.finder-status')!
 const finderChips = [...document.querySelectorAll<HTMLButtonElement>('.finder-chip')]
 let uiFilter = 'all'
+let activePurpose: string | null = null
+const purposeCards = [...document.querySelectorAll<HTMLButtonElement>('.purpose-card')]
+const purposeStatus = document.querySelector<HTMLParagraphElement>('.purpose-status')!
 
 const queryTerms = () => normalize(finderInput.value).split(/\s+/).filter(Boolean)
 
@@ -552,7 +580,12 @@ const applyFilters = () => {
       const text = card.dataset.search ?? ''
       const matchesQuery = terms.every((term) => text.includes(term))
       const matchesCategory = library !== 'ui' || uiFilter === 'all' || card.dataset.category === uiFilter
-      const show = matchesQuery && matchesCategory
+      const purpose = activePurpose ? purposeById.get(activePurpose) : null
+      const purposeIndex = purpose ? purpose.samples.indexOf(card.dataset.number ?? '') : -1
+      const matchesPurpose = !purpose || purposeIndex >= 0
+      // 目的を選んでいる間は、おすすめの順に並べる
+      card.style.order = purpose && purposeIndex >= 0 ? String(purposeIndex) : ''
+      const show = matchesQuery && matchesCategory && matchesPurpose
       card.hidden = !show
       if (show) visible += 1
     })
@@ -566,17 +599,32 @@ const applyFilters = () => {
     if (count !== undefined) tab.querySelector('[data-tab-count]')!.textContent = String(count)
   })
 
-  finderClear.hidden = terms.length === 0
+  finderClear.hidden = terms.length === 0 && !activePurpose
   finderChips.forEach((chip) => chip.classList.toggle('is-active', terms.includes(normalize(chip.dataset.feel!))))
+  purposeCards.forEach((card) => {
+    const selected = card.dataset.purpose === activePurpose
+    card.classList.toggle('is-active', selected)
+    card.setAttribute('aria-pressed', String(selected))
+  })
 
-  if (terms.length === 0) {
+  purposeStatus.hidden = !activePurpose
+  if (activePurpose) {
+    const purpose = purposeById.get(activePurpose)!
+    purposeStatus.querySelector('span')!.textContent = `「${purpose.name}」：${purpose.description} 下の見本は、使う順のおすすめに並んでいます（${Object.keys(libraryNames).map((key) => `${libraryNames[key]} ${counts[key]}`).join('／')}）。`
+  }
+
+  if (terms.length === 0 && !activePurpose) {
     finderStatus.textContent = ''
     return
   }
+  const conditions = [
+    activePurpose ? `目的「${purposeById.get(activePurpose)!.name}」` : '',
+    terms.length ? `「${finderInput.value.trim()}」` : '',
+  ].filter(Boolean).join('と')
   const total = Object.values(counts).reduce((sum, count) => sum + count, 0)
   finderStatus.textContent = total === 0
-    ? `「${finderInput.value.trim()}」に合う見本はありません。言葉を減らすか、別の言い方で試してください。`
-    : `「${finderInput.value.trim()}」に合う見本：${Object.keys(libraryNames).map((key) => `${libraryNames[key]} ${counts[key]}`).join('／')}`
+    ? `${conditions}に合う見本はありません。言葉を減らすか、別の言い方で試してください。`
+    : `${conditions}に合う見本：${Object.keys(libraryNames).map((key) => `${libraryNames[key]} ${counts[key]}`).join('／')}`
 
   // 今のタブに結果がなく、ほかのタブにある場合は、結果のあるタブへ切り替える
   const activeLibrary = libraryTabs.find((tab) => tab.classList.contains('is-active'))?.dataset.library
@@ -596,8 +644,28 @@ filters.forEach((button) => {
 
 finderInput.addEventListener('input', applyFilters)
 
+/** 目的の入口：押すとその目的で絞り込み、もう一度押すと解除。検索語とは組み合わせて使える */
+purposeCards.forEach((card) => {
+  card.addEventListener('click', () => {
+    activePurpose = activePurpose === card.dataset.purpose ? null : card.dataset.purpose!
+    applyFilters()
+    // 目的を選んだときは、件数の多いタブ（ふつうは動画・カメラ）を開く
+    if (activePurpose) {
+      const purpose = purposeById.get(activePurpose)!
+      const firstVisible = ['video', 'ui', 'text'].find((library) => document.querySelector(`[data-library-panel="${library}"] .sample-card[data-number="${purpose.samples[0]}"]`))
+      if (firstVisible) selectLibrary(firstVisible)
+    }
+  })
+})
+
+document.querySelector('.purpose-clear')!.addEventListener('click', () => {
+  activePurpose = null
+  applyFilters()
+})
+
 finderClear.addEventListener('click', () => {
   finderInput.value = ''
+  activePurpose = null
   applyFilters()
   finderInput.focus()
 })
