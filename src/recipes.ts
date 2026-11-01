@@ -379,6 +379,46 @@ items.forEach((el) => { const a = before.get(el), b = el.getBoundingClientRect()
     powerpoint: '開始効果「ワイプ（下から）」、または「フロートイン」をテキストボックス内でトリミング',
     prompt: 'A chapter title slides up from behind an invisible line with a thin accent rule, refined editorial motion',
   },
+  T06: {
+    css: `@keyframes tracking { from { letter-spacing: -.04em; opacity: 0; } to { letter-spacing: .4em; opacity: 1; } }
+.title { animation: tracking 2s cubic-bezier(.2,.7,.2,1) both; }`,
+    edit: 'After Effects：テキストアニメーター「字送り（トラッキング量）」をキーフレーム／プリセット「トラッキング」系',
+    powerpoint: '開始効果「フェード」＋「拡大」で近い印象に。字間そのものは「変形」で、字間の違う2枚のスライドをつなぐ',
+    prompt: 'An elegant title whose letters slowly spread apart with increasing letter spacing while fading in, luxury architectural film opening',
+  },
+  T07: {
+    css: `/* SVGの文字に線を描かせてから塗る */
+text { fill: transparent; stroke: currentColor; stroke-dasharray: 600; stroke-dashoffset: 600; animation: stroke 1.4s ease forwards, fill .6s 1.3s forwards; }
+@keyframes stroke { to { stroke-dashoffset: 0; } } @keyframes fill { to { fill: currentColor; } }`,
+    edit: 'After Effects：テキストからシェイプを作成し、「パスのトリミング」で線を描いてから塗りの不透明度を上げる／エフェクト「線（ストローク）」',
+    powerpoint: '文字を図形に変換（図形の結合）し、輪郭だけの図に開始効果「ワイプ」、続けて塗りありの図を「フェード」',
+    cg: 'SketchUp：3Dテキストの「エッジのみ」と「塗りあり」のスタイルを切り替えたシーンをつなぐ',
+    prompt: 'The outline strokes of a building name are drawn by an invisible pen, then the letters fill in with color, refined title animation',
+  },
+  T08: {
+    css: `/* JSで値を数える（表示は3桁区切り） */
+const run = (el, to, ms) => { const t0 = performance.now(); const step = (t) => { const p = Math.min((t - t0) / ms, 1); el.textContent = Math.round(to * (1 - (1 - p) ** 3)).toLocaleString(); if (p < 1) requestAnimationFrame(step); }; requestAnimationFrame(step); };`,
+    edit: 'After Effects：エフェクト「数値」、またはテキストのソーステキストにエクスプレッション（スライダー制御で値をキー）',
+    powerpoint: '標準機能での数え上げはない。数値を数枚に分けて「変形」でつなぐか、開始効果「スピン」「ズーム」で数値を強調',
+    prompt: 'Animated statistics for a building project counting up from zero: floor area 12,480 square meters, 24 floors, height 98.5 meters, clean infographic',
+  },
+  T09: {
+    css: `.dim-line { transform: scaleX(0); transform-origin: center; animation: dim 1s cubic-bezier(.2,.8,.2,1) both; }
+.dim-value { opacity: 0; animation: fade .5s .9s forwards; }
+@keyframes dim { to { transform: scaleX(1); } }`,
+    edit: 'After Effects：線のシェイプのスケールXを中央から伸ばし、端の矢印と数値をあとからフェード',
+    powerpoint: '寸法線の図形に開始効果「ストレッチ（左右）」、数値に「フェード」を「直前の動作の後」で',
+    cg: 'SketchUp：「寸法」ツールで寸法を付け、寸法のあるシーンとないシーンをつなぐ（寸法の表示はスタイル・タグで切り替え）',
+    prompt: 'An architectural dimension line extends from the center to both sides between two walls and the measurement 7,200 appears above it, clean technical drawing style',
+  },
+  T10: {
+    css: `.dot { animation: pop .3s both; } .leader { transform: scaleX(0); transform-origin: left; animation: grow .5s .3s both; }
+.label { opacity: 0; transform: translateX(-6px); animation: show .4s .7s both; }`,
+    edit: 'After Effects：点・引き出し線（パスのトリミング）・ラベルの順に時間差で表示',
+    powerpoint: '点に開始効果「ズーム」、線に「ワイプ（左から）」、ラベルに「フェード」を「直前の動作の後」で順に',
+    cg: 'SketchUp：「テキスト」ツールで引き出し線付きの注記を付け、注記の有無でシーンを分ける／Twinmotion・Lumion：書き出した画像に後から注記',
+    prompt: 'Leader callouts appear on an architectural rendering: a dot, a thin line and a label naming the facade material, one after another',
+  },
 }
 
 /** 再現情報が欠けている見本の番号を返す（開発時の確認用） */

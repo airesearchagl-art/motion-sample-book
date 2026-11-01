@@ -79,6 +79,12 @@ export const textSamples: Sample[] = [
   { id: 'stagger', number: 'T03', name: '文字送り', english: 'Stagger', description: '文字が少しずつ遅れて順に現れ、リズムを生む。', categoryLabel: 'リズム', hint: 'タイトル・ロゴ', avoid: '本文・注意書き', feel: ['リズム', '軽快', '弾む'] },
   { id: 'scatter', number: 'T04', name: '分解／集合', english: 'Scatter & assemble', description: 'ばらばらの文字が集まり、一語に組み上がる。', categoryLabel: '演出', hint: 'オープニング・ブランド', avoid: '何度も見る画面', feel: ['勢いがある', '組み上がる', '演出'] },
   { id: 'mask', number: 'T05', name: 'マスク表示', english: 'Mask reveal', description: '見えない境界の下から、文字がせり上がって現れる。', categoryLabel: '静か', hint: '章タイトル・テロップ', avoid: '小さな文字', feel: ['高級感', 'すっきり', '映画的'] },
+  // 見本の倍増（建築寄り）
+  { id: 'tracking', number: 'T06', name: '字間が開く', english: 'Tracking expand', description: '詰まった文字が、ゆっくり字間を広げながら落ち着く。', categoryLabel: '静か', hint: '竣工映像のタイトル・施設名', avoid: '長い文や小さな文字', feel: ['高級感', '上品', '余韻'] },
+  { id: 'strokedraw', number: 'T07', name: '線で描かれる文字', english: 'Stroke draw', description: '文字の輪郭線が描かれてから、塗りが入る。', categoryLabel: '演出', hint: '施設名・手描きや図面の雰囲気', avoid: '細い書体・小さな文字', feel: ['手描き', '組み上がる', '繊細'] },
+  { id: 'counter', number: 'T08', name: '数字のカウントアップ', english: 'Count up', description: '数字が0から回り、面積・階数・高さの値で止まる。', categoryLabel: 'リズム', hint: '延床面積・階数・高さ・戸数', avoid: '正確に読ませたい表', feel: ['勢いがある', 'スケール感', '注目させる'] },
+  { id: 'dimension', number: 'T09', name: '寸法線と一緒に表示', english: 'Dimension reveal', description: '寸法線が両側へ伸び、その上に寸法の数値が現れる。', categoryLabel: '静か', hint: '寸法・スケールの説明', avoid: '寸法が多い図', feel: ['正確', '図面', 'すっきり'] },
+  { id: 'callout', number: 'T10', name: '引き出し線の注記', english: 'Leader callout', description: '点から引き出し線が伸び、素材や部位のラベルが出る。', categoryLabel: 'リズム', hint: 'パースへの注記・素材の説明', avoid: '注記が多すぎる画面', feel: ['分かりやすい', '説明', '図面'] },
 ]
 
 export const allSamples: Sample[] = [...samples, ...videoSamples, ...textSamples]
@@ -86,7 +92,7 @@ export const allSamples: Sample[] = [...samples, ...videoSamples, ...textSamples
 export const finderWords = ['ふわっと', '一瞬で', '高級感', '勢いがある', '上品', '奥行き', '注目させる', 'リズム']
 
 /* v0.4-3 再生の調整：速度はすべての見本、強さ・向きは意味のある見本だけに効く */
-export const strengthSamples = new Set(['01', '02', '04', '05', '06', '13', '14', 'V04', 'V07', 'V17', 'V20', 'T01', 'T03', 'T04'])
+export const strengthSamples = new Set(['01', '02', '04', '05', '06', '13', '14', 'V04', 'V07', 'V17', 'V20', 'T01', 'T03', 'T04', 'T06'])
 export const directionSamples = new Set(['07', '08', '09', '12', '17', '19', 'V03', 'V05', 'V06', 'V08', 'V09', 'V12', 'V13', 'V16', 'T05'])
 
 export type Setting = 'speed' | 'strength' | 'direction'
