@@ -6,6 +6,10 @@ import {
 import { type Recipe, recipes, recipeTools, missingRecipes } from './recipes'
 import { recipeChecks } from './recipe-checks'
 import { purposes, purposeById, purposesOf, shotScale, shotScaleNote } from './purposes'
+import {
+  type CustomTemplate, type StoryFileTemplate, storyTemplates, storyTemplateById, storyLimits,
+  newStoryId, clampSeconds, toStoryFile, parseStoryFile,
+} from './storyboard'
 
 const totalSamples = samples.length + videoSamples.length + textSamples.length
 /** 番号（01 / V01 / T01）から見本を引く。比較パネルで使う */
@@ -157,6 +161,10 @@ app.innerHTML = `
           </button>`).join('')}
       </div>
       <p class="purpose-status" aria-live="polite" hidden><span></span><button class="purpose-clear" type="button">目的の選択を解除</button></p>
+      <div class="story-entry">
+        <div><strong>構成を組む</strong><span>型を選んで見本を並べ、カット割り表としてコピーできます。</span></div>
+        <div class="story-entry-buttons">${storyTemplates.map((template) => `<button class="story-open" type="button" data-story="${template.id}">${template.name}</button>`).join('')}<button class="story-open-custom" type="button">＋ 自分の型を作る</button></div>
+      </div>
     </section>
 
     <section class="playback-bar" aria-label="再生の調整">
@@ -265,6 +273,54 @@ app.innerHTML = `
     </div>
     ${playbackControls('compare')}
     <div class="compare-columns"></div>
+    </div>
+  </dialog>
+
+  <dialog class="story-dialog" aria-labelledby="story-title">
+    <div class="compare-dialog-body">
+      <div class="compare-dialog-head">
+        <div>
+          <p class="eyebrow">STORYBOARD</p>
+          <h2 id="story-title">構成を組む</h2>
+        </div>
+        <div class="compare-dialog-actions">
+          <button class="story-close" type="button">閉じる</button>
+          <button class="story-play" type="button">順に再生</button>
+        </div>
+      </div>
+      <div class="story-templates" role="tablist" aria-label="構成の型"></div>
+      <div class="story-tools"></div>
+      <details class="story-json">
+        <summary>JSONで書き出し・読み込み</summary>
+        <div class="story-json-body">
+          <div class="story-json-actions">
+            <button type="button" data-json="download-one">この型を書き出す（.json）</button>
+            <button type="button" data-json="download-all">自分の型をすべて書き出す</button>
+            <button type="button" data-json="copy-one">この型のJSONをコピー</button>
+            <label class="story-file">ファイルから読み込む<input class="story-file-input" type="file" accept=".json,application/json"></label>
+          </div>
+          <label class="story-paste">JSONを貼り付けて読み込む
+            <textarea class="story-paste-input" rows="3" placeholder='{ "format": "motion-sample-book/storyboard", "version": 1, "templates": [ … ] }'></textarea>
+          </label>
+          <div class="story-json-actions"><button type="button" data-json="paste">貼り付けたJSONを読み込む</button></div>
+          <p class="story-json-status" aria-live="polite"></p>
+        </div>
+      </details>
+      <div class="story-meta"></div>
+      <ol class="story-slots"></ol>
+      <div class="story-export">
+        <label>カット割り表に入れる再現情報
+          <select class="story-tool">
+            <option value="">入れない（見本の名前と説明だけ）</option>
+            <option value="powerpoint">PowerPoint</option>
+            <option value="edit">Premiere Pro／After Effects</option>
+            <option value="cg">建築CG（SketchUp／D5 Renderなど）</option>
+            <option value="prompt">生成AI向けの指示文</option>
+          </select>
+        </label>
+        <span class="story-total"></span>
+        <button class="story-copy" type="button">カット割り表をコピー</button>
+      </div>
     </div>
   </dialog>
 
@@ -1219,3 +1275,479 @@ document.querySelector('.recipe-close')!.addEventListener('click', () => recipeD
 recipeDialog.addEventListener('click', (event) => {
   if (event.target === recipeDialog) recipeDialog.close()
 })
+
+
+/*
+ * v1.0-2 構成を組む：型ごとに役割（カット）へ見本を割り当て、順に再生し、カット割り表をコピーする。
+ * 最初からある型（storyboard.ts）は複製して「自分の型」にでき、自分の型はカットの追加・削除・並べ替えができる。
+ * 型はJSONで書き出し・読み込みできる（生成AIが作った構成も同じ読み込み口から入れる）。
+ */
+const storyDialog = document.querySelector<HTMLDialogElement>('.story-dialog')!
+const storySlotsEl = document.querySelector<HTMLOListElement>('.story-slots')!
+const storyTool = document.querySelector<HTMLSelectElement>('.story-tool')!
+const storyTabsEl = document.querySelector<HTMLDivElement>('.story-templates')!
+const storyToolsEl = document.querySelector<HTMLDivElement>('.story-tools')!
+const storyMetaEl = document.querySelector<HTMLDivElement>('.story-meta')!
+const storyJsonStatus = document.querySelector<HTMLParagraphElement>('.story-json-status')!
+const storyKey = 'motion-sample-book:story'
+const storyCustomKey = 'motion-sample-book:story-custom'
+let storyTemplateId = storyTemplates[0].id
+let storyEditing = false
+
+const readJson = <T,>(key: string, fallback: T): T => {
+  try { return JSON.parse(window.localStorage.getItem(key) ?? '') as T } catch { return fallback }
+}
+const writeJson = (key: string, value: unknown) => {
+  try { window.localStorage.setItem(key, JSON.stringify(value)) } catch { /* 保存できない環境では開いている間だけ */ }
+}
+
+/** 最初からある型での選択（役割ごとの見本の番号と秒数）。端末内に保存して、次に開いたときも残す */
+let storyChoices: Record<string, { numbers: string[], seconds: number[] }> = readJson(storyKey, {})
+if (!storyChoices || typeof storyChoices !== 'object') storyChoices = {}
+const saveStory = () => writeJson(storyKey, storyChoices)
+
+/** 自分の型。端末内に保存し、JSONで持ち運ぶ */
+let customTemplates: CustomTemplate[] = readJson(storyCustomKey, [])
+if (!Array.isArray(customTemplates)) customTemplates = []
+customTemplates = customTemplates.filter((template) => template && Array.isArray(template.slots) && template.slots.length)
+const saveCustom = () => writeJson(storyCustomKey, customTemplates)
+const customById = (id: string) => customTemplates.find((template) => template.id === id)
+
+type StoryView = {
+  id: string
+  name: string
+  description: string
+  custom: boolean
+  slots: { role: string, note: string, candidates: string[], number: string, seconds: number }[]
+}
+
+/** 最初からある型と自分の型を、同じ形で扱う */
+const storyView = (id: string): StoryView => {
+  const custom = customById(id)
+  if (custom) {
+    return {
+      id, name: custom.name, description: custom.description, custom: true,
+      slots: custom.slots.map((slot) => ({
+        role: slot.role, note: slot.note, candidates: slot.candidates, seconds: slot.seconds,
+        number: sampleByNumber.has(slot.sample) ? slot.sample : (slot.candidates[0] ?? allSamples[0].number),
+      })),
+    }
+  }
+  const template = storyTemplateById.get(id) ?? storyTemplates[0]
+  const saved = storyChoices[template.id]
+  return {
+    id: template.id, name: template.name, description: template.description, custom: false,
+    slots: template.slots.map((slot, index) => ({
+      role: slot.role, note: slot.note, candidates: slot.candidates,
+      number: saved?.numbers?.[index] && slot.candidates.includes(saved.numbers[index]) ? saved.numbers[index] : slot.candidates[0],
+      seconds: clampSeconds(saved?.seconds?.[index], slot.seconds),
+    })),
+  }
+}
+
+const stageOf = (number: string) => document.querySelector<HTMLButtonElement>(`.sample-card[data-number="${number}"] .motion-stage, .sample-card[data-number="${number}"] .preview-stage`)
+
+const sampleLabel = (number: string) => {
+  const sample = sampleByNumber.get(number)!
+  return `${number} ${sample.name}${shotScale[number] ? `・${shotScale[number]}` : ''}`
+}
+
+/** 見本の選択肢。最初からある型は候補だけ、自分の型は候補（あれば）＋50種類すべて */
+const sampleOptions = (view: StoryView, slot: StoryView['slots'][number]) => {
+  const option = (number: string, selected: boolean, suffix = '') => `<option value="${number}" ${selected ? 'selected' : ''}>${escapeHtml(sampleLabel(number))}${suffix}</option>`
+  if (!view.custom) return slot.candidates.map((number, index) => option(number, number === slot.number, index === 0 ? '（おすすめ）' : '')).join('')
+  let picked = false
+  const pick = (number: string) => {
+    const selected = !picked && number === slot.number
+    if (selected) picked = true
+    return selected
+  }
+  const groups: [string, string[]][] = [
+    ['この役割の候補', slot.candidates],
+    ['UIモーション', samples.map((sample) => sample.number)],
+    ['動画・カメラ', videoSamples.map((sample) => sample.number)],
+    ['文字', textSamples.map((sample) => sample.number)],
+  ]
+  return groups.filter(([, numbers]) => numbers.length).map(([label, numbers]) => `<optgroup label="${label}">${numbers.map((number) => option(number, pick(number))).join('')}</optgroup>`).join('')
+}
+
+const renderStoryEntry = () => {
+  const button = document.querySelector<HTMLButtonElement>('.story-open-custom')!
+  button.textContent = customTemplates.length ? `★ 自分の型（${customTemplates.length}）` : '＋ 自分の型を作る'
+}
+
+const renderStory = () => {
+  if (!customById(storyTemplateId) && !storyTemplateById.has(storyTemplateId)) storyTemplateId = storyTemplates[0].id
+  if (!customById(storyTemplateId)) storyEditing = false
+  const view = storyView(storyTemplateId)
+  const tab = (id: string, name: string, custom: boolean) => `<button class="story-template${custom ? ' is-custom' : ''}${id === view.id ? ' is-active' : ''}" type="button" role="tab" data-story-template="${id}" aria-selected="${id === view.id}">${custom ? '★ ' : ''}${escapeHtml(name)}</button>`
+  storyTabsEl.innerHTML = [
+    ...storyTemplates.map((template) => tab(template.id, template.name, false)),
+    ...customTemplates.map((template) => tab(template.id, template.name, true)),
+  ].join('')
+
+  storyToolsEl.innerHTML = view.custom
+    ? `<button type="button" data-story-action="edit" class="${storyEditing ? 'is-on' : ''}">${storyEditing ? '編集を終える' : '編集する'}</button>
+       <button type="button" data-story-action="duplicate">複製</button>
+       <button type="button" data-story-action="delete">この型を削除</button>
+       <button type="button" data-story-action="new">＋ 新しい型</button>`
+    : `<button type="button" data-story-action="duplicate">複製して自分の型にする</button>
+       <button type="button" data-story-action="new">＋ 新しい型</button>
+       <span class="story-tools-note">最初からある型は、複製すると名前やカットを変えられます。</span>`
+
+  storyMetaEl.innerHTML = storyEditing
+    ? `<label class="story-field">型の名前<input class="story-name" type="text" maxlength="40" value="${escapeHtml(view.name)}"></label>
+       <label class="story-field">説明<input class="story-desc" type="text" maxlength="200" value="${escapeHtml(view.description)}" placeholder="どんな場面で使う構成か"></label>`
+    : `<p class="story-description">${escapeHtml(view.description) || '（説明なし）'}</p>`
+
+  storySlotsEl.innerHTML = ''
+  storySlotsEl.classList.toggle('is-editing', storyEditing)
+  view.slots.forEach((slot, index) => {
+    const sample = sampleByNumber.get(slot.number)!
+    const item = document.createElement('li')
+    item.className = 'story-slot'
+    item.dataset.index = String(index)
+    const last = view.slots.length - 1
+    item.innerHTML = `
+      <div class="story-slot-head"><span class="story-num">${String(index + 1).padStart(2, '0')}</span>${storyEditing
+        ? `<input class="story-role" type="text" maxlength="40" value="${escapeHtml(slot.role)}" aria-label="${index + 1}カット目の役割" data-index="${index}">`
+        : `<strong>${escapeHtml(slot.role)}</strong>`}</div>
+      ${storyEditing
+        ? `<input class="story-note-input" type="text" maxlength="120" value="${escapeHtml(slot.note)}" placeholder="ねらい（任意）" aria-label="${index + 1}カット目のねらい" data-index="${index}">
+           <div class="story-slot-tools">
+             <button type="button" data-slot-action="left" data-index="${index}" ${index === 0 ? 'disabled' : ''} aria-label="前へ移す">←</button>
+             <button type="button" data-slot-action="right" data-index="${index}" ${index === last ? 'disabled' : ''} aria-label="後ろへ移す">→</button>
+             <button type="button" data-slot-action="remove" data-index="${index}" ${last === 0 ? 'disabled' : ''}>削除</button>
+           </div>`
+        : `<p class="story-note">${escapeHtml(slot.note)}</p>`}
+      <div class="story-stage"></div>
+      <label class="story-field">見本
+        <select class="story-select" data-index="${index}">${sampleOptions(view, slot)}</select>
+      </label>
+      <label class="story-field seconds">秒数
+        <input class="story-seconds" type="number" min="${storyLimits.minSeconds}" max="${storyLimits.maxSeconds}" step="1" value="${slot.seconds}" data-index="${index}">
+      </label>
+      <p class="story-sample">${sample.description}</p>`
+    const original = stageOf(slot.number)
+    if (original) {
+      const stage = original.cloneNode(true) as HTMLButtonElement
+      stage.classList.remove('is-playing')
+      item.querySelector('.story-stage')!.append(stage)
+      bindStage(stage)
+    }
+    storySlotsEl.append(item)
+  })
+  if (storyEditing) {
+    const add = document.createElement('li')
+    add.className = 'story-slot story-add'
+    add.innerHTML = `<button type="button" data-slot-action="add" ${view.slots.length >= storyLimits.slots ? 'disabled' : ''}>＋ カットを追加</button>`
+    storySlotsEl.append(add)
+  }
+  const total = view.slots.reduce((sum, slot) => sum + slot.seconds, 0)
+  document.querySelector('.story-total')!.textContent = `${view.slots.length}カット・合計 約${total}秒`
+  document.querySelector<HTMLButtonElement>('[data-json="download-all"]')!.disabled = !customTemplates.length
+  renderStoryEntry()
+}
+
+/** 見本・秒数の変更。最初からある型は選択として、自分の型は型そのものに保存する */
+const updateStoryChoice = (index: number, change: { number?: string, seconds?: number }) => {
+  const custom = customById(storyTemplateId)
+  if (custom) {
+    const slot = custom.slots[index]
+    if (change.number) slot.sample = change.number
+    if (change.seconds !== undefined) slot.seconds = clampSeconds(change.seconds, slot.seconds)
+    saveCustom()
+  } else {
+    const view = storyView(storyTemplateId)
+    const state = { numbers: view.slots.map((slot) => slot.number), seconds: view.slots.map((slot) => slot.seconds) }
+    if (change.number) state.numbers[index] = change.number
+    if (change.seconds !== undefined) state.seconds[index] = clampSeconds(change.seconds, state.seconds[index])
+    storyChoices[storyTemplateId] = state
+    saveStory()
+  }
+  renderStory()
+}
+
+storySlotsEl.addEventListener('change', (event) => {
+  const target = event.target as HTMLElement
+  const index = Number(target.dataset.index)
+  if (target.matches('.story-select')) updateStoryChoice(index, { number: (target as HTMLSelectElement).value })
+  if (target.matches('.story-seconds')) updateStoryChoice(index, { seconds: Number((target as HTMLInputElement).value) || 1 })
+})
+
+/** 文字の入力は、入力のたびに保存する（描き直さないので、入力中のカーソルが外れない） */
+storyDialog.addEventListener('input', (event) => {
+  const custom = customById(storyTemplateId)
+  const target = event.target as HTMLInputElement
+  if (!custom || !storyEditing) return
+  const index = Number(target.dataset.index)
+  if (target.matches('.story-role')) custom.slots[index].role = target.value
+  else if (target.matches('.story-note-input')) custom.slots[index].note = target.value
+  else if (target.matches('.story-name')) {
+    custom.name = target.value
+    const tab = storyTabsEl.querySelector<HTMLButtonElement>(`[data-story-template="${custom.id}"]`)
+    if (tab) tab.textContent = `★ ${target.value}`
+  } else if (target.matches('.story-desc')) custom.description = target.value
+  else return
+  saveCustom()
+})
+/** 名前を空のまま終えたときは、元の形に戻す */
+storyDialog.addEventListener('focusout', (event) => {
+  const custom = customById(storyTemplateId)
+  const target = event.target as HTMLInputElement
+  if (!custom) return
+  if (target.matches('.story-name') && !target.value.trim()) { custom.name = '名前のない型'; saveCustom(); renderStory() }
+  if (target.matches('.story-role') && !target.value.trim()) { custom.slots[Number(target.dataset.index)].role = `カット${Number(target.dataset.index) + 1}`; saveCustom(); renderStory() }
+})
+
+storySlotsEl.addEventListener('click', (event) => {
+  const button = (event.target as HTMLElement).closest<HTMLButtonElement>('[data-slot-action]')
+  const custom = customById(storyTemplateId)
+  if (!button || !custom) return
+  const index = Number(button.dataset.index)
+  const slots = custom.slots
+  switch (button.dataset.slotAction) {
+    case 'left': [slots[index - 1], slots[index]] = [slots[index], slots[index - 1]]; break
+    case 'right': [slots[index + 1], slots[index]] = [slots[index], slots[index + 1]]; break
+    case 'remove': if (slots.length > 1) slots.splice(index, 1); break
+    case 'add': {
+      if (slots.length >= storyLimits.slots) return
+      const previous = slots[slots.length - 1]
+      slots.push({ role: `カット${slots.length + 1}`, note: '', sample: previous?.sample ?? 'V08', seconds: 5, candidates: [] })
+      break
+    }
+  }
+  saveCustom()
+  renderStory()
+  if (button.dataset.slotAction === 'add') storySlotsEl.lastElementChild?.previousElementSibling?.scrollIntoView({ block: 'nearest', inline: 'nearest' })
+})
+
+storyTabsEl.addEventListener('click', (event) => {
+  const tab = (event.target as HTMLElement).closest<HTMLButtonElement>('[data-story-template]')
+  if (!tab) return
+  stopStory()
+  storyTemplateId = tab.dataset.storyTemplate!
+  storyEditing = false
+  renderStory()
+})
+
+/** 名前が重ならないようにする（「訪問の順（自分用）」「訪問の順（自分用）2」…） */
+const uniqueName = (name: string) => {
+  const names = new Set([...storyTemplates, ...customTemplates].map((template) => template.name))
+  if (!names.has(name)) return name
+  let count = 2
+  while (names.has(`${name} ${count}`)) count += 1
+  return `${name} ${count}`
+}
+
+const addCustom = (template: Omit<CustomTemplate, 'id'>) => {
+  const created: CustomTemplate = { ...template, id: newStoryId(), name: uniqueName(template.name) }
+  customTemplates.push(created)
+  saveCustom()
+  return created
+}
+
+let deleteArmed = 0
+storyToolsEl.addEventListener('click', (event) => {
+  const button = (event.target as HTMLElement).closest<HTMLButtonElement>('[data-story-action]')
+  if (!button) return
+  const view = storyView(storyTemplateId)
+  switch (button.dataset.storyAction) {
+    case 'edit':
+      storyEditing = !storyEditing
+      break
+    case 'duplicate': {
+      if (customTemplates.length >= storyLimits.templates) return
+      const created = addCustom({
+        name: view.custom ? `${view.name}（複製）` : `${view.name}（自分用）`,
+        description: view.description,
+        basedOn: view.custom ? customById(view.id)?.basedOn : view.id,
+        slots: view.slots.map((slot) => ({ role: slot.role, note: slot.note, sample: slot.number, seconds: slot.seconds, candidates: [...slot.candidates] })),
+      })
+      storyTemplateId = created.id
+      storyEditing = true
+      break
+    }
+    case 'new': {
+      if (customTemplates.length >= storyLimits.templates) return
+      const created = addCustom({ name: '新しい型', description: '', slots: [{ role: 'カット1', note: '', sample: 'V08', seconds: 5, candidates: [] }] })
+      storyTemplateId = created.id
+      storyEditing = true
+      break
+    }
+    case 'delete':
+      // 押し間違いを防ぐため、2回押して削除する
+      if (Date.now() - deleteArmed > 3000) {
+        deleteArmed = Date.now()
+        button.textContent = 'もう一度押すと削除'
+        button.classList.add('is-armed')
+        return
+      }
+      deleteArmed = 0
+      {
+        const basedOn = customById(view.id)?.basedOn
+        customTemplates = customTemplates.filter((template) => template.id !== view.id)
+        saveCustom()
+        storyTemplateId = basedOn && storyTemplateById.has(basedOn) ? basedOn : storyTemplates[0].id
+      }
+      storyEditing = false
+      break
+  }
+  stopStory()
+  renderStory()
+})
+
+const openStory = (id: string, editing = false) => {
+  storyTemplateId = id
+  storyEditing = editing
+  storyJsonStatus.textContent = ''
+  renderStory()
+  if (!storyDialog.open) storyDialog.showModal()
+}
+
+document.querySelectorAll<HTMLButtonElement>('.story-open').forEach((button) => {
+  button.addEventListener('click', () => openStory(button.dataset.story!))
+})
+document.querySelector('.story-open-custom')!.addEventListener('click', () => {
+  if (customTemplates.length) openStory(customTemplates[customTemplates.length - 1].id)
+  else {
+    const created = addCustom({ name: '新しい型', description: '', slots: [{ role: 'カット1', note: '', sample: 'V08', seconds: 5, candidates: [] }] })
+    openStory(created.id, true)
+  }
+})
+renderStoryEntry()
+
+let storyTimers: number[] = []
+const stopStory = () => {
+  storyTimers.forEach((timer) => window.clearTimeout(timer))
+  storyTimers = []
+  storySlotsEl.querySelectorAll('.story-slot').forEach((slot) => slot.classList.remove('is-current'))
+}
+
+/** 役割の順に1つずつ再生する（プレビューは約2.4秒。速度の設定に合わせる） */
+document.querySelector('.story-play')!.addEventListener('click', () => {
+  stopStory()
+  const slots = [...storySlotsEl.querySelectorAll<HTMLElement>('.story-slot:not(.story-add)')]
+  const step = 2600 / speed()
+  slots.forEach((slot, index) => {
+    storyTimers.push(window.setTimeout(() => {
+      slots.forEach((item) => item.classList.toggle('is-current', item === slot))
+      slot.scrollIntoView({ block: 'nearest', inline: 'nearest' })
+      const stage = slot.querySelector<HTMLButtonElement>('.motion-stage, .preview-stage')
+      if (stage) playStage(stage)
+    }, index * step))
+  })
+  storyTimers.push(window.setTimeout(() => slots.forEach((item) => item.classList.remove('is-current')), slots.length * step))
+})
+
+const toolNames: Record<string, string> = { powerpoint: 'PowerPoint', edit: 'Premiere Pro／After Effects', cg: '建築CG', prompt: '生成AI向けの指示文' }
+const cell = (text: string) => text.replace(/\|/g, '／').replace(/\n/g, ' ')
+
+/** カット割り表（Markdownの表）。そのまま資料や指示書に貼れる */
+const storyTable = () => {
+  const view = storyView(storyTemplateId)
+  const tool = storyTool.value as keyof Recipe | ''
+  const head = ['No.', '役割', '見本', 'カット', '秒数', '内容', ...(tool ? [toolNames[tool]] : [])]
+  const rows = view.slots.map((slot, index) => {
+    const sample = sampleByNumber.get(slot.number)!
+    const recipeText = tool ? (recipes[slot.number]?.[tool] ?? '（この見本には記載なし）') : ''
+    return [String(index + 1), slot.role, `${slot.number} ${sample.name}（${sample.english}）`, shotScale[slot.number] ?? '—', `${slot.seconds}秒`, sample.description, ...(tool ? [recipeText] : [])]
+  })
+  const total = view.slots.reduce((sum, slot) => sum + slot.seconds, 0)
+  return [
+    `# 構成：${view.name}（${view.slots.length}カット・約${total}秒）`,
+    ...(view.description ? ['', view.description] : []),
+    '',
+    `| ${head.join(' | ')} |`,
+    `| ${head.map(() => '---').join(' | ')} |`,
+    ...rows.map((row) => `| ${row.map(cell).join(' | ')} |`),
+    '',
+    '出典：モーション見本帳 https://motion-sample-book.vercel.app/',
+  ].join('\n')
+}
+
+document.querySelector('.story-copy')!.addEventListener('click', async (event) => {
+  flashCopied(event.currentTarget as HTMLButtonElement, await copyText(storyTable()))
+})
+
+/* ---------- JSONの書き出し・読み込み ---------- */
+const fileTemplate = (view: StoryView): StoryFileTemplate => ({
+  name: view.name,
+  description: view.description,
+  ...(view.custom ? (customById(view.id)?.basedOn ? { basedOn: customById(view.id)!.basedOn } : {}) : { basedOn: view.id }),
+  slots: view.slots.map((slot) => ({ role: slot.role, note: slot.note, sample: slot.number, seconds: slot.seconds, ...(slot.candidates.length ? { candidates: slot.candidates } : {}) })),
+})
+const storyJson = (templates: StoryFileTemplate[]) => JSON.stringify(toStoryFile(templates), null, 2)
+const fileName = (name: string) => `storyboard-${name.replace(/[\\/:*?"<>|\s]+/g, '-').slice(0, 40) || 'template'}.json`
+
+const download = (name: string, content: string) => {
+  const url = URL.createObjectURL(new Blob([content], { type: 'application/json' }))
+  const link = document.createElement('a')
+  link.href = url
+  link.download = name
+  document.body.append(link)
+  link.click()
+  link.remove()
+  window.setTimeout(() => URL.revokeObjectURL(url), 1000)
+}
+
+const setJsonStatus = (message: string, error = false) => {
+  storyJsonStatus.textContent = message
+  storyJsonStatus.classList.toggle('is-error', error)
+}
+
+const importStory = (source: string) => {
+  try {
+    const result = parseStoryFile(source, (number) => sampleByNumber.has(number))
+    const room = storyLimits.templates - customTemplates.length
+    if (room <= 0) throw new Error(`自分の型は${storyLimits.templates}件までです。不要な型を削除してから読み込んでください。`)
+    const created = result.templates.slice(0, room).map(addCustom)
+    if (result.templates.length > room) result.warnings.push(`自分の型が${storyLimits.templates}件に達したため、${result.templates.length - room}件は取り込みませんでした。`)
+    storyTemplateId = created[0].id
+    storyEditing = false
+    renderStory()
+    setJsonStatus([`${created.length}件の型を「自分の型」に読み込みました（${created.map((template) => template.name).join('、')}）。`, ...result.warnings].join(' '))
+    return true
+  } catch (error) {
+    setJsonStatus((error as Error).message, true)
+    return false
+  }
+}
+
+document.querySelector('.story-json')!.addEventListener('click', async (event) => {
+  const button = (event.target as HTMLElement).closest<HTMLButtonElement>('[data-json]')
+  if (!button) return
+  const view = storyView(storyTemplateId)
+  switch (button.dataset.json) {
+    case 'download-one':
+      download(fileName(view.name), storyJson([fileTemplate(view)]))
+      setJsonStatus(`「${view.name}」を書き出しました。`)
+      break
+    case 'download-all':
+      download(fileName('自分の型'), storyJson(customTemplates.map((template) => fileTemplate(storyView(template.id)))))
+      setJsonStatus(`自分の型${customTemplates.length}件を書き出しました。`)
+      break
+    case 'copy-one':
+      flashCopied(button, await copyText(storyJson([fileTemplate(view)])))
+      break
+    case 'paste': {
+      const input = document.querySelector<HTMLTextAreaElement>('.story-paste-input')!
+      if (!input.value.trim()) { setJsonStatus('JSONを貼り付けてください。', true); return }
+      if (importStory(input.value)) input.value = ''
+      break
+    }
+  }
+})
+
+document.querySelector<HTMLInputElement>('.story-file-input')!.addEventListener('change', async (event) => {
+  const input = event.target as HTMLInputElement
+  const file = input.files?.[0]
+  if (!file) return
+  if (file.size > 1024 * 1024) setJsonStatus('ファイルが大きすぎます（1MBまで）。', true)
+  else importStory(await file.text())
+  input.value = ''
+})
+
+document.querySelector('.story-close')!.addEventListener('click', () => storyDialog.close())
+storyDialog.addEventListener('click', (event) => { if (event.target === storyDialog) storyDialog.close() })
+storyDialog.addEventListener('close', () => { stopStory(); storySlotsEl.innerHTML = '' })
