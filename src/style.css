@@ -258,6 +258,23 @@ body.has-compare-tray footer { padding-bottom: 110px; }
 .story-tools button.is-on { background: var(--ink); border-color: var(--ink); color: var(--cream); }
 .story-tools button.is-armed { background: #a8432b; border-color: #a8432b; color: #fff; }
 .story-tools-note { font-size: .74rem; color: #827c70; }
+.story-open-ai { border: 1px solid var(--coral); background: transparent; color: #a8432b; border-radius: 999px; padding: 8px 16px; font-size: .84rem; font-weight: 600; cursor: pointer; }
+.story-open-ai:hover, .story-open-ai:focus-visible { background: rgba(234,107,77,.1); }
+.story-open-ai:focus-visible, .story-open-custom:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+.story-ai { margin-bottom: 8px; border: 1px solid rgba(234,107,77,.45); border-radius: 6px; background: rgba(234,107,77,.05); }
+.story-ai summary { padding: 8px 12px; font-size: .8rem; font-weight: 600; cursor: pointer; color: #a8432b; }
+.story-ai summary:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+.story-ai-body { display: grid; gap: 10px; padding: 0 12px 12px; }
+.story-ai-lead { margin: 0; font-size: .8rem; color: #5b574e; line-height: 1.6; }
+.story-ai-steps { margin: 0; padding: 0; list-style: none; display: grid; gap: 14px; }
+.story-ai-steps > li { display: grid; gap: 8px; }
+.story-ai-step { display: flex; align-items: center; gap: 8px; font-size: .84rem; }
+.story-ai-step span { display: grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: var(--coral); color: #fff; font-size: .7rem; }
+.story-ai-situation { width: 100%; box-sizing: border-box; padding: 6px 8px; border: 1px solid var(--line); border-radius: 6px; background: var(--cream); font: inherit; font-size: .84rem; line-height: 1.6; color: var(--ink); resize: vertical; }
+.story-ai-options { display: flex; flex-wrap: wrap; gap: 8px 12px; }
+.story-ai-options .story-field { min-width: 140px; }
+.story-ai-copy { background: var(--ink) !important; border-color: var(--ink) !important; color: var(--cream) !important; font-weight: 600; }
+.story-ai-copy.is-copied { background: var(--blue) !important; border-color: var(--blue) !important; }
 .story-json { margin-bottom: 12px; border: 1px solid var(--line); border-radius: 6px; background: rgba(255,253,247,.5); }
 .story-json summary { padding: 8px 12px; font-size: .8rem; cursor: pointer; color: #5b574e; }
 .story-json-body { display: grid; gap: 8px; padding: 0 12px 12px; }

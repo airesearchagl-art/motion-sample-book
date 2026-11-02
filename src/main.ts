@@ -10,6 +10,7 @@ import {
   type CustomTemplate, type StoryFileTemplate, storyTemplates, storyTemplateById, storyLimits,
   newStoryId, clampSeconds, toStoryFile, parseStoryFile,
 } from './storyboard'
+import { buildStoryPrompt, storyRequestTools, storyRequestLengths, lengthLabel } from './story-prompt'
 
 const totalSamples = samples.length + videoSamples.length + textSamples.length
 /** 番号（01 / V01 / T01）から見本を引く。比較パネルで使う */
@@ -164,7 +165,7 @@ app.innerHTML = `
       <p class="purpose-status" aria-live="polite" hidden><span></span><button class="purpose-clear" type="button">目的の選択を解除</button></p>
       <div class="story-entry">
         <div><strong>構成を組む</strong><span>型を選んで見本を並べ、カット割り表としてコピーできます。</span></div>
-        <div class="story-entry-buttons">${storyTemplates.map((template) => `<button class="story-open" type="button" data-story="${template.id}">${template.name}</button>`).join('')}<button class="story-open-custom" type="button">＋ 自分の型を作る</button></div>
+        <div class="story-entry-buttons">${storyTemplates.map((template) => `<button class="story-open" type="button" data-story="${template.id}">${template.name}</button>`).join('')}<button class="story-open-custom" type="button">＋ 自分の型を作る</button><button class="story-open-ai" type="button">AIに構成を頼む</button></div>
       </div>
     </section>
 
@@ -291,6 +292,40 @@ app.innerHTML = `
       </div>
       <div class="story-templates" role="tablist" aria-label="構成の型"></div>
       <div class="story-tools"></div>
+      <details class="story-ai">
+        <summary>AIに構成を頼む</summary>
+        <div class="story-ai-body">
+          <p class="story-ai-lead">場面を書いて依頼文をコピーし、ClaudeやChatGPTに貼り付けます。返ってきた答えを下に貼ると、「自分の型」に追加されます。</p>
+          <ol class="story-ai-steps">
+            <li>
+              <strong class="story-ai-step"><span>1</span>依頼文を作ってコピーする</strong>
+              <label class="story-field">場面（だれに、何を伝えたいか）
+                <textarea class="story-ai-situation" rows="3" maxlength="600" placeholder="例：工場の新しい厚生棟を、施主の役員に初めて説明する。敷地の広さと、社員が集まる吹抜けの明るさを伝えたい。"></textarea>
+              </label>
+              <div class="story-ai-options">
+                <label class="story-field">全体の長さ
+                  <select class="story-ai-length">${storyRequestLengths.map((seconds) => `<option value="${seconds}">${lengthLabel(seconds)}</option>`).join('')}</select>
+                </label>
+                <label class="story-field">主に使う道具
+                  <select class="story-ai-tool">${Object.entries(storyRequestTools).map(([key, label]) => `<option value="${key}">${label}</option>`).join('')}</select>
+                </label>
+                <label class="story-field">提案の数
+                  <select class="story-ai-count"><option value="1">1案</option><option value="2">2案</option><option value="3" selected>3案</option></select>
+                </label>
+              </div>
+              <div class="story-json-actions"><button type="button" class="story-ai-copy">依頼文をコピー</button></div>
+            </li>
+            <li>
+              <strong class="story-ai-step"><span>2</span>AIの答えを読み込む</strong>
+              <label class="story-paste">AIの答えを貼り付ける（JSONの前後に文章があっても読めます）
+                <textarea class="story-ai-answer" rows="3" placeholder="AIの答えをそのまま貼り付け"></textarea>
+              </label>
+              <div class="story-json-actions"><button type="button" class="story-ai-import">答えを読み込む</button></div>
+            </li>
+          </ol>
+          <p class="story-ai-status story-json-status" aria-live="polite"></p>
+        </div>
+      </details>
       <details class="story-json">
         <summary>JSONで書き出し・読み込み</summary>
         <div class="story-json-body">
@@ -1289,7 +1324,8 @@ const storyTool = document.querySelector<HTMLSelectElement>('.story-tool')!
 const storyTabsEl = document.querySelector<HTMLDivElement>('.story-templates')!
 const storyToolsEl = document.querySelector<HTMLDivElement>('.story-tools')!
 const storyMetaEl = document.querySelector<HTMLDivElement>('.story-meta')!
-const storyJsonStatus = document.querySelector<HTMLParagraphElement>('.story-json-status')!
+const storyJsonStatus = document.querySelector<HTMLParagraphElement>('.story-json .story-json-status')!
+const storyAiStatus = document.querySelector<HTMLParagraphElement>('.story-ai-status')!
 const storyKey = 'motion-sample-book:story'
 const storyCustomKey = 'motion-sample-book:story-custom'
 let storyTemplateId = storyTemplates[0].id
@@ -1602,6 +1638,7 @@ const openStory = (id: string, editing = false) => {
   storyTemplateId = id
   storyEditing = editing
   storyJsonStatus.textContent = ''
+  storyAiStatus.textContent = ''
   renderStory()
   if (!storyDialog.open) storyDialog.showModal()
 }
@@ -1692,12 +1729,15 @@ const download = (name: string, content: string) => {
   window.setTimeout(() => URL.revokeObjectURL(url), 1000)
 }
 
+let statusTarget: HTMLElement = storyJsonStatus
 const setJsonStatus = (message: string, error = false) => {
-  storyJsonStatus.textContent = message
-  storyJsonStatus.classList.toggle('is-error', error)
+  ;[storyJsonStatus, storyAiStatus].forEach((element) => { if (element !== statusTarget) element.textContent = '' })
+  statusTarget.textContent = message
+  statusTarget.classList.toggle('is-error', error)
 }
 
-const importStory = (source: string) => {
+const importStory = (source: string, target: HTMLElement = storyJsonStatus) => {
+  statusTarget = target
   try {
     const result = parseStoryFile(source, (number) => sampleByNumber.has(number))
     const room = storyLimits.templates - customTemplates.length
@@ -1752,3 +1792,48 @@ document.querySelector<HTMLInputElement>('.story-file-input')!.addEventListener(
 document.querySelector('.story-close')!.addEventListener('click', () => storyDialog.close())
 storyDialog.addEventListener('click', (event) => { if (event.target === storyDialog) storyDialog.close() })
 storyDialog.addEventListener('close', () => { stopStory(); storySlotsEl.innerHTML = '' })
+
+/* ---------- v1.0-2b AIに構成を頼む：依頼文をコピーし、AIの答え（JSON）を読み込む ---------- */
+const storyAi = document.querySelector<HTMLDetailsElement>('.story-ai')!
+const storyAiDraftKey = 'motion-sample-book:story-ai'
+const aiSituation = document.querySelector<HTMLTextAreaElement>('.story-ai-situation')!
+const aiLength = document.querySelector<HTMLSelectElement>('.story-ai-length')!
+const aiTool = document.querySelector<HTMLSelectElement>('.story-ai-tool')!
+const aiCount = document.querySelector<HTMLSelectElement>('.story-ai-count')!
+
+/** 書きかけの場面と条件は、端末に残しておく */
+const aiDraft = readJson<{ situation?: string, length?: string, tool?: string, count?: string }>(storyAiDraftKey, {}) ?? {}
+aiSituation.value = aiDraft.situation ?? ''
+if (aiDraft.length && [...aiLength.options].some((option) => option.value === aiDraft.length)) aiLength.value = aiDraft.length
+if (aiDraft.tool !== undefined && [...aiTool.options].some((option) => option.value === aiDraft.tool)) aiTool.value = aiDraft.tool
+if (aiDraft.count && [...aiCount.options].some((option) => option.value === aiDraft.count)) aiCount.value = aiDraft.count
+const saveAiDraft = () => writeJson(storyAiDraftKey, { situation: aiSituation.value, length: aiLength.value, tool: aiTool.value, count: aiCount.value })
+;[aiSituation, aiLength, aiTool, aiCount].forEach((element) => element.addEventListener('change', saveAiDraft))
+aiSituation.addEventListener('input', saveAiDraft)
+
+document.querySelector('.story-ai-copy')!.addEventListener('click', async (event) => {
+  const button = event.currentTarget as HTMLButtonElement
+  const prompt = buildStoryPrompt(
+    { situation: aiSituation.value, totalSeconds: Number(aiLength.value), count: Number(aiCount.value), tool: aiTool.value },
+    [['UIモーション', samples], ['動画・カメラ', videoSamples], ['文字', textSamples]],
+  )
+  const ok = await copyText(prompt)
+  flashCopied(button, ok)
+  statusTarget = storyAiStatus
+  setJsonStatus(ok
+    ? `依頼文（約${Math.round(prompt.length / 100) / 10}千字）をコピーしました。ClaudeやChatGPTに貼り付けて送り、返ってきた答えを下に貼ってください。`
+    : 'コピーできませんでした。ブラウザのクリップボードの許可を確認してください。', !ok)
+})
+
+document.querySelector('.story-ai-import')!.addEventListener('click', () => {
+  const answer = document.querySelector<HTMLTextAreaElement>('.story-ai-answer')!
+  if (!answer.value.trim()) { statusTarget = storyAiStatus; setJsonStatus('AIの答えを貼り付けてください。', true); return }
+  if (importStory(answer.value, storyAiStatus)) answer.value = ''
+})
+
+document.querySelector('.story-open-ai')!.addEventListener('click', () => {
+  openStory(storyTemplateId)
+  storyAi.open = true
+  aiSituation.focus()
+})
+
