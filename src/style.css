@@ -178,7 +178,12 @@ body.has-compare-tray footer { padding-bottom: 110px; }
 .recipe-body { display: grid; gap: 12px; }
 .recipe-block { border: 1px solid var(--line); background: rgba(255,253,247,.6); }
 .recipe-block-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 14px; border-bottom: 1px solid var(--line); }
-.recipe-block-head h3 { margin: 0; font-size: .86rem; }
+.recipe-block-head h3 { margin: 0; font-size: .86rem; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; }
+.check-badge { font-size: .68rem; font-weight: 500; padding: 2px 8px; border-radius: 999px; }
+.check-badge.is-device { background: rgba(49,92,112,.12); color: var(--blue); }
+.check-badge.is-docs { background: rgba(125,143,117,.18); color: #4f6148; }
+.check-badge.is-unverified { background: rgba(37,35,31,.07); color: #827c70; }
+.recipe-tools i.is-verified { border-color: rgba(255,253,247,.85); background: rgba(255,253,247,.14); }
 .recipe-copy, .recipe-copy-all { border: 1px solid var(--line); background: transparent; border-radius: 999px; padding: 6px 14px; font-size: .78rem; cursor: pointer; white-space: nowrap; }
 .recipe-copy:hover, .recipe-copy:focus-visible { border-color: var(--ink); }
 .recipe-copy.is-copied, .recipe-copy-all.is-copied { background: var(--blue); border-color: var(--blue); color: var(--cream); }

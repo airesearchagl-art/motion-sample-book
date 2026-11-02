@@ -4,7 +4,7 @@
  * - css:        Webで作るときの短いコード例（作れないものは省略）
  * - edit:       Premiere Pro／After Effectsでの呼び方・主な操作
  * - powerpoint: PowerPointで近いアニメーション（開始効果／強調／画面切り替え）
- * - cg:         SketchUp／Lumion／Twinmotion／Enscapeなど建築CGでの作り方（関係するものだけ）
+ * - cg:         SketchUp／D5 Render／Lumion／Twinmotion／Enscapeなど建築CGでの作り方（関係するものだけ）
  * - prompt:     動画・画像生成AIへ渡す英語の指示文
  *
  * 新しい見本を足すときは、ここにも同じ番号で1件追加する。
@@ -32,14 +32,14 @@ export const recipes: Record<string, Recipe> = {
     css: `.thumb { transition: transform .3s; }
 .thumb:hover { transform: scale(1.12); }`,
     edit: 'After Effects：スケール 100→112%（イーズアウト）',
-    powerpoint: '強調「拡大/収縮」（サイズ 110%程度、スムーズ終了）',
+    powerpoint: '強調「拡大/収縮」（効果のオプション画面でサイズをユーザー設定110%、「滑らかに終了」を0.5秒程度）',
     prompt: 'A thumbnail image smoothly scales up by about 10 percent when hovered, subtle and clean UI motion',
   },
   '03': {
     css: `.button { box-shadow: 0 8px 0 #c4b9a6; transition: transform .1s, box-shadow .1s; }
 .button:active { transform: translateY(7px); box-shadow: 0 1px 0 #c4b9a6; }`,
     edit: 'After Effects：位置Yを数px下げ、影を縮める短い2キー（0.1秒）',
-    powerpoint: '強調「拡大/収縮」95%＋自動で元に戻す。または軌跡で数pxだけ下へ',
+    powerpoint: '強調「拡大/収縮」（サイズをユーザー設定95%、効果のオプション画面で「オートリバース」をオン）。または軌跡で数pxだけ下へ',
     prompt: 'A physical-looking button is pressed down, sinking a few pixels as its bottom shadow shrinks, tactile UI feedback',
   },
   '04': {
@@ -53,7 +53,7 @@ export const recipes: Record<string, Recipe> = {
     css: `@keyframes shake { 20%,60% { transform: translateX(-8px); } 40%,80% { transform: translateX(8px); } }
 .field.error { animation: shake .5s ease; }`,
     edit: 'After Effects：位置Xを左右に4往復（ウィグラーや wiggle() でも可）',
-    powerpoint: '強調「シーソー」、または「アニメーションの軌跡（左右）」を自動で戻す・繰り返し2回',
+    powerpoint: '強調「シーソー」、または「アニメーションの軌跡：直線」の効果のオプション「右へ」で少しだけ動かし、「オートリバース」と「繰り返し：2」',
     prompt: 'An input field shakes quickly left and right to signal an error, short and clear UI feedback',
   },
   '06': {
@@ -81,7 +81,7 @@ export const recipes: Record<string, Recipe> = {
     css: `.badge::before { content: ''; position: absolute; inset: -60% auto; left: -55%; width: 34%; background: rgb(255 255 255 / .55); transform: skewX(-18deg); transition: left .55s; }
 .badge:hover::before { left: 125%; }`,
     edit: 'After Effects：エフェクト「CC Light Sweep」',
-    powerpoint: '斜めの白い半透明図形を「アニメーションの軌跡（右へ）」で横切らせ、図形内でトリミング',
+    powerpoint: '斜めの白い半透明図形を「アニメーションの軌跡：直線（右へ）」で横切らせる（はみ出す部分は、背景と同じ色の図形を上に重ねて隠す）',
     prompt: 'A glossy light reflection sweeps diagonally across a premium badge, subtle shine effect',
   },
   '10': {
@@ -120,7 +120,7 @@ export const recipes: Record<string, Recipe> = {
     css: `@keyframes ken-burns { from { transform: scale(1) translate(0, 0); } to { transform: scale(1.15) translate(-3%, -2%); } }
 .hero-photo { animation: ken-burns 8s ease-out both; }`,
     edit: 'Premiere Pro：スケールと位置にキーフレーム（またはエフェクト「ゆっくりズーム」系のプリセット）／After Effects：スケール100→115%と位置',
-    powerpoint: '画像に強調「拡大/収縮」（110〜115%、時間を長く）＋「アニメーションの軌跡（少し斜め）」',
+    powerpoint: '画像に強調「拡大/収縮」（ユーザー設定110〜115%、継続時間を長く）＋「その他のアニメーションの軌跡効果」の「対角線（右上へ）」を「直前の動作と同時」で',
     prompt: 'Slow Ken Burns zoom and drift across a still exterior photograph of a modern building at dusk',
   },
   '15': {
@@ -178,7 +178,7 @@ items.forEach((el) => { const a = before.get(el), b = el.getBoundingClientRect()
     css: '/* 切り替え時に、次の画面を0秒で表示するだけ */\n.scene-b { opacity: 0; } .scene-b.is-active { opacity: 1; }',
     edit: 'Premiere Pro：トランジションを入れない「カット編集」。リズムよく切るなら「Jカット／Lカット」も',
     powerpoint: '画面切り替え「カット」（または「なし」）',
-    cg: 'Lumion／Twinmotion：別々のカメラクリップをムービー編集でつなぐ（トランジションなし）',
+    cg: 'Lumion／Twinmotion：別々のカメラクリップをムービー編集でつなぐ（トランジションなし）／D5 Render：1つのクリップに視点（ショット）を複数並べると、ショットの境目でカットになる',
     prompt: 'A hard cut between two architectural shots, no transition, crisp editorial pacing',
   },
   V02: {
@@ -186,7 +186,7 @@ items.forEach((el) => { const a = before.get(el), b = el.getBoundingClientRect()
 .is-next .scene-a { opacity: 0; } .is-next .scene-b { opacity: 1; }`,
     edit: 'Premiere Pro：トランジション「クロスディゾルブ」（黒を挟むなら「ディップ（黒）」）',
     powerpoint: '画面切り替え「フェード」（効果のオプション：スムーズ）',
-    cg: 'Lumion／Twinmotion：クリップ間のトランジション「フェード」',
+    cg: 'Lumion／Twinmotion：クリップ間のトランジション「フェード」／D5 Render：不可（ショットやクリップの間にトランジション（フェード）を付ける設定がない。書き出した動画を編集ソフトでフェード）',
     prompt: 'A slow cross dissolve between an exterior daytime shot and an interior shot of a building, calm and atmospheric',
   },
   V03: {
@@ -201,7 +201,7 @@ items.forEach((el) => { const a = before.get(el), b = el.getBoundingClientRect()
 .shot { animation: zoom 2s cubic-bezier(.2,.75,.2,1) both; }`,
     edit: 'Premiere Pro：エフェクトコントロール「スケール」にキーフレーム／After Effects：スケール（ドリーと違い、遠近感は変わらない）',
     powerpoint: '画像に強調「拡大/収縮」、または画面切り替え「変形」で拡大した画像へ',
-    cg: 'Lumion／Twinmotion：カメラの「画角（焦点距離）」をキーフレームで変える',
+    cg: 'Lumion／Twinmotion：カメラの「画角（焦点距離）」をキーフレームで変える／D5 Render：動画モードで視点ごとに「FOV (Horizontal)」（または Focal Length）を変え、「↻」で視点を更新',
     prompt: 'Slow optical zoom in toward the main entrance of a modern building, focal length change, static camera position',
   },
   V05: {
@@ -209,7 +209,7 @@ items.forEach((el) => { const a = before.get(el), b = el.getBoundingClientRect()
 .panorama { width: 175%; animation: pan 2.2s ease-in-out both; }`,
     edit: 'After Effects：3Dカメラの「Yの回転（方向）」、または画像の位置Xを動かす',
     powerpoint: '横長画像に「アニメーションの軌跡（左へ）」、または画面切り替え「パン」',
-    cg: 'SketchUp：シーン間でカメラの向きだけ変える／Lumion・Twinmotion：同じ位置で向きだけを変えた2キー',
+    cg: 'SketchUp：シーン間でカメラの向きだけ変える／Lumion・Twinmotion：同じ位置で向きだけを変えた2キー／D5 Render：テンプレート「Camera Movement」の「Pan Left」／「Pan Right」（その場で向きだけ変える。Start Rotation で角度）',
     prompt: 'A slow horizontal camera pan across a building facade and its surrounding plaza, steady tripod movement',
   },
   V06: {
@@ -217,7 +217,7 @@ items.forEach((el) => { const a = before.get(el), b = el.getBoundingClientRect()
 .tall-shot { height: 175%; transform: translateY(-43%); animation: tilt 2.2s ease-in-out both; }`,
     edit: 'After Effects：3Dカメラの「Xの回転」（チルトアップ）、または縦長画像の位置Y',
     powerpoint: '縦長画像に「アニメーションの軌跡（下へ）」で、下から上へ見上げる',
-    cg: 'SketchUp／Lumion／Twinmotion：同じ位置で、視線を地上から上層部へ上げた2キー',
+    cg: 'SketchUp／Lumion／Twinmotion：同じ位置で、視線を地上から上層部へ上げた2キー／D5 Render：テンプレート「Camera Movement」の「Pan Up」（その場で視線を上げる）',
     prompt: 'Camera tilts up slowly from the street level to the top of a high-rise tower, emphasizing height and scale',
   },
   V07: {
@@ -226,15 +226,15 @@ items.forEach((el) => { const a = before.get(el), b = el.getBoundingClientRect()
 @keyframes grow { to { transform: scale(var(--to)); } }`,
     edit: 'After Effects：3Dカメラを前進（Z位置）。ズーム（スケール）と違い、手前と奥の見え方が変わる',
     powerpoint: '前景・被写体・背景を別画像にして、手前ほど大きく「拡大/収縮」させる',
-    cg: 'Lumion／Twinmotion／Enscape：カメラ位置を前進させたキーフレーム（画角は固定）',
+    cg: 'Lumion／Twinmotion／Enscape：カメラ位置を前進させたキーフレーム（画角は固定）／D5 Render：テンプレート「Camera Movement」の「Horizontal Push」（Distance で前進量。画角は固定）',
     prompt: 'Smooth dolly-in camera move through foreground columns toward a building entrance, strong parallax, cinematic',
   },
   V08: {
     css: `.stage { perspective: 640px; } .cube { transform-style: preserve-3d; animation: orbit 2.2s ease-in-out both; }
 @keyframes orbit { from { transform: rotateY(-28deg); } to { transform: rotateY(-118deg); } }`,
     edit: 'After Effects：3Dカメラの「軌道（オービット）」ツール、またはヌルを親にしてY回転',
-    powerpoint: '画面切り替え「軌道」、または角度違いの画像を「変形」でつなぐ',
-    cg: 'SketchUp：建物を中心に角度を変えたシーンを複数作る／Lumion・Twinmotion：「オービット」系のカメラパス',
+    powerpoint: '画面切り替え「オービット」、または角度違いの画像を「変形」でつなぐ',
+    cg: 'SketchUp：建物を中心に角度を変えたシーンを複数作る／Lumion・Twinmotion：「オービット」系のカメラパス／D5 Render：テンプレート「Camera Movement」の「360° Pan」（Calibre=半径、Circle center height、Movement Degree で回り込む角度）',
     prompt: 'Slow aerial orbit around a contemporary building at golden hour, revealing all facades, smooth and level',
   },
   V09: {
@@ -243,7 +243,7 @@ items.forEach((el) => { const a = before.get(el), b = el.getBoundingClientRect()
 @keyframes slide { to { transform: translateX(var(--to)); } }`,
     edit: 'After Effects：3Dカメラの「トラックXY」ツールで横移動。パン（向きだけ）と違い視差が出る',
     powerpoint: '前景・中景・背景を別画像にし、移動量を変えた「アニメーションの軌跡（左へ）」を同時に',
-    cg: 'Lumion／Twinmotion：カメラを建物と平行に横移動させたキーフレーム',
+    cg: 'Lumion／Twinmotion：カメラを建物と平行に横移動させたキーフレーム／D5 Render：テンプレート「Camera Movement」の「Slide Left」／「Slide Right」（Distance で移動量）',
     prompt: 'Camera trucks sideways along a street facade with columns passing in the foreground, layered parallax',
   },
   V10: {
@@ -251,19 +251,19 @@ items.forEach((el) => { const a = before.get(el), b = el.getBoundingClientRect()
 @keyframes blur-out { to { filter: blur(7px); } } @keyframes focus-in { to { filter: blur(0); } }`,
     edit: 'After Effects：3Dカメラの被写界深度をオンにし「フォーカス距離」をキーフレーム／Premiere Pro：「ブラー（ガウス）」を2層で入れ替え',
     powerpoint: 'ぼかし加工した画像とシャープな画像を重ね、「フェード」で入れ替える（図の書式「アート効果：ぼかし」）',
-    cg: 'Lumion：エフェクト「被写界深度」の焦点距離をキー／Twinmotion：「被写界深度」のフォーカス',
+    cg: 'Lumion：エフェクト「被写界深度」の焦点距離をキー／Twinmotion：「被写界深度」のフォーカス／D5 Render：Preference > Widget で「Advanced Camera Tool」を有効にし、「Add Camera」で置いたカメラの「Depth of Field」「Set Focus」「Blur」を設定（動画でピント位置をキー間で変える方法は未確認）',
     prompt: 'Rack focus from a blurred material sample in the foreground to the building interior in the background, shallow depth of field',
   },
   V11: {
     edit: 'After Effects：外観の画像にマスクを付け、切断線と一緒にマスクパスを左→右へ動かす',
     powerpoint: '断面図の上に外観図を重ね、外観図に終了効果「ワイプ（左から）」＋赤い切断線を「アニメーションの軌跡」で同時に',
-    cg: 'SketchUp：「断面平面」を置き、位置を変えたシーンでアニメーション／Enscape・Twinmotion：「断面（クリッピング平面）」の位置をキー',
+    cg: 'SketchUp：「断面平面」を置き、位置を変えたシーンでアニメーション／Enscape・Twinmotion：「断面（クリッピング平面）」の位置をキー／D5 Render：Preference > Widget で「Section Tools」を有効にし、「Section」>「Section Plane」を置く。動画モードで断面を選び、Inspector の「◇」で位置・角度をキーフレーム',
     prompt: 'An animated section cut sweeps across a multi-story building, slicing away the facade to reveal floors, rooms and stairs inside, clean architectural diagram style',
   },
   V12: {
     edit: 'After Effects：昼と夜の2枚の外観を不透明度で重ね、窓の明かりをレイヤーごとに時間差で点灯',
-    powerpoint: '昼の画像に夜の画像を「フェード」で重ね、窓の光の図形を「アピール」で順に表示（遅延をずらす）',
-    cg: 'Lumion／Twinmotion：「時刻（太陽の位置）」をキーフレームで夕方→夜へ。照明は「夜だけ点灯」設定／SketchUp：影の設定の時刻をシーンごとに変える',
+    powerpoint: '昼の画像に夜の画像を「フェード」で重ね、窓の光の図形を開始効果「表示」で順に表示（「直前の動作の後」で遅延をずらす）',
+    cg: 'Lumion／Twinmotion：「時刻（太陽の位置）」をキーフレームで夕方→夜へ。照明は「夜だけ点灯」設定／SketchUp：影の設定の時刻をシーンごとに変える／D5 Render：動画モードで2つ目の視点の Environment「Sky Light」の時刻を夜にして「↻」で更新すると、夕方→夜へ補間される（照明の夜だけ点灯は未確認）',
     prompt: 'Time-lapse of a building facade from late afternoon to night, the sky deepens to dusk while interior lights switch on window by window',
   },
 
@@ -273,7 +273,7 @@ items.forEach((el) => { const a = before.get(el), b = el.getBoundingClientRect()
 @keyframes sun { 0% { transform: rotate(-70deg) scaleY(1.6); } 50% { transform: rotate(0) scaleY(.6); } 100% { transform: rotate(70deg) scaleY(1.6); } }`,
     edit: 'After Effects：影のシェイプを建物の足元を中心に回転させ、スケールで長さを変える（太陽のアイコンを円弧のパスで動かす）',
     powerpoint: '時刻ごとの日影図を並べ、画面切り替え「変形」でつなぐ（影の図形を同じ名前にしておくと滑らかに回る）',
-    cg: 'SketchUp：「影」パネルで日付と時刻を設定し、時刻を変えたシーンを並べてアニメーション／Lumion・Twinmotion：太陽の「時刻」をキーフレーム',
+    cg: 'SketchUp：「影」パネルで日付と時刻を設定し、時刻を変えたシーンを並べてアニメーション／Lumion・Twinmotion：太陽の「時刻」をキーフレーム／D5 Render：視点ごとに Environment「Sky Light」の時刻を変え、「↻」で更新すると太陽の位置が補間される',
     prompt: 'Top-down site plan animation of building shadows sweeping from morning to evening as the sun moves across the sky, clean architectural diagram',
   },
   V14: {
@@ -284,7 +284,7 @@ items.forEach((el) => { const a = before.get(el), b = el.getBoundingClientRect()
 @keyframes rise { from { transform: rotateX(-90deg) scaleY(0); } to { transform: rotateX(-90deg) scaleY(1); } }`,
     edit: 'After Effects：平面図のレイヤーを3D化して X回転で寝かせ、壁のレイヤーをアンカーポイントを下端にしてスケールYで立ち上げる',
     powerpoint: '平面図とアイソメ図の2枚を画面切り替え「変形」でつなぐ。壁は開始効果「ワイプ（下から）」で追加',
-    cg: 'SketchUp：上面図のシーンと、壁を押し出した（プッシュ／プル）アイソメのシーンを用意してアニメーション。押し出し途中の段階をシーンで刻むと滑らか',
+    cg: 'SketchUp：上面図のシーンと、壁を押し出した（プッシュ／プル）アイソメのシーンを用意してアニメーション。押し出し途中の段階をシーンで刻むと滑らか／D5 Render：テンプレート「Animation」の「Rise」（Edit Objects で対象を選ぶ）。壁を別モデルとして読み込むと段階的に立ち上げられる',
     prompt: 'A flat architectural floor plan tilts into an isometric view and its walls extrude upward into a 3D model, clean white diagram style',
   },
   V15: {
@@ -292,8 +292,8 @@ items.forEach((el) => { const a = before.get(el), b = el.getBoundingClientRect()
 .layer { animation: explode 2.2s ease-in-out both; }
 @keyframes explode { 50% { transform: translateZ(calc(var(--i) * 46px)); } }`,
     edit: 'After Effects：各階を3Dレイヤーにし、Z位置を階ごとに離してから戻す（ヌルを親にして全体をアイソメ角度に）',
-    powerpoint: '各階の図形を「アニメーションの軌跡（上へ）」で階ごとに距離を変えて同時に動かし、「自動で元に戻す」を有効にする',
-    cg: 'SketchUp：各階をグループにし、上下に離したシーンと重ねたシーンを作る（分解アクソメ）／Twinmotion：オブジェクトの「アニメーター（移動）」',
+    powerpoint: '各階の図形を「アニメーションの軌跡：直線（上へ）」で階ごとに距離を変えて「直前の動作と同時」に動かし、効果のオプション画面で「オートリバース」をオンにする',
+    cg: 'SketchUp：重ねた状態と上下に離した状態を別タグの複製で用意し、タグの表示を切り替えたシーンを作る（分解アクソメ。切り替えは瞬時なので、途中段階のシーンを足すと動いて見える）／Twinmotion：オブジェクトの「アニメーター（移動）」／D5 Render：テンプレート「Animation」の「Ascend」／「Descend」などを階ごとに設定（.skp を1ファイルで読み込むと1モデルになるため、階ごとに別ファイルで読み込む）',
     prompt: 'Exploded axonometric animation of a building: roof, floor slabs and foundation separate vertically and then reassemble, minimal diagram',
   },
   V16: {
@@ -302,7 +302,7 @@ items.forEach((el) => { const a = before.get(el), b = el.getBoundingClientRect()
 @keyframes up { to { transform: translateY(var(--to)); } }`,
     edit: 'After Effects：3DカメラのY位置を上げる（「カメラ：トラックY」）。手前の木を別レイヤーにすると視差が出る',
     powerpoint: '手前・建物・背景を別画像にし、手前ほど大きく「アニメーションの軌跡（下へ）」で動かす',
-    cg: 'Lumion／Twinmotion／Enscape：カメラの高さを上げたキーフレーム（視線は建物に向けたまま）／SketchUp：視点の高さを変えたシーン',
+    cg: 'Lumion／Twinmotion／Enscape：カメラの高さを上げたキーフレーム（視線は建物に向けたまま）／SketchUp：視点の高さを変えたシーン／D5 Render：テンプレート「Camera Movement」の「Slide Up」＋ショットの「Camera Target」をオン（Focus On で建物を指定）',
     prompt: 'Crane shot rising from eye level over foreground trees to reveal a building and the city skyline behind it, smooth vertical movement',
   },
   V17: {
@@ -311,7 +311,7 @@ items.forEach((el) => { const a = before.get(el), b = el.getBoundingClientRect()
 @keyframes pull { from { transform: scale(3.5); } to { transform: scale(1); } }`,
     edit: 'After Effects：3Dカメラを後退（Z位置）、または高解像度の全景をスケール350→100%（アンカーポイントをディテールに）',
     powerpoint: '全景の画像に強調「拡大/収縮」の逆（大きい状態から100%へ）、または寄りと引きの2枚を「変形」でつなぐ',
-    cg: 'Lumion／Twinmotion：ディテールに寄ったカメラから、建物全体が入る位置まで後退するキーフレーム',
+    cg: 'Lumion／Twinmotion：ディテールに寄ったカメラから、建物全体が入る位置まで後退するキーフレーム／D5 Render：テンプレート「Camera Movement」の「Horizontal Pull」（Distance で後退量）',
     prompt: 'Camera pulls back from a close-up of a facade material detail to reveal the entire building and its surroundings, slow and cinematic',
   },
   V18: {
@@ -320,7 +320,7 @@ items.forEach((el) => { const a = before.get(el), b = el.getBoundingClientRect()
 @keyframes pass { to { transform: scale(6); opacity: 0; } } @keyframes enter { to { transform: scale(1.5); } }`,
     edit: 'After Effects：3Dカメラを開口に向けて前進。入口の枠を手前のレイヤーにすると「抜ける」感じが出る',
     powerpoint: '外観と内観を画面切り替え「ズーム」系（または「フライスルー」）でつなぐ。開口の位置を合わせると自然',
-    cg: 'Lumion／Twinmotion／Enscape：入口の外から開口を通り、室内まで進むカメラパス（ドアは開けておく）／SketchUp：歩行ツールの視点でシーンを並べる',
+    cg: 'Lumion／Twinmotion／Enscape：入口の外から開口を通り、室内まで進むカメラパス（ドアは開けておく）／SketchUp：「ウォーク」ツールの視点でシーンを並べる／D5 Render：入口の外→開口→室内の順に「Add Current View」で視点を追加し、「Edit Path」で経路を調整',
     prompt: 'Smooth fly-through camera move passing through the main entrance opening into a bright double-height lobby, architectural walkthrough',
   },
   V19: {
@@ -329,8 +329,8 @@ items.forEach((el) => { const a = before.get(el), b = el.getBoundingClientRect()
 @keyframes draw { to { stroke-dashoffset: 0; } }
 .render { opacity: 0; animation: show .9s 1.1s forwards; } @keyframes show { to { opacity: 1; } }`,
     edit: 'After Effects：線画に「線（ストローク）」エフェクトまたは「パスのトリミング」で描画し、レンダー画像を不透明度で重ねる／Premiere Pro：線画とレンダーを「クロスディゾルブ」',
-    powerpoint: '線画に開始効果「ワイプ」または「スケッチ」系の描画、続けてレンダー画像を開始効果「フェード」',
-    cg: 'SketchUp：スタイルを「線画（スケッチ風エッジ）」と「陰影付きテクスチャ」で切り替えたシーンをつなぐ（スタイルのフェードで溶ける）／Lumion：「スケッチ」エフェクトの強さをキー',
+    powerpoint: '線画に開始効果「ワイプ」、続けてレンダー画像を開始効果「フェード」（「直前の動作の後」）',
+    cg: 'SketchUp：スタイル「スケッチ エッジ」と、面スタイル「テクスチャーで陰影をつける」のスタイルを切り替えたシーンをつなぐ（切り替えは瞬時。溶けるように見せるなら書き出した2枚を動画編集でクロスフェード）／Lumion：「スケッチ」エフェクトの強さをキー／D5 Render：Effect > Style の「Outline mode」で線画風にできる（視点ごとの切り替え・補間は未確認）',
     prompt: 'A hand-drawn architectural line sketch of a house draws itself and then dissolves into a fully colored photorealistic rendering',
   },
   V20: {
@@ -338,8 +338,8 @@ items.forEach((el) => { const a = before.get(el), b = el.getBoundingClientRect()
 .city { filter: saturate(1.3); }
 .blur-top, .blur-bottom { backdrop-filter: blur(6px); mask-image: linear-gradient(to bottom, #000, transparent); }`,
     edit: 'After Effects：「ブラー（カメラレンズ）」をグラデーションのマップで上下だけに。彩度を上げ、再生速度を少し速めると模型らしくなる',
-    powerpoint: '同じ画像を2枚重ね、上の画像に「アート効果：ぼかし」をかけて中央だけトリミング（透明のグラデーション）',
-    cg: 'Lumion：エフェクト「ティルトシフト（ミニチュア）」／Twinmotion：被写界深度を強め、高い位置からの俯瞰カメラ',
+    powerpoint: '同じ画像を2枚重ね、上の画像に「アート効果：ぼかし」をかけ、中央を透明から白へのグラデーションで塗った図形を重ねてぼかしの境目をなじませる',
+    cg: 'Lumion：エフェクト「ティルトシフト（ミニチュア）」／Twinmotion：被写界深度を強め、高い位置からの俯瞰カメラ／D5 Render：不可（ティルトシフトの機能はない。近い表現は「Add Camera」のカメラで「Depth of Field」の Blur を強め、高い位置から俯瞰）',
     prompt: 'High-angle tilt-shift shot of a city block with blurred top and bottom edges and saturated colors, looking like a miniature architectural model',
   },
 
@@ -355,14 +355,14 @@ items.forEach((el) => { const a = before.get(el), b = el.getBoundingClientRect()
     css: `.char { opacity: 0; animation: show .01s steps(1) both; animation-delay: calc(var(--i) * .18s); }
 @keyframes show { to { opacity: 1; } }`,
     edit: 'After Effects：テキストアニメーター（不透明度0＋範囲セレクター）、またはプリセット「タイプライター」',
-    powerpoint: '開始効果「アピール」＋効果のオプション「テキストの送り：文字単位」（文字間の遅延を設定）',
+    powerpoint: '開始効果「表示」＋効果のオプション画面の「テキストの動作：文字単位で表示」（「秒文字間で遅延」を0.05秒程度）',
     prompt: 'Text appears letter by letter like a typewriter with a blinking cursor, minimal and clear',
   },
   T03: {
     css: `.char { display: inline-block; animation: rise .55s cubic-bezier(.2,.8,.2,1) both; animation-delay: calc(var(--i) * .1s); }
 @keyframes rise { from { opacity: 0; transform: translateY(.9em); } }`,
     edit: 'After Effects：テキストアニメーター（位置Y＋不透明度）で範囲セレクターのオフセットをキー（文字ごとに時間差）',
-    powerpoint: '開始効果「フロートイン」＋テキストの送り「文字単位」',
+    powerpoint: '開始効果「フロートイン」＋効果のオプション画面の「テキストの動作：文字単位で表示」（「%文字間で遅延」を調整）',
     prompt: 'Letters of a title rise into place one after another with a smooth staggered rhythm',
   },
   T04: {
@@ -376,14 +376,14 @@ items.forEach((el) => { const a = before.get(el), b = el.getBoundingClientRect()
     css: `.mask { overflow: hidden; } .mask .line { animation: up 1.1s cubic-bezier(.7,0,.2,1) both; }
 @keyframes up { from { transform: translateY(115%); } }`,
     edit: 'After Effects：トラックマット（アルファ）で文字を枠の下から上へ／Premiere Pro：「クロップ」＋位置',
-    powerpoint: '開始効果「ワイプ（下から）」、または「フロートイン」をテキストボックス内でトリミング',
+    powerpoint: '開始効果「ワイプ」（効果のオプション：下から）',
     prompt: 'A chapter title slides up from behind an invisible line with a thin accent rule, refined editorial motion',
   },
   T06: {
     css: `@keyframes tracking { from { letter-spacing: -.04em; opacity: 0; } to { letter-spacing: .4em; opacity: 1; } }
 .title { animation: tracking 2s cubic-bezier(.2,.7,.2,1) both; }`,
     edit: 'After Effects：テキストアニメーター「字送り（トラッキング量）」をキーフレーム／プリセット「トラッキング」系',
-    powerpoint: '開始効果「フェード」＋「拡大」で近い印象に。字間そのものは「変形」で、字間の違う2枚のスライドをつなぐ',
+    powerpoint: '開始効果「フェード」＋強調「拡大/収縮」を「直前の動作と同時」で近い印象に。字間そのものは「変形」で、字間の違う2枚のスライドをつなぐ',
     prompt: 'An elegant title whose letters slowly spread apart with increasing letter spacing while fading in, luxury architectural film opening',
   },
   T07: {
@@ -392,7 +392,7 @@ text { fill: transparent; stroke: currentColor; stroke-dasharray: 600; stroke-da
 @keyframes stroke { to { stroke-dashoffset: 0; } } @keyframes fill { to { fill: currentColor; } }`,
     edit: 'After Effects：テキストからシェイプを作成し、「パスのトリミング」で線を描いてから塗りの不透明度を上げる／エフェクト「線（ストローク）」',
     powerpoint: '文字を図形に変換（図形の結合）し、輪郭だけの図に開始効果「ワイプ」、続けて塗りありの図を「フェード」',
-    cg: 'SketchUp：3Dテキストの「エッジのみ」と「塗りあり」のスタイルを切り替えたシーンをつなぐ',
+    cg: 'SketchUp：3Dテキストの「エッジのみ」と「塗りあり」のスタイルを切り替えたシーンをつなぐ／D5 Render：Effect > Style の「Outline mode」で線画風／通常を切り替え（視点ごとの切り替えは未確認）',
     prompt: 'The outline strokes of a building name are drawn by an invisible pen, then the letters fill in with color, refined title animation',
   },
   T08: {
@@ -407,8 +407,8 @@ const run = (el, to, ms) => { const t0 = performance.now(); const step = (t) => 
 .dim-value { opacity: 0; animation: fade .5s .9s forwards; }
 @keyframes dim { to { transform: scaleX(1); } }`,
     edit: 'After Effects：線のシェイプのスケールXを中央から伸ばし、端の矢印と数値をあとからフェード',
-    powerpoint: '寸法線の図形に開始効果「ストレッチ（左右）」、数値に「フェード」を「直前の動作の後」で',
-    cg: 'SketchUp：「寸法」ツールで寸法を付け、寸法のあるシーンとないシーンをつなぐ（寸法の表示はスタイル・タグで切り替え）',
+    powerpoint: '寸法線の図形に開始効果「ストレッチ」（効果のオプション：中心から）、数値に「フェード」を「直前の動作の後」で',
+    cg: 'SketchUp：「寸法」ツールで寸法を付け、寸法のあるシーンとないシーンをつなぐ（寸法の表示はスタイル・タグで切り替え）／D5 Render：不可（SketchUpの寸法は読み込まれず、D5に寸法ツールもない。書き出した画像・動画に後から追記）',
     prompt: 'An architectural dimension line extends from the center to both sides between two walls and the measurement 7,200 appears above it, clean technical drawing style',
   },
   T10: {
@@ -416,7 +416,7 @@ const run = (el, to, ms) => { const t0 = performance.now(); const step = (t) => 
 .label { opacity: 0; transform: translateX(-6px); animation: show .4s .7s both; }`,
     edit: 'After Effects：点・引き出し線（パスのトリミング）・ラベルの順に時間差で表示',
     powerpoint: '点に開始効果「ズーム」、線に「ワイプ（左から）」、ラベルに「フェード」を「直前の動作の後」で順に',
-    cg: 'SketchUp：「テキスト」ツールで引き出し線付きの注記を付け、注記の有無でシーンを分ける／Twinmotion・Lumion：書き出した画像に後から注記',
+    cg: 'SketchUp：「テキスト」ツールで引き出し線付きの注記を付け、注記の有無でシーンを分ける／Twinmotion・Lumion：書き出した画像に後から注記／D5 Render：不可（SketchUpのテキスト（注記）は読み込まれず、D5に注記ツールもない。書き出した画像・動画に後から追記）',
     prompt: 'Leader callouts appear on an architectural rendering: a dot, a thin line and a label naming the facade material, one after another',
   },
 }
@@ -429,6 +429,6 @@ export const recipeTools: { key: keyof Recipe, label: string, short: string }[] 
   { key: 'css', label: 'Web（CSS）', short: 'CSS' },
   { key: 'edit', label: 'Premiere Pro／After Effects', short: '編集' },
   { key: 'powerpoint', label: 'PowerPoint', short: 'PPT' },
-  { key: 'cg', label: '建築CG（SketchUp／Lumion／Twinmotion／Enscape）', short: 'CG' },
+  { key: 'cg', label: '建築CG（SketchUp／D5 Render／Lumion／Twinmotion／Enscape）', short: 'CG' },
   { key: 'prompt', label: '生成AI向けの指示文（英語）', short: 'AI' },
 ]

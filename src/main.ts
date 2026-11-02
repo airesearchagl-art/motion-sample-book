@@ -4,6 +4,7 @@ import {
   finderWords, strengthSamples, directionSamples, settingOptions, defaultSettings, suggestedCollections,
 } from './data'
 import { type Recipe, recipes, recipeTools, missingRecipes } from './recipes'
+import { recipeChecks } from './recipe-checks'
 import { purposes, purposeById, purposesOf, shotScale, shotScaleNote } from './purposes'
 
 const totalSamples = samples.length + videoSamples.length + textSamples.length
@@ -18,10 +19,36 @@ if (import.meta.env.DEV) {
 }
 
 /** 再現情報を開くボタン。どの道具の情報があるかを小さく添える */
+/**
+ * 再現情報の確認状態（Windowsスレッドの実機確認、src/recipe-checks.ts）。
+ * mismatch は修正案を recipes.ts に反映済みなので「実機で確認」として扱う。
+ * CSSは見本帳そのものが動作例、生成AI向けの指示文は確認の対象外。
+ */
+type CheckView = { level: 'device' | 'docs' | 'unverified' | 'none', text: string }
+const checkView = (number: string, key: keyof Recipe): CheckView => {
+  if (key === 'css') return { level: 'none', text: '見本帳の動きがそのまま動作例' }
+  if (key === 'prompt') return { level: 'none', text: '確認の対象外（生成AIの結果は毎回変わる）' }
+  const check = recipeChecks[number]?.[key as 'edit' | 'powerpoint' | 'cg']
+  if (!check) return { level: 'unverified', text: '未確認' }
+  const tool = check.checkedWith.split('/')[0].replace(/\s*\(Microsoft 365\)/, '').trim()
+  if (key === 'cg') {
+    const tools = [check.status === 'device' || check.status === 'mismatch' ? 'SketchUp' : '', check.d5 ? 'D5 Render' : ''].filter(Boolean)
+    const rest = '（Lumion／Twinmotion／Enscapeは未確認）'
+    return tools.length ? { level: 'device', text: `${tools.join('・')}は実機で確認${rest}` } : { level: 'unverified', text: '未確認' }
+  }
+  if (check.status === 'device') return { level: 'device', text: `実機で確認（${tool}）` }
+  if (check.status === 'mismatch') return { level: 'device', text: `実機で確認・修正済み（${tool}）` }
+  if (check.status === 'docs') return { level: 'docs', text: '公式資料で確認' }
+  return { level: 'unverified', text: '未確認' }
+}
+
 const recipeButton = (sample: Sample) => {
   const recipe = recipes[sample.number]
   if (!recipe) return ''
-  const tools = recipeTools.filter((tool) => recipe[tool.key]).map((tool) => `<i>${tool.short}</i>`).join('')
+  const tools = recipeTools.filter((tool) => recipe[tool.key]).map((tool) => {
+    const verified = checkView(sample.number, tool.key).level === 'device'
+    return `<i class="${verified ? 'is-verified' : ''}" title="${verified ? '実機で確認済み' : ''}">${verified ? '✓' : ''}${tool.short}</i>`
+  }).join('')
   return `<button class="recipe-open" type="button" data-recipe="${sample.number}"><span>⧉ 再現情報を見る</span><span class="recipe-tools" aria-label="対応する道具">${tools}</span></button>`
 }
 
@@ -1098,7 +1125,7 @@ renderSaved()
 const recipeDialog = document.querySelector<HTMLDialogElement>('.recipe-dialog')!
 const recipeBody = document.querySelector<HTMLDivElement>('.recipe-body')!
 const recipeStatus = document.querySelector<HTMLParagraphElement>('.recipe-status')!
-let recipeTexts: { label: string, text: string }[] = []
+let recipeTexts: { label: string, text: string, check?: CheckView }[] = []
 
 /** 見本の情報から、そのまま人に渡せる日本語の依頼文を作る */
 const briefText = (sample: Sample) => [
@@ -1149,7 +1176,7 @@ const openRecipe = (number: string) => {
     { label: '依頼文（日本語）', text: briefText(sample) },
     ...recipeTools
       .filter((tool) => recipe[tool.key as keyof Recipe])
-      .map((tool) => ({ label: tool.label, text: recipe[tool.key as keyof Recipe]! })),
+      .map((tool) => ({ label: tool.label, text: recipe[tool.key as keyof Recipe]!, check: checkView(number, tool.key) })),
   ]
 
   document.querySelector('#recipe-title')!.textContent = `${sample.number} ${sample.name}`
@@ -1157,7 +1184,7 @@ const openRecipe = (number: string) => {
   recipeBody.innerHTML = recipeTexts.map((item, index) => `
     <section class="recipe-block">
       <div class="recipe-block-head">
-        <h3>${item.label}</h3>
+        <h3>${item.label}${item.check && item.check.level !== 'none' ? `<span class="check-badge is-${item.check.level}">${item.check.level === 'device' ? '✓ ' : ''}${item.check.text}</span>` : ''}</h3>
         <button class="recipe-copy" type="button" data-copy-index="${index}">コピー</button>
       </div>
       <pre><code>${escapeHtml(item.text)}</code></pre>
