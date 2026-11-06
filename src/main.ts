@@ -541,6 +541,16 @@ const cameraScenes: Record<string, string> = {
           </span>
         </span>
         <small class="scene-caption">AXONOMETRIC</small>`,
+  // v1.0-4 構造 → 設備 → 仕上げを段階的に重ねる（左側は仕上げを外した切り欠き）
+  layers: `
+        <span class="camera-layer lb-bg" aria-hidden="true"></span>
+        <span class="lb-frame" aria-hidden="true">
+          <span class="lb-structure">${[0, 1, 2, 3].map((index) => `<i class="lb-col" style="--i:${index}"></i>`).join('')}${[0, 1, 2, 3].map((index) => `<i class="lb-beam" style="--i:${index}"></i>`).join('')}</span>
+          <span class="lb-mep">${[0, 1, 2].map((index) => `<i class="lb-duct" style="--i:${index}"></i>`).join('')}<i class="lb-pipe"></i><i class="lb-cable"></i></span>
+          <span class="lb-finish"><i class="lb-panel"></i><i class="lb-glass g1"></i><i class="lb-glass g2"></i><i class="lb-glass g3"></i></span>
+        </span>
+        <i class="lb-ground" aria-hidden="true"></i>
+        <span class="lb-steps" aria-hidden="true"><b>構造</b><b>設備</b><b>仕上げ</b></span>`,
   crane: `
         <span class="camera-layer cr-sky" aria-hidden="true"></span>
         <span class="camera-layer cr-skyline" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
