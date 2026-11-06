@@ -115,6 +115,26 @@ export const normalizeNumber = (value: unknown) => {
   return match ? `${match[1]}${match[2].padStart(2, '0')}` : raw
 }
 
+/**
+ * 生成AIの答えは、前後に文章やコードブロック（```json … ```）が付くことがある。
+ * そのまま読めなければ、コードブロックの中、または最初の { から最後の } までを取り出す。
+ */
+export const extractJson = (source: string) => {
+  const text = source.trim()
+  const fence = text.match(/```(?:json)?\s*([\s\S]*?)```/i)?.[1]?.trim()
+  const start = text.search(/[{[]/)
+  const end = Math.max(text.lastIndexOf('}'), text.lastIndexOf(']'))
+  const sliced = start >= 0 && end > start ? text.slice(start, end + 1) : undefined
+  for (const candidate of [text, fence, sliced]) {
+    if (!candidate) continue
+    try {
+      JSON.parse(candidate)
+      return candidate
+    } catch { /* 次の候補を試す */ }
+  }
+  return text
+}
+
 export type StoryImport = { templates: Omit<CustomTemplate, 'id'>[], warnings: string[] }
 
 /**
@@ -127,7 +147,7 @@ export type StoryImport = { templates: Omit<CustomTemplate, 'id'>[], warnings: s
 export const parseStoryFile = (source: string, exists: (number: string) => boolean): StoryImport => {
   let data: unknown
   try {
-    data = JSON.parse(source)
+    data = JSON.parse(extractJson(source))
   } catch {
     throw new Error('JSONとして読めませんでした。括弧やカンマの抜けがないか確認してください。')
   }
