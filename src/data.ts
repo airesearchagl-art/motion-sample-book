@@ -87,13 +87,30 @@ export const textSamples: Sample[] = [
   { id: 'callout', number: 'T10', name: '引き出し線の注記', english: 'Leader callout', description: '点から引き出し線が伸び、素材や部位のラベルが出る。', categoryLabel: 'リズム', hint: 'パースへの注記・素材の説明', avoid: '注記が多すぎる画面', feel: ['分かりやすい', '説明', '図面'] },
 ]
 
-export const allSamples: Sample[] = [...samples, ...videoSamples, ...textSamples]
+/**
+ * v1.0-3 環境の動き。建物とカメラは止めたまま、風・水・人・天気・光・季節だけを動かす。
+ * 1枚のパースから生成AIで動画を作るときや、CGの静止画に空気感を足すときの見本。
+ */
+export const environmentSamples: Sample[] = [
+  { id: 'foliage', number: 'E01', name: '植栽の揺れ', english: 'Foliage sway', description: '手前の木々が、風を受けてそれぞれの間合いでゆっくり揺れる。', categoryLabel: '風', hint: '外観パース・アプローチの手前', avoid: '植栽のない場面、強風に見せたくない場面', feel: ['やわらかい', '自然', '静か'] },
+  { id: 'water', number: 'E02', name: '水面のゆらぎ', english: 'Water shimmer', description: '水盤に映った建物が、さざ波で細かく揺らぐ。', categoryLabel: '水', hint: '水盤・池・川沿いの外観', avoid: '水面のない場面', feel: ['涼しい', '上品', 'きらっと'] },
+  { id: 'people', number: 'E03', name: '人の往来', english: 'People passing', description: '人のシルエットが、手前と奥を違う速さで行き交う。', categoryLabel: '人・車', hint: '広場・エントランス・商業施設', avoid: '人の配置を決めていない計画段階', feel: ['にぎわい', '生活感', 'リズム'] },
+  { id: 'clouds', number: 'E04', name: '雲の流れ', english: 'Drifting clouds', description: '空の雲がゆっくり流れ、外壁に落ちる雲の影も通り過ぎる。', categoryLabel: '天気', hint: '外観の導入・余韻のカット', avoid: '空が写らない室内', feel: ['ゆったり', '余韻', '時間経過'] },
+  { id: 'dappled', number: 'E05', name: '木漏れ日', english: 'Dappled light', description: '床や壁に落ちた木漏れ日が、葉の揺れに合わせて明滅する。', categoryLabel: '光', hint: 'テラス・縁側・中庭に面した室内', avoid: '曇りや夜の場面', feel: ['やわらかい', '心地よい', '自然'] },
+  { id: 'rain', number: 'E06', name: '雨', english: 'Rain', description: '細い雨が斜めに降り、地面に小さな波紋が広がる。', categoryLabel: '天気', hint: '庇・軒下・雨の日の使われ方', avoid: '晴れの外観を見せたい場面', feel: ['しっとり', '静か', '映画的'] },
+  { id: 'snow', number: 'E07', name: '雪', english: 'Snowfall', description: '大きさの違う雪が、ゆらぎながらゆっくり降る。', categoryLabel: '天気', hint: '冬の外観・寒冷地の計画', avoid: '雪の降らない地域の計画', feel: ['静か', '幻想的', '季節感'] },
+  { id: 'trails', number: 'E08', name: '車の光跡', english: 'Light trails', description: '夜の道路を、車のライトが光の筋になって流れる。', categoryLabel: '人・車', hint: '夜景の外観・駅前・幹線道路沿い', avoid: '静けさを伝えたい住宅地', feel: ['都会的', 'スピード', 'ドラマチック'] },
+  { id: 'mist', number: 'E09', name: '霧・もや', english: 'Drifting mist', description: '低い霧が地面近くを流れ、奥の景色が見え隠れする。', categoryLabel: '天気', hint: '森の中の施設・朝の外観・余韻', avoid: '建物をはっきり見せたい場面', feel: ['幻想的', '静か', '余韻'] },
+  { id: 'seasons', number: 'E10', name: '季節の移ろい', english: 'Seasons', description: '木々の色が若葉 → 深緑 → 紅葉 → 冬枯れへと移り変わる。', categoryLabel: '季節', hint: '植栽計画・一年の使われ方の説明', avoid: '1つの季節だけを見せたい場面', feel: ['時間経過', '季節感', '変化'] },
+]
+
+export const allSamples: Sample[] = [...samples, ...videoSamples, ...textSamples, ...environmentSamples]
 
 export const finderWords = ['ふわっと', '一瞬で', '高級感', '勢いがある', '上品', '奥行き', '注目させる', 'リズム']
 
 /* v0.4-3 再生の調整：速度はすべての見本、強さ・向きは意味のある見本だけに効く */
-export const strengthSamples = new Set(['01', '02', '04', '05', '06', '13', '14', 'V04', 'V07', 'V17', 'V20', 'T01', 'T03', 'T04', 'T06'])
-export const directionSamples = new Set(['07', '08', '09', '12', '17', '19', 'V03', 'V05', 'V06', 'V08', 'V09', 'V12', 'V13', 'V16', 'T05'])
+export const strengthSamples = new Set(['01', '02', '04', '05', '06', '13', '14', 'V04', 'V07', 'V17', 'V20', 'T01', 'T03', 'T04', 'T06', 'E01', 'E02', 'E09'])
+export const directionSamples = new Set(['07', '08', '09', '12', '17', '19', 'V03', 'V05', 'V06', 'V08', 'V09', 'V12', 'V13', 'V16', 'T05', 'E03', 'E04', 'E08'])
 
 export type Setting = 'speed' | 'strength' | 'direction'
 export const settingOptions: Record<Setting, { label: string, options: [string, string][] }> = {

@@ -67,6 +67,7 @@ kbd { display: inline-block; padding: 1px 8px; margin: 1px 0; border: 1px solid 
 .g-table td:first-child { white-space: nowrap; font-weight: 600; }
 
 .g-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-bottom: 18px; }
+.g-cards.is-four { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .g-cards > div { padding: 18px; border: 1px solid var(--line); background: rgba(255,253,247,.55); }
 .g-cards h4 small { margin-left: 6px; font-weight: 500; color: #827c70; }
 .g-cards p { margin: 0; font-size: .86rem; }

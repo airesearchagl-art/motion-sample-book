@@ -40,7 +40,7 @@ export const storyTemplates: StoryTemplate[] = [
       { role: '建物の全体', note: '建物の形と大きさが分かるカット', candidates: ['V08', 'V06', 'V05', 'V12'], seconds: 5 },
       { role: '空間に入る', note: '人の目線で中へ', candidates: ['V18', 'V07', 'V09'], seconds: 5 },
       { role: 'ディテール', note: '素材や納まりに寄る', candidates: ['V10', 'V04', 'T10'], seconds: 4 },
-      { role: '締め：余韻を残す', note: '時間の移ろいやタイトルで終える', candidates: ['V12', 'V02', 'T06'], seconds: 5 },
+      { role: '締め：余韻を残す', note: '時間の移ろいやタイトルで終える', candidates: ['V12', 'V02', 'T06', 'E04', 'E09'], seconds: 5 },
     ],
   },
   {
@@ -49,11 +49,11 @@ export const storyTemplates: StoryTemplate[] = [
     description: '近づく → 入口 → 室内 → 素材 → 夕景。人が実際に歩く順で空間を体験させる。',
     purpose: 'experience',
     slots: [
-      { role: '近づく', note: 'アプローチを歩く目線で建物へ', candidates: ['V09', 'V07', 'V16'], seconds: 5 },
+      { role: '近づく', note: 'アプローチを歩く目線で建物へ', candidates: ['V09', 'V07', 'V16', 'E01', 'E03'], seconds: 5 },
       { role: '入口を抜ける', note: '外から内へのつなぎ', candidates: ['V18', 'V07'], seconds: 4 },
-      { role: '室内を見渡す', note: '広がりや吹抜けを見せる', candidates: ['V05', 'V06', 'V09'], seconds: 5 },
+      { role: '室内を見渡す', note: '広がりや吹抜けを見せる', candidates: ['V05', 'V06', 'V09', 'E05'], seconds: 5 },
       { role: '素材に寄る', note: '手に触れる素材を印象づける', candidates: ['V10', 'V04', 'T10'], seconds: 4 },
-      { role: '夕景で締める', note: '明かりが灯る外観で終える', candidates: ['V12', 'V02'], seconds: 5 },
+      { role: '夕景で締める', note: '明かりが灯る外観で終える', candidates: ['V12', 'V02', 'E08'], seconds: 5 },
     ],
   },
   {
@@ -76,7 +76,7 @@ export const storyTemplateById = new Map(storyTemplates.map((template) => [templ
 
 /* ---------- 自分の型と、JSONでの書き出し・読み込み ---------- */
 
-/** 自分の型のカット。見本は50種類すべてから選べる。candidates は複製元の候補（おすすめ順） */
+/** 自分の型のカット。見本はすべての見本から選べる。candidates は複製元の候補（おすすめ順） */
 export type CustomSlot = { role: string, note: string, sample: string, seconds: number, candidates: string[] }
 export type CustomTemplate = { id: string, name: string, description: string, basedOn?: string, slots: CustomSlot[] }
 
@@ -111,7 +111,7 @@ const text = (value: unknown, max: number, fallback = '') => (typeof value === '
 export const normalizeNumber = (value: unknown) => {
   if (typeof value !== 'string' && typeof value !== 'number') return ''
   const raw = String(value).trim().toUpperCase()
-  const match = raw.match(/^([VT]?)(\d{1,2})$/)
+  const match = raw.match(/^([VTE]?)(\d{1,2})$/)
   return match ? `${match[1]}${match[2].padStart(2, '0')}` : raw
 }
 
