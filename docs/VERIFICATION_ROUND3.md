@@ -126,8 +126,8 @@ v1.0 で追加した見本。どれも `recipe-checks.ts` に記録がなく、�
 
 ## 進み具合
 
-- [ ] 開始（PCと道具の確認、作業計画の報告）
-- [ ] PowerPoint 11件
-- [ ] 編集ソフト 11件
-- [ ] 建築CG 11件（D5 Render、V21 は SketchUp も）
-- [ ] 報告書・`npm run build`
+- [x] 開始（PCと道具の確認、作業計画の報告）
+- [x] PowerPoint 11件（device 3／mismatch 8）
+- [x] 編集ソフト 11件（device 10／mismatch 1）
+- [x] 建築CG 11件（D5 Render、V21 は SketchUp も）（device 8／mismatch 3、`d5` 11件）
+- [x] 報告書・`npm run build`（2026-11-07、Windowsスレッド）
