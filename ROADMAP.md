@@ -123,4 +123,4 @@ PR #6〜#9でリリース済み（使い方ページはPR #10）。確認しや�
 2. v1.0-2：構成を組んでカット割り表をコピーする。自分の型とJSONの書き出し・読み込み（作業中、PR #18）。
    - v1.0-2b：AIへの依頼文をコピーして、場面からおすすめの構成を作る（別PR）。
 3. v1.0-3：環境の動きを追加する。
-4. 再現情報の実機確認：PowerPoint・SketchUp・D5 Renderの結果を反映済み（PR #16・#17）。Premiere Pro／After Effectsは今後Windowsスレッドで確認する。
+4. 再現情報の実機確認：PowerPoint・SketchUp・D5 Renderの結果を反映済み（PR #16・#17）。Premiere Pro／After Effectsの結果を反映済み（PR #20・#21）。Lumion／Twinmotion／Enscapeは未確認。

@@ -1,7 +1,7 @@
 /**
  * 再現情報の実機確認の結果（Windowsスレッドが記録）。
  * - キーは src/recipes.ts の見本の番号に合わせる。
- * - edit の Premiere Pro 部分は未確認（note に記載）。
+ * - edit は After Effects・Premiere Pro の日本語UIで、名称（エフェクト・プロパティ・プリセット・ツール・パネル）を確認した。動きの再生確認はしていない。
  * - mismatch の fix は、そのまま recipes.ts の該当欄に入れられる文。
  * - cg の d5 は D5 Render で実際に作った手順（recipes.ts の cg 欄へ「D5 Render：…」として追記する想定）。
  * 詳細は docs/RECIPE_VERIFICATION.md を参照。

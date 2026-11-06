@@ -45,7 +45,7 @@ export const recipes: Record<string, Recipe> = {
   '04': {
     css: `@keyframes bounce { 40% { transform: translateY(-16px) scale(1.04,.96); } 68% { transform: translateY(3px); } }
 .icon.done { animation: bounce .65s ease; }`,
-    edit: 'After Effects：位置Yのオーバーシュート（エクスプレッション bounce／「弾み」）',
+    edit: 'After Effects：位置Yにオーバーシュートするキーを付け、グラフエディターで減衰させる（減衰する弾みのエクスプレッションを使ってもよい）',
     powerpoint: '開始効果「バウンド」、または強調「シーソー」を弱めに',
     prompt: 'A small icon pops and bounces once with a playful squash and stretch, celebrating a completed action',
   },
@@ -119,7 +119,7 @@ export const recipes: Record<string, Recipe> = {
   '14': {
     css: `@keyframes ken-burns { from { transform: scale(1) translate(0, 0); } to { transform: scale(1.15) translate(-3%, -2%); } }
 .hero-photo { animation: ken-burns 8s ease-out both; }`,
-    edit: 'Premiere Pro：スケールと位置にキーフレーム（またはエフェクト「ゆっくりズーム」系のプリセット）／After Effects：スケール100→115%と位置',
+    edit: 'Premiere Pro：エフェクトコントロールの「モーション」で「スケール」と「位置」にキーフレーム／After Effects：スケール100→115%と位置',
     powerpoint: '画像に強調「拡大/収縮」（ユーザー設定110〜115%、継続時間を長く）＋「その他のアニメーションの軌跡効果」の「対角線（右上へ）」を「直前の動作と同時」で',
     prompt: 'Slow Ken Burns zoom and drift across a still exterior photograph of a modern building at dusk',
   },
@@ -184,7 +184,7 @@ items.forEach((el) => { const a = before.get(el), b = el.getBoundingClientRect()
   V02: {
     css: `.scene-a { transition: opacity 1.5s; } .scene-b { opacity: 0; transition: opacity 1.5s; }
 .is-next .scene-a { opacity: 0; } .is-next .scene-b { opacity: 1; }`,
-    edit: 'Premiere Pro：トランジション「クロスディゾルブ」（黒を挟むなら「ディップ（黒）」）',
+    edit: 'Premiere Pro：トランジション「クロスディゾルブ」（黒を挟むなら「暗転」）',
     powerpoint: '画面切り替え「フェード」（効果のオプション：スムーズ）',
     cg: 'Lumion／Twinmotion：クリップ間のトランジション「フェード」／D5 Render：不可（ショットやクリップの間にトランジション（フェード）を付ける設定がない。書き出した動画を編集ソフトでフェード）',
     prompt: 'A slow cross dissolve between an exterior daytime shot and an interior shot of a building, calm and atmospheric',
@@ -207,7 +207,7 @@ items.forEach((el) => { const a = before.get(el), b = el.getBoundingClientRect()
   V05: {
     css: `@keyframes pan { to { transform: translateX(-42%); } }
 .panorama { width: 175%; animation: pan 2.2s ease-in-out both; }`,
-    edit: 'After Effects：3Dカメラの「Yの回転（方向）」、または画像の位置Xを動かす',
+    edit: 'After Effects：3Dカメラの「Y 回転」（または「方向」）にキー、または画像の位置Xを動かす',
     powerpoint: '横長画像に「アニメーションの軌跡（左へ）」、または画面切り替え「パン」',
     cg: 'SketchUp：シーン間でカメラの向きだけ変える／Lumion・Twinmotion：同じ位置で向きだけを変えた2キー／D5 Render：テンプレート「Camera Movement」の「Pan Left」／「Pan Right」（その場で向きだけ変える。Start Rotation で角度）',
     prompt: 'A slow horizontal camera pan across a building facade and its surrounding plaza, steady tripod movement',
@@ -215,7 +215,7 @@ items.forEach((el) => { const a = before.get(el), b = el.getBoundingClientRect()
   V06: {
     css: `@keyframes tilt { to { transform: translateY(0); } }
 .tall-shot { height: 175%; transform: translateY(-43%); animation: tilt 2.2s ease-in-out both; }`,
-    edit: 'After Effects：3Dカメラの「Xの回転」（チルトアップ）、または縦長画像の位置Y',
+    edit: 'After Effects：3Dカメラの「X 回転」にキー（チルトアップ）、または縦長画像の位置Y',
     powerpoint: '縦長画像に「アニメーションの軌跡（下へ）」で、下から上へ見上げる',
     cg: 'SketchUp／Lumion／Twinmotion：同じ位置で、視線を地上から上層部へ上げた2キー／D5 Render：テンプレート「Camera Movement」の「Pan Up」（その場で視線を上げる）',
     prompt: 'Camera tilts up slowly from the street level to the top of a high-rise tower, emphasizing height and scale',
@@ -232,7 +232,7 @@ items.forEach((el) => { const a = before.get(el), b = el.getBoundingClientRect()
   V08: {
     css: `.stage { perspective: 640px; } .cube { transform-style: preserve-3d; animation: orbit 2.2s ease-in-out both; }
 @keyframes orbit { from { transform: rotateY(-28deg); } to { transform: rotateY(-118deg); } }`,
-    edit: 'After Effects：3Dカメラの「軌道（オービット）」ツール、またはヌルを親にしてY回転',
+    edit: 'After Effects：3Dカメラを「カーソルのまわりを周回ツール」で回した位置にキー、またはヌルを親にしてY 回転',
     powerpoint: '画面切り替え「オービット」、または角度違いの画像を「変形」でつなぐ',
     cg: 'SketchUp：建物を中心に角度を変えたシーンを複数作る／Lumion・Twinmotion：「オービット」系のカメラパス／D5 Render：テンプレート「Camera Movement」の「360° Pan」（Calibre=半径、Circle center height、Movement Degree で回り込む角度）',
     prompt: 'Slow aerial orbit around a contemporary building at golden hour, revealing all facades, smooth and level',
@@ -241,7 +241,7 @@ items.forEach((el) => { const a = before.get(el), b = el.getBoundingClientRect()
     css: `/* 層ごとに移動量を変える（手前ほど速い） */
 .far { animation: slide 2.2s both; --to: -8%; } .mid { --to: -20%; } .near { --to: -42%; }
 @keyframes slide { to { transform: translateX(var(--to)); } }`,
-    edit: 'After Effects：3Dカメラの「トラックXY」ツールで横移動。パン（向きだけ）と違い視差が出る',
+    edit: 'After Effects：3Dカメラを「カーソルの下でパンツール」で横に動かした位置にキー（カメラの「X 位置」）。パン（向きだけ）と違い視差が出る',
     powerpoint: '前景・中景・背景を別画像にし、移動量を変えた「アニメーションの軌跡（左へ）」を同時に',
     cg: 'Lumion／Twinmotion：カメラを建物と平行に横移動させたキーフレーム／D5 Render：テンプレート「Camera Movement」の「Slide Left」／「Slide Right」（Distance で移動量）',
     prompt: 'Camera trucks sideways along a street facade with columns passing in the foreground, layered parallax',
@@ -300,7 +300,7 @@ items.forEach((el) => { const a = before.get(el), b = el.getBoundingClientRect()
     css: `/* 層ごとに下へ流す量を変えて、上昇感を出す */
 .near { animation: up 2.2s both; --to: 70%; } .building { --to: 22%; } .skyline { --to: 6%; }
 @keyframes up { to { transform: translateY(var(--to)); } }`,
-    edit: 'After Effects：3DカメラのY位置を上げる（「カメラ：トラックY」）。手前の木を別レイヤーにすると視差が出る',
+    edit: 'After Effects：3Dカメラの「Y 位置」を上げる（画面上では「カーソルの下でパンツール」で上へ）。手前の木を別レイヤーにすると視差が出る',
     powerpoint: '手前・建物・背景を別画像にし、手前ほど大きく「アニメーションの軌跡（下へ）」で動かす',
     cg: 'Lumion／Twinmotion／Enscape：カメラの高さを上げたキーフレーム（視線は建物に向けたまま）／SketchUp：視点の高さを変えたシーン／D5 Render：テンプレート「Camera Movement」の「Slide Up」＋ショットの「Camera Target」をオン（Focus On で建物を指定）',
     prompt: 'Crane shot rising from eye level over foreground trees to reveal a building and the city skyline behind it, smooth vertical movement',
@@ -347,14 +347,14 @@ items.forEach((el) => { const a = before.get(el), b = el.getBoundingClientRect()
   T01: {
     css: `@keyframes fade-in { from { opacity: 0; transform: translateY(.25em); filter: blur(6px); } }
 .title { animation: fade-in 1.7s ease both; }`,
-    edit: 'After Effects：プリセット「フェードアップ」系、または不透明度＋ブラー（ガウス）／Premiere Pro：エッセンシャルグラフィックスで不透明度キー',
+    edit: 'After Effects：プリセット「フェードアップ」系、または不透明度＋ブラー（ガウス）／Premiere Pro：テキストを置き、エフェクトコントロール（または「プロパティ」パネル）の「不透明度」にキー',
     powerpoint: '開始効果「フェード」（ぼかしは画像化して重ねる）',
     prompt: 'A title fades in softly from a slight blur, calm and elegant typography for an architectural film',
   },
   T02: {
     css: `.char { opacity: 0; animation: show .01s steps(1) both; animation-delay: calc(var(--i) * .18s); }
 @keyframes show { to { opacity: 1; } }`,
-    edit: 'After Effects：テキストアニメーター（不透明度0＋範囲セレクター）、またはプリセット「タイプライター」',
+    edit: 'After Effects：テキストアニメーター（不透明度0＋範囲セレクター）、またはプリセット「タイプライタ」',
     powerpoint: '開始効果「表示」＋効果のオプション画面の「テキストの動作：文字単位で表示」（「秒文字間で遅延」を0.05秒程度）',
     prompt: 'Text appears letter by letter like a typewriter with a blinking cursor, minimal and clear',
   },
@@ -368,7 +368,7 @@ items.forEach((el) => { const a = before.get(el), b = el.getBoundingClientRect()
   T04: {
     css: `.char { display: inline-block; animation: assemble 1.6s cubic-bezier(.2,.8,.2,1) both; }
 @keyframes assemble { from { opacity: .35; transform: translate(var(--x), var(--y)) rotate(var(--r)); } }`,
-    edit: 'After Effects：テキストアニメーター（位置・回転のウィグリー）を収束させる、プリセット「集合」系',
+    edit: 'After Effects：テキストアニメーター（位置・回転＋ウィグリーセレクター）を収束させる、またはプリセット「ランダムシャッフルイン」など',
     powerpoint: '開始効果「スライドイン（各方向）」を文字ごとに設定、または「変形」でばらばらの文字から整列へ',
     prompt: 'Scattered letters fly in from different directions and assemble into a brand name, dynamic opening title',
   },
@@ -382,7 +382,7 @@ items.forEach((el) => { const a = before.get(el), b = el.getBoundingClientRect()
   T06: {
     css: `@keyframes tracking { from { letter-spacing: -.04em; opacity: 0; } to { letter-spacing: .4em; opacity: 1; } }
 .title { animation: tracking 2s cubic-bezier(.2,.7,.2,1) both; }`,
-    edit: 'After Effects：テキストアニメーター「字送り（トラッキング量）」をキーフレーム／プリセット「トラッキング」系',
+    edit: 'After Effects：テキストアニメーター「トラッキング」の「トラッキングの量」をキーフレーム／プリセット「トラッキング (拡張)」など',
     powerpoint: '開始効果「フェード」＋強調「拡大/収縮」を「直前の動作と同時」で近い印象に。字間そのものは「変形」で、字間の違う2枚のスライドをつなぐ',
     prompt: 'An elegant title whose letters slowly spread apart with increasing letter spacing while fading in, luxury architectural film opening',
   },
@@ -398,7 +398,7 @@ text { fill: transparent; stroke: currentColor; stroke-dasharray: 600; stroke-da
   T08: {
     css: `/* JSで値を数える（表示は3桁区切り） */
 const run = (el, to, ms) => { const t0 = performance.now(); const step = (t) => { const p = Math.min((t - t0) / ms, 1); el.textContent = Math.round(to * (1 - (1 - p) ** 3)).toLocaleString(); if (p < 1) requestAnimationFrame(step); }; requestAnimationFrame(step); };`,
-    edit: 'After Effects：エフェクト「数値」、またはテキストのソーステキストにエクスプレッション（スライダー制御で値をキー）',
+    edit: 'After Effects：エフェクト「番号」、またはテキストのソーステキストにエクスプレッション（スライダー制御で値をキー）',
     powerpoint: '標準機能での数え上げはない。数値を数枚に分けて「変形」でつなぐか、開始効果「スピン」「ズーム」で数値を強調',
     prompt: 'Animated statistics for a building project counting up from zero: floor area 12,480 square meters, 24 floors, height 98.5 meters, clean infographic',
   },
