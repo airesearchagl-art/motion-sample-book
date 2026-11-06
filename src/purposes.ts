@@ -46,7 +46,7 @@ export const purposes: Purpose[] = [
     name: '検討と比較',
     summary: '構成・断面・案の違いを分かりやすく',
     description: '設計の考え方や案の違いを説明するカット。平面から立体、分解、断面、前後比較など、図面に近い見せ方が中心。',
-    samples: ['V14', 'V15', 'V11', 'V19', '11', '16', 'V03', 'V13'],
+    samples: ['V14', 'V15', 'V21', 'V11', 'V19', '11', '16', 'V03', 'V13'],
   },
   {
     id: 'time',
@@ -70,7 +70,7 @@ export type ShotScale = '引き' | '中' | '寄り' | '目線'
 export const shotScale: Record<string, ShotScale> = {
   V04: '寄り', V05: '引き', V06: '引き', V07: '目線', V08: '引き', V09: '目線', V10: '寄り',
   V11: '中', V12: '引き', V13: '引き', V14: '中', V15: '中', V16: '引き', V17: '寄り',
-  V18: '目線', V20: '引き',
+  V18: '目線', V20: '引き', V21: '中',
 }
 
 export const shotScaleNote: Record<ShotScale, string> = {

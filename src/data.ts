@@ -71,6 +71,8 @@ export const videoSamples: Sample[] = [
   { id: 'flythrough', number: 'V18', name: 'フライスルー', english: 'Fly-through', description: '入口の開口を抜けて、建物の内部へ入り込む。', categoryLabel: 'カメラ', hint: 'エントランスから内部への導入', avoid: '外観だけで完結する場面', feel: ['没入', '引き込む', '奥行き'] },
   { id: 'linerender', number: 'V19', name: '線画からレンダーへ', english: 'Line to render', description: '線画が描かれ、色の付いた完成イメージへ溶けて変わる。', categoryLabel: 'つなぎ', hint: 'スケッチから完成イメージへ', avoid: '写真同士のつなぎ', feel: ['組み上がる', '完成', 'ドラマチック'] },
   { id: 'tiltshift', number: 'V20', name: 'ミニチュア（ティルトシフト）', english: 'Tilt-shift', description: '画面の上下をぼかし、街区を模型のように見せる。', categoryLabel: 'カメラ', hint: '街区・配置計画・敷地全体', avoid: '実物の大きさを伝えたい場面', feel: ['かわいい', '俯瞰', '模型'] },
+  // v1.0-4 建築CGの残り
+  { id: 'layers', number: 'V21', name: '構造・設備・仕上げを重ねる', english: 'Layered build-up', description: '柱と梁の構造、ダクトや配管の設備、外装の仕上げが、順に重なっていく。', categoryLabel: '建築CG', hint: 'BIMモデルの説明・設備の納まり・施工順序', avoid: '完成した外観の印象だけを伝えたい場面', feel: ['構成', '組み上がる', '分かりやすい'] },
 ]
 
 export const textSamples: Sample[] = [
@@ -110,7 +112,7 @@ export const finderWords = ['ふわっと', '一瞬で', '高級感', '勢いが
 
 /* v0.4-3 再生の調整：速度はすべての見本、強さ・向きは意味のある見本だけに効く */
 export const strengthSamples = new Set(['01', '02', '04', '05', '06', '13', '14', 'V04', 'V07', 'V17', 'V20', 'T01', 'T03', 'T04', 'T06', 'E01', 'E02', 'E09'])
-export const directionSamples = new Set(['07', '08', '09', '12', '17', '19', 'V03', 'V05', 'V06', 'V08', 'V09', 'V12', 'V13', 'V16', 'T05', 'E03', 'E04', 'E08'])
+export const directionSamples = new Set(['07', '08', '09', '12', '17', '19', 'V03', 'V05', 'V06', 'V08', 'V09', 'V12', 'V13', 'V16', 'V21', 'T05', 'E03', 'E04', 'E08'])
 
 export type Setting = 'speed' | 'strength' | 'direction'
 export const settingOptions: Record<Setting, { label: string, options: [string, string][] }> = {

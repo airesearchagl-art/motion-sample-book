@@ -343,6 +343,18 @@ items.forEach((el) => { const a = before.get(el), b = el.getBoundingClientRect()
     prompt: 'High-angle tilt-shift shot of a city block with blurred top and bottom edges and saturated colors, looking like a miniature architectural model',
   },
 
+  V21: {
+    css: `/* 構造 → 設備 → 仕上げの順に、遅らせて現れる */
+.column { transform-origin: bottom; animation: rise .45s ease-out both; }
+.duct { transform-origin: left; animation: grow .4s .85s ease-out both; }
+.finish { animation: slide .55s 1.5s cubic-bezier(.2,.8,.2,1) both; }
+@keyframes rise { from { transform: scaleY(0); } } @keyframes grow { from { transform: scaleX(0); } } @keyframes slide { from { transform: translateX(105%); } }`,
+    edit: 'After Effects：構造・設備・仕上げを別々に書き出した画像（または線画）を3つのレイヤーに分け、構造は「リニアワイプ」で下から、設備は線ごとに「パスのトリミング」、仕上げは位置または「リニアワイプ」で順に重ねる。段階名のラベルを添える',
+    powerpoint: '構造・設備・仕上げの3枚の画像（同じ位置・同じ大きさで書き出し）を重ね、構造に開始効果「ワイプ（下から）」、設備に「フェード」、仕上げに「ワイプ（右から）」を「直前の動作の後」で順に',
+    cg: 'SketchUp：構造・設備・仕上げをタグで分け、表示するタグを1つずつ増やしたシーンを並べる（タグの切り替えは瞬時。滑らかにしたいときは書き出した画像を動画編集でつなぐ）／Navisworks：TimeLiner で施工順序（4D）を再生／D5 Render：構造・設備・仕上げを別ファイルで読み込み、表示を切り替えた画像・動画を書き出して編集ソフトで重ねる',
+    prompt: 'Architectural BIM build-up animation on a clean grid background: first the steel columns and beams appear, then colored ducts, pipes and cable trays are added floor by floor, and finally the facade panels and glazing slide in, leaving a cutaway that shows the layers inside',
+  },
+
   /* ---------- 文字 ---------- */
   T01: {
     css: `@keyframes fade-in { from { opacity: 0; transform: translateY(.25em); filter: blur(6px); } }
