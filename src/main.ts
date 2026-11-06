@@ -1,6 +1,6 @@
 import './style.css'
 import {
-  type Sample, type Setting, samples, videoSamples, textSamples, allSamples,
+  type Sample, type Setting, samples, videoSamples, textSamples, environmentSamples, allSamples,
   finderWords, strengthSamples, directionSamples, settingOptions, defaultSettings, suggestedCollections,
 } from './data'
 import { type Recipe, recipes, recipeTools, missingRecipes } from './recipes'
@@ -12,10 +12,10 @@ import {
 } from './storyboard'
 import { buildStoryPrompt, storyRequestTools, storyRequestLengths, lengthLabel } from './story-prompt'
 
-const totalSamples = samples.length + videoSamples.length + textSamples.length
+const totalSamples = allSamples.length
 /** 番号（01 / V01 / T01）から見本を引く。比較パネルで使う */
 const sampleByNumber = new Map<string, Sample>(allSamples.map((sample) => [sample.number, sample]))
-const libraryCount = 3
+const libraryCount = 4
 
 // 開発中だけ、再現情報が欠けている見本を知らせる（見本を足したときの書き忘れ防止）
 if (import.meta.env.DEV) {
@@ -125,7 +125,7 @@ app.innerHTML = `
     <section class="hero" aria-labelledby="page-title">
       <p class="eyebrow">MOTION FIELD NOTES</p>
       <h1 id="page-title">名前より先に、<br><em>動きで見つける。</em></h1>
-      <p class="lead">UIの反応も、動画のつなぎやカメラワークも、文字の動きも、実際の動きを見ながら探せる見本帳。<br>タブを切り替え、触って試してください。</p>
+      <p class="lead">UIの反応も、動画のつなぎやカメラワークも、文字の動きも、風や水などの環境の動きも、実際の動きを見ながら探せる見本帳。<br>タブを切り替え、触って試してください。</p>
       <div class="hero-meta" aria-label="収録内容">
         <span><strong>${totalSamples}</strong> samples</span>
         <span><strong>${libraryCount}</strong> libraries</span>
@@ -184,6 +184,9 @@ app.innerHTML = `
       <button class="library-tab" type="button" role="tab" data-library="text" aria-controls="text-library" aria-selected="false">
         <span>文字</span><strong data-tab-count>${textSamples.length}</strong>
       </button>
+      <button class="library-tab" type="button" role="tab" data-library="environment" aria-controls="environment-library" aria-selected="false">
+        <span>環境</span><strong data-tab-count>${environmentSamples.length}</strong>
+      </button>
       <button class="library-tab saved-tab" type="button" role="tab" data-library="saved" aria-controls="saved-library" aria-selected="false">
         <span>保存</span><strong data-saved-count>0</strong>
       </button>
@@ -230,6 +233,19 @@ app.innerHTML = `
       </div>
       <p class="result" aria-live="polite"><span data-result-count>${textSamples.length}</span>件を表示</p>
       <div class="grid" id="text-grid"></div>
+      <p class="empty-note" hidden>このタブには該当する見本がありません。上の件数を見て、ほかのタブを開いてください。</p>
+    </section>
+
+    <section class="catalog library-panel" id="environment-library" role="tabpanel" data-library-panel="environment" aria-labelledby="environment-catalog-title" hidden>
+      <div class="catalog-head environment-head">
+        <div>
+          <p class="eyebrow">ENVIRONMENT</p>
+          <h2 id="environment-catalog-title">環境の動きから選ぶ</h2>
+        </div>
+        <p class="catalog-note">建物とカメラは止めたまま、風・水・人・天気・光だけが動きます。1枚のパースを生成AIで動画にするときの指示にも使えます。</p>
+      </div>
+      <p class="result" aria-live="polite"><span data-result-count>${environmentSamples.length}</span>件を表示</p>
+      <div class="grid" id="environment-grid"></div>
       <p class="empty-note" hidden>このタブには該当する見本がありません。上の件数を見て、ほかのタブを開いてください。</p>
     </section>
 
@@ -655,6 +671,49 @@ textGrid.innerHTML = textSamples.map((sample) => `
   </article>
 `).join('')
 
+/*
+ * v1.0-3 環境の動き。共通の外観（空・遠景・建物・地面）に、風・水・人・天気・光の要素を重ねる。
+ * 建物とカメラは動かさない（生成AIで1枚のパースを動画にするときの基本と同じ）。
+ */
+const envBase = (building = '') => `
+        <i class="ev-sky"></i><i class="ev-far"></i>
+        <span class="ev-bldg">${building}</span>
+        <i class="ev-ground"></i>`
+const envTrees = (extra = '') => `<i class="ev-tree t1${extra}"></i><i class="ev-tree t2${extra}"></i><i class="ev-tree t3${extra}"></i>`
+const envScenes: Record<string, string> = {
+  foliage: `${envBase()}${envTrees()}`,
+  water: `${envBase()}<span class="ev-pool"><i class="ev-refl"></i><i class="ev-glints"></i></span>`,
+  people: `${envBase()}<i class="ev-person far p1"></i><i class="ev-person far p2"></i><i class="ev-person near p3"></i><i class="ev-person near p4"></i><i class="ev-person near p5"></i>`,
+  clouds: `${envBase('<i class="ev-cshadow"></i>')}<i class="ev-cloud c1"></i><i class="ev-cloud c2"></i><i class="ev-cloud c3"></i>`,
+  dappled: `<i class="ev-wall"></i><i class="ev-window"></i><i class="ev-floor"></i>${Array.from({ length: 7 }, (_, index) => `<i class="ev-spot s${index + 1}"></i>`).join('')}`,
+  rain: `${envBase()}<i class="ev-rain r1"></i><i class="ev-rain r2"></i>${Array.from({ length: 5 }, (_, index) => `<i class="ev-drop d${index + 1}"></i>`).join('')}`,
+  snow: `${envBase()}<i class="ev-snow f1"></i><i class="ev-snow f2"></i>`,
+  trails: `${envBase(Array.from({ length: 9 }, () => '<i></i>').join(''))}<i class="ev-road"></i><i class="ev-trail head l1"></i><i class="ev-trail head l2"></i><i class="ev-trail tail l3"></i><i class="ev-trail tail l4"></i>`,
+  mist: `${envBase()}<i class="ev-forest"></i><i class="ev-mist m1"></i><i class="ev-mist m2"></i>`,
+  seasons: `${envBase()}${envTrees()}<small class="scene-caption ev-season"><b>春</b><b>夏</b><b>秋</b><b>冬</b></small>`,
+}
+
+const environmentGrid = document.querySelector<HTMLDivElement>('#environment-grid')!
+
+environmentGrid.innerHTML = environmentSamples.map((sample) => `
+  <article class="sample-card video-card environment-card" data-number="${sample.number}" data-search="${searchText(sample)}">
+    <div class="card-top">
+      ${cardId(sample)}
+      <span class="tag environment-tag">${sample.categoryLabel}</span>
+    </div>
+    <button class="video-stage preview-stage env-effect-${sample.id}" type="button" aria-label="${sample.name}のプレビューを再生">
+      <span class="video-viewport env-scene" aria-hidden="true">${envScenes[sample.id]}</span>
+      <span class="interaction-label">HOVER / TAP</span>
+    </button>
+    <div class="card-copy">
+      <p class="english">${sample.english}</p>
+      <h3>${sample.name}</h3>
+      <p>${sample.description}</p>
+    </div>
+    ${usageRows(sample, '向いている場面')}
+  </article>
+`).join('')
+
 const libraryTabs = [...document.querySelectorAll<HTMLButtonElement>('.library-tab')]
 const libraryPanels = [...document.querySelectorAll<HTMLElement>('[data-library-panel]')]
 
@@ -673,7 +732,7 @@ libraryTabs.forEach((tab) => {
   tab.addEventListener('click', () => selectLibrary(tab.dataset.library))
 })
 
-const libraryNames: Record<string, string> = { ui: 'UI', video: '動画・カメラ', text: '文字' }
+const libraryNames: Record<string, string> = { ui: 'UI', video: '動画・カメラ', text: '文字', environment: '環境' }
 const filters = [...document.querySelectorAll<HTMLButtonElement>('.filter')]
 const finderInput = document.querySelector<HTMLInputElement>('#finder-input')!
 const finderClear = document.querySelector<HTMLButtonElement>('.finder-clear')!
@@ -686,7 +745,7 @@ const purposeStatus = document.querySelector<HTMLParagraphElement>('.purpose-sta
 
 const queryTerms = () => normalize(finderInput.value).split(/\s+/).filter(Boolean)
 
-/** 検索語（すべて含む）とUIの雰囲気フィルターを重ねて、3つの見本帳へ同時に反映する */
+/** 検索語（すべて含む）とUIの雰囲気フィルターを重ねて、4つの見本帳へ同時に反映する */
 const applyFilters = () => {
   const terms = queryTerms()
   const counts: Record<string, number> = {}
@@ -771,7 +830,7 @@ purposeCards.forEach((card) => {
     // 目的を選んだときは、件数の多いタブ（ふつうは動画・カメラ）を開く
     if (activePurpose) {
       const purpose = purposeById.get(activePurpose)!
-      const firstVisible = ['video', 'ui', 'text'].find((library) => document.querySelector(`[data-library-panel="${library}"] .sample-card[data-number="${purpose.samples[0]}"]`))
+      const firstVisible = ['video', 'ui', 'text', 'environment'].find((library) => document.querySelector(`[data-library-panel="${library}"] .sample-card[data-number="${purpose.samples[0]}"]`))
       if (firstVisible) selectLibrary(firstVisible)
     }
   })
@@ -1389,7 +1448,7 @@ const sampleLabel = (number: string) => {
   return `${number} ${sample.name}${shotScale[number] ? `・${shotScale[number]}` : ''}`
 }
 
-/** 見本の選択肢。最初からある型は候補だけ、自分の型は候補（あれば）＋50種類すべて */
+/** 見本の選択肢。最初からある型は候補だけ、自分の型は候補（あれば）＋すべての見本 */
 const sampleOptions = (view: StoryView, slot: StoryView['slots'][number]) => {
   const option = (number: string, selected: boolean, suffix = '') => `<option value="${number}" ${selected ? 'selected' : ''}>${escapeHtml(sampleLabel(number))}${suffix}</option>`
   if (!view.custom) return slot.candidates.map((number, index) => option(number, number === slot.number, index === 0 ? '（おすすめ）' : '')).join('')
@@ -1404,6 +1463,7 @@ const sampleOptions = (view: StoryView, slot: StoryView['slots'][number]) => {
     ['UIモーション', samples.map((sample) => sample.number)],
     ['動画・カメラ', videoSamples.map((sample) => sample.number)],
     ['文字', textSamples.map((sample) => sample.number)],
+    ['環境', environmentSamples.map((sample) => sample.number)],
   ]
   return groups.filter(([, numbers]) => numbers.length).map(([label, numbers]) => `<optgroup label="${label}">${numbers.map((number) => option(number, pick(number))).join('')}</optgroup>`).join('')
 }
@@ -1815,7 +1875,7 @@ document.querySelector('.story-ai-copy')!.addEventListener('click', async (event
   const button = event.currentTarget as HTMLButtonElement
   const prompt = buildStoryPrompt(
     { situation: aiSituation.value, totalSeconds: Number(aiLength.value), count: Number(aiCount.value), tool: aiTool.value },
-    [['UIモーション', samples], ['動画・カメラ', videoSamples], ['文字', textSamples]],
+    [['UIモーション', samples], ['動画・カメラ', videoSamples], ['文字', textSamples], ['環境', environmentSamples]],
   )
   const ok = await copyText(prompt)
   flashCopied(button, ok)

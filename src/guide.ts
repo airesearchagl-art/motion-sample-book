@@ -1,7 +1,7 @@
 import './style.css'
 import './guide.css'
 import {
-  samples, videoSamples, textSamples, allSamples,
+  samples, videoSamples, textSamples, environmentSamples, allSamples,
   finderWords, strengthSamples, directionSamples, settingOptions, suggestedCollections,
 } from './data'
 import { purposes, shotScaleNote } from './purposes'
@@ -30,7 +30,7 @@ const optionLabels = (setting: keyof typeof settingOptions) => settingOptions[se
  */
 /** side：番号を部分の左右どちらに付けるか（重ならないように分ける） */
 const mapItems: { n: number, title: string, summary: string, section: string, side?: 'left' | 'right' }[] = [
-  { n: 1, title: '検索欄', summary: '思い浮かんだ言葉で3つの見本帳を探す', section: 'search' },
+  { n: 1, title: '検索欄', summary: '思い浮かんだ言葉で4つの見本帳を探す', section: 'search' },
   { n: 2, title: '感覚語のボタン', summary: '押すだけで検索語に追加・解除', section: 'search' },
   { n: 13, title: '目的から選ぶ', summary: '伝えたいことから見本をしぼり、使う順に並べる', section: 'purpose' },
   { n: 14, title: '構成を組む', summary: '型に見本を並べ、カット割り表をコピー。自分の型やAIの提案も', section: 'story' },
@@ -103,7 +103,7 @@ const sections: Section[] = [
     lead: '名前を知らなくても、動きを見ながら探せる見本帳です。',
     body: `
       <ol class="g-steps">
-        <li><strong>タブを選ぶ</strong><span>「UIモーション」「動画・カメラ」「文字」から見たい種類を開きます。</span></li>
+        <li><strong>タブを選ぶ</strong><span>「UIモーション」「動画・カメラ」「文字」「環境」から見たい種類を開きます。</span></li>
         <li><strong>動きを見る</strong><span>プレビューにカーソルを重ねるか、タップすると動きます。</span></li>
         <li><strong>印象で探す</strong><span>「ふわっと」「高級感」など、思い浮かんだ言葉を検索欄に入れます。</span></li>
       </ol>`,
@@ -125,15 +125,16 @@ const sections: Section[] = [
   },
   {
     id: 'libraries',
-    title: '3つの見本帳',
+    title: '4つの見本帳',
     lead: `全${allSamples.length}種類を、種類ごとのタブに分けています。`,
     body: `
-      <div class="g-cards">
+      <div class="g-cards is-four">
         <div><h4>UIモーション <small>${samples.length}</small></h4><p>ボタンやカードの反応。雰囲気「静か／はっきり／装飾」で絞り込めます。</p></div>
         <div><h4>動画・カメラ <small>${videoSamples.length}</small></h4><p>カット・フェードなどのつなぎ、ズーム・パン・ドリーなどのカメラワーク、断面カットなどの建築CG。</p></div>
         <div><h4>文字 <small>${textSamples.length}</small></h4><p>見出しやテロップの出し方。フェードイン、タイプ表示、寸法線や注記など。</p></div>
+        <div><h4>環境 <small>${environmentSamples.length}</small></h4><p>建物とカメラは止めたまま動かす、風・水・人・天気・光・季節。植栽の揺れ、水面、人の往来、雨・雪など。1枚のパースを生成AIで動画にするときにも。</p></div>
       </div>
-      <p>4つ目の「保存」タブには、自分で保存した見本が集まります（<a href="#save">保存とコレクション</a>）。</p>`,
+      <p>5つ目の「保存」タブには、自分で保存した見本が集まります（<a href="#save">保存とコレクション</a>）。</p>`,
   },
   {
     id: 'search',
@@ -141,7 +142,7 @@ const sections: Section[] = [
     lead: '名前が分からなくても、受ける印象や使う場所の言葉で探せます。',
     body: `
       <ul class="g-list">
-        <li>検索欄に言葉を入れると、3つの見本帳をまとめて絞り込みます。タブの数字が、それぞれの該当件数に変わります。</li>
+        <li>検索欄に言葉を入れると、4つの見本帳をまとめて絞り込みます。タブの数字が、それぞれの該当件数に変わります。</li>
         <li>よく使う言葉はボタンで用意しています：${finderWords.map((word) => `<kbd>${word}</kbd>`).join(' ')}。押すと検索に追加、もう一度押すと外れます。</li>
         <li>カードの下の <kbd>#ふわっと</kbd> のようなタグを押すと、その言葉で探し直します。</li>
         <li>「ボタン」「見出し」のような<strong>使う場所</strong>や、「Zoom」のような英語名でも探せます。</li>
@@ -155,7 +156,7 @@ const sections: Section[] = [
     title: '目的から選ぶ',
     lead: '建築プレゼンで何を伝えたいかから、使う見本を選べます。',
     body: `
-      <p>検索欄の下にある5つの入口のどれかを押すと、3つの見本帳をまとめて絞り込みます。見本は、その目的で<strong>使う順のおすすめ</strong>に並びます。もう一度押すか「目的の選択を解除」で元に戻ります。検索語と組み合わせることもできます。</p>
+      <p>検索欄の下にある${purposes.length}つの入口のどれかを押すと、4つの見本帳をまとめて絞り込みます。見本は、その目的で<strong>使う順のおすすめ</strong>に並びます。もう一度押すか「目的の選択を解除」で元に戻ります。検索語と組み合わせることもできます。</p>
       <table class="g-table">
         <thead><tr><th>目的</th><th>どんなときに使うか</th></tr></thead>
         <tbody>${purposes.map((purpose) => `<tr><td>${purpose.name}</td><td>${purpose.description}</td></tr>`).join('')}</tbody>
@@ -316,7 +317,7 @@ const sections: Section[] = [
 
 /** 更新履歴。新しいものを上に追加する */
 const changelog: [string, string][] = [
-  ['v1.0（準備中）', 'AIに構成を頼む（依頼文をコピーし、答えのJSONを読み込む）。編集ソフト（After Effects・Premiere Pro）の再現情報を実機で確認し、13件を修正。構成を組む（全景から細部へ／訪問の順／計画の説明）と、カット割り表のコピー。複製や新規作成で自分の型を作り、JSONで書き出し・読み込み。再現情報を実機で確認（PowerPoint 50件、SketchUp・D5 Render 22件）し、修正と確認状態の印を反映。建築CG欄にD5 Renderの手順を追加。目的から選ぶ入口（敷地と全体像／空間の体験／素材とディテール／検討と比較／時間と光）と、カットの大きさの印（引き・中・寄り・目線）'],
+  ['v1.0（準備中）', '環境の動き（E01〜E10：植栽の揺れ、水面、人の往来、雲、木漏れ日、雨、雪、車の光跡、霧、季節）と、目的「空気感を足す」。AIに構成を頼む（依頼文をコピーし、答えのJSONを読み込む）。編集ソフト（After Effects・Premiere Pro）の再現情報を実機で確認し、13件を修正。構成を組む（全景から細部へ／訪問の順／計画の説明）と、カット割り表のコピー。複製や新規作成で自分の型を作り、JSONで書き出し・読み込み。再現情報を実機で確認（PowerPoint 50件、SketchUp・D5 Render 22件）し、修正と確認状態の印を反映。建築CG欄にD5 Renderの手順を追加。目的から選ぶ入口（敷地と全体像／空間の体験／素材とディテール／検討と比較／時間と光）と、カットの大きさの印（引き・中・寄り・目線）'],
   ['v0.6', '動画・カメラに建築寄りの8種類（日影の移動、平面図から立体へ、分解／組み上げ、クレーンアップ、プルバック、フライスルー、線画からレンダーへ、ミニチュア）、UIモーションに10種類（前後比較スライダー、画像のクリップ表示、視差、ケン・バーンズ、詳細へ拡大、カードの裏返し、カーテン遷移、グリッドの並び替え、横スクロール、ピンが落ちる）、文字に5種類（字間が開く、線で描かれる文字、数字のカウントアップ、寸法線と一緒に表示、引き出し線の注記）を追加し、合計50種類に'],
   ['v0.5', '再現情報（CSS、編集ソフト、PowerPoint、建築CG、生成AI）のコピー。建築CGの見本「断面カット」「デイ・トゥ・ナイト」を試験追加'],
   ['v0.4', '感覚語検索、2案比較、速度・強さ・向きの調整、保存とコレクション、使い方ページ'],

@@ -419,6 +419,103 @@ const run = (el, to, ms) => { const t0 = performance.now(); const step = (t) => 
     cg: 'SketchUp：「テキスト」ツールで引き出し線付きの注記を付け、注記の有無でシーンを分ける／Twinmotion・Lumion：書き出した画像に後から注記／D5 Render：不可（SketchUpのテキスト（注記）は読み込まれず、D5に注記ツールもない。書き出した画像・動画に後から追記）',
     prompt: 'Leader callouts appear on an architectural rendering: a dot, a thin line and a label naming the facade material, one after another',
   },
+
+  /* ---------- 環境の動き（v1.0-3）：建物とカメラは止め、環境だけを動かす ---------- */
+  E01: {
+    css: `/* 木ごとに周期をずらし、足元を中心に揺らす */
+.tree { transform-origin: 50% 100%; animation: sway 1.2s ease-in-out infinite; }
+.tree:nth-child(2) { animation-duration: .8s; }
+@keyframes sway { 30% { transform: rotate(3.5deg); } 70% { transform: rotate(-2.5deg); } }`,
+    edit: 'After Effects：木だけを切り抜いたレイヤー（またはマスク）に「タービュレントディスプレイス」をかけ、「展開」にエクスプレッション time*40 などで揺らす。幹の根元はピンで固定するか、パペットツールで揺らす',
+    powerpoint: '木の画像（背景を削除して切り抜く）に強調「シーソー」をかけ、効果のオプション画面で「繰り返し：スライドの最後まで」。木ごとに継続時間を変えると自然に見える',
+    cg: 'D5 Render：環境の「風」（Wind）の強さを上げると、植栽が揺れる動画になる／Lumion・Twinmotion：植栽の風（Wind）の強さを設定',
+    prompt: 'Keep the camera locked and the building completely unchanged. Only the trees in the foreground sway gently in a light breeze, leaves rustling, natural and subtle motion, photorealistic architectural visualization',
+  },
+  E02: {
+    css: `/* 映り込みを上下反転し、細かく横に揺らぐ */
+.reflection { transform: scaleY(-1); transform-origin: top; animation: shimmer .6s ease-in-out infinite; }
+@keyframes shimmer { 25% { transform: scaleY(-1) skewX(4deg); } 75% { transform: scaleY(-1) skewX(-4deg); } }`,
+    edit: 'After Effects：水面の部分だけにマスクをかけ、「波形ワープ」（波形の高さを小さく、波形の速度を遅く）またはディスプレイスメントマップにフラクタルノイズを使って揺らす。きらめきは「コースティック」',
+    powerpoint: '映り込みの画像（上下反転）に軌跡「直線（右）」を数pxだけ付け、「オートリバース」と「繰り返し：スライドの最後まで」。水面に細い白線の図形を重ね、強調「透過性」で明滅',
+    cg: 'D5 Render：水盤に「水」マテリアルを貼ると、動画モードで波が動く（波の大きさ・速さはマテリアルで調整）／Lumion・Twinmotion：水のマテリアル（または水面オブジェクト）の波の設定',
+    prompt: 'Keep the camera locked and the building unchanged. The reflecting pool in front gently ripples, the mirrored facade wavers softly with small glints of light on the water, calm and elegant',
+  },
+  E03: {
+    css: `/* 手前は速く、奥はゆっくり。上下に小さく弾ませて歩く感じに */
+.person.near { animation: walk 6s linear infinite; }
+.person.far { animation: walk 14s linear infinite reverse; }
+@keyframes walk { from { transform: translateX(-20vw); } to { transform: translateX(120vw); } }`,
+    edit: 'After Effects／Premiere Pro：歩く人の切り抜き素材（グリーンバックやアルファ付きのストック動画）を手前と奥に大きさを変えて合成し、奥ほど小さく・遅くする。足元に薄い影を付ける',
+    powerpoint: '人のシルエット（図形または切り抜き画像）に軌跡「直線（右）」、奥の人には左向き。継続時間を手前は短く、奥は長くし、「滑らかに開始／終了」を0にして一定の速さで動かす',
+    cg: 'D5 Render：動く人物（アニメーション付きのキャラクター）を置き、パスに沿って歩かせる（群衆の配置にも対応）／Lumion・Twinmotion：歩く人物を経路（パス）に沿って配置',
+    prompt: 'Keep the camera locked and the building unchanged. People walk across the plaza in both directions at different distances and speeds, natural pedestrian flow, lively but calm, photorealistic',
+  },
+  E04: {
+    css: `/* 雲と外壁の雲の影を、同じ向きにゆっくり流す */
+.cloud { animation: drift 40s linear infinite; }
+.cloud-shadow { animation: drift 40s linear infinite; mix-blend-mode: multiply; }
+@keyframes drift { from { transform: translateX(-30%); } to { transform: translateX(130%); } }`,
+    edit: 'After Effects：空をマスクで切り分け、雲の画像（または「フラクタルノイズ」で作った雲）の位置Xをゆっくり動かす。外壁には黒の柔らかい楕円を「乗算」で重ね、同じ速さで流すと雲の影になる',
+    powerpoint: '空の部分に雲の画像を重ね、軌跡「直線（右）」を長い継続時間（20秒程度）で、「滑らかに開始／終了」を0に',
+    cg: 'D5 Render：空（Sky）で雲を表示し、雲の動き（風向・速さ）を設定して動画にする（項目名はバージョンで異なる）／Lumion・Twinmotion：雲の速さ・量を設定',
+    prompt: 'Keep the camera locked and the building unchanged. White clouds drift slowly across the blue sky and their soft shadows pass over the facade, calm time-lapse feeling',
+  },
+  E05: {
+    css: `/* 光の斑ごとに周期を変え、明るさと位置を少し揺らす */
+.spot { mix-blend-mode: screen; animation: flicker .8s ease-in-out infinite; }
+.spot:nth-child(2n) { animation-duration: 1.2s; }
+@keyframes flicker { 40% { opacity: .35; transform: translate(6%, -4%) scale(.9); } }`,
+    edit: 'After Effects：床と壁に、葉の形の明るい模様（フラクタルノイズにしきい値やレベル補正をかけたもの）を「スクリーン」または「加算」で重ね、「展開」をゆっくり動かして明滅させる',
+    powerpoint: 'ぼかした楕円（光の色、透過50%程度）をいくつか重ね、強調「透過性」を「オートリバース」と「繰り返し」で。継続時間を楕円ごとに変える',
+    cg: 'D5 Render：窓の外に木を置き、太陽光で木漏れ日を落とした状態で環境の「風」を上げると、影が揺れる／Lumion・Twinmotion：太陽光と植栽の風',
+    prompt: 'Keep the camera locked and the interior unchanged. Dappled sunlight filtering through trees outside flickers softly across the floor and wall as the leaves move in the breeze, warm and peaceful',
+  },
+  E06: {
+    css: `/* 斜めの線の模様を下へ流す。地面の波紋は拡大しながら消す */
+.rain { background: repeating-linear-gradient(105deg, transparent 0 14px, rgb(255 255 255 / .5) 14px 15px, transparent 15px 30px); animation: fall .3s linear infinite; }
+@keyframes fall { to { background-position: -16px 60px; } }`,
+    edit: 'After Effects：エフェクト「CC Rainfall」（雨の量・速さ・角度）を重ね、地面には小さな波紋の素材を合成。空と外観は「トーンカーブ」で暗く、彩度を少し下げる',
+    powerpoint: '雨のストック動画（黒背景）を挿入し、色の「透明色を指定」または上に重ねて「再生：繰り返し」。PowerPointの効果だけで雨を作るのは難しい',
+    cg: 'D5 Render：環境の「天気」（Weather）で雨を有効にする（強さ・濡れた地面の表現を調整）／Lumion・Twinmotion：天気の雨',
+    prompt: 'Keep the camera locked and the building unchanged. Light rain falls diagonally, small ripples appear on the wet pavement, overcast sky, quiet and cinematic mood',
+  },
+  E07: {
+    css: `/* 大きさの違う2層の雪を、違う速さで下へ流す */
+.snow { background-image: radial-gradient(circle, #fff 0 2px, transparent 2.5px); background-size: 48px 48px; animation: snow 1.2s linear infinite; }
+@keyframes snow { 50% { background-position: 5px 24px; } 100% { background-position: 0 48px; } }`,
+    edit: 'After Effects：エフェクト「CC Snowfall」（雪の量・大きさ・速さ・揺れ）を、大きい雪と小さい雪の2つ重ねて奥行きを出す。地面と屋根は白く補正',
+    powerpoint: '雪のストック動画を重ねて「再生：繰り返し」。図形で作るなら、白い小さな円に軌跡「直線（下）」を、円ごとに継続時間と開始を変える',
+    cg: 'D5 Render：環境の「天気」（Weather）で雪を有効にし、積雪の表現も調整／Lumion・Twinmotion：天気の雪と積雪',
+    prompt: 'Keep the camera locked and the building unchanged. Soft snow falls slowly in flakes of different sizes, swaying gently, a thin layer of snow on the ground, quiet winter atmosphere',
+  },
+  E08: {
+    css: `/* 光の筋を道路に沿って流す。前照灯は白、尾灯は赤で逆向き */
+.trail.head { background: linear-gradient(90deg, transparent, #fff8d6); animation: right .8s linear infinite; }
+.trail.tail { background: linear-gradient(270deg, transparent, #ff463c); animation: right .6s linear infinite reverse; }
+@keyframes right { from { transform: translateX(-160%); } to { transform: translateX(260%); } }`,
+    edit: 'After Effects：車の動画（または光の点）に「エコー」をかけて光の尾を伸ばし、「グロー」でにじませる。ストック素材の光跡を「スクリーン」で道路に重ねてもよい',
+    powerpoint: '道路の上に細い光の線（グラデーション）を置き、開始効果「ワイプ（左から）」と終了効果「ワイプ」を「直前の動作の後」で繰り返す。赤い線は逆向き',
+    cg: 'D5 Render：夜の設定で車を道路のパスに沿って走らせる（光跡そのものは書き出した動画を編集ソフトで「エコー」などで作る）／Lumion・Twinmotion：車の経路（パス）',
+    prompt: 'Keep the camera locked and the building unchanged. At night, cars pass along the road leaving long streaks of white headlights and red taillights, long exposure light trails, lit windows on the facade',
+  },
+  E09: {
+    css: `/* 白いもやの帯を、ゆっくり左右に流す */
+.mist { background: radial-gradient(ellipse at 30% 50%, rgb(255 255 255 / .9), transparent 60%); animation: mist 8s ease-in-out infinite alternate; }
+@keyframes mist { to { transform: translateX(-12%); } }`,
+    edit: 'After Effects：「フラクタルノイズ」で作った雲模様を地面近くの帯にマスクし、「スクリーン」で重ねて「展開」と位置Xをゆっくり動かす。奥ほど濃くすると奥行きが出る',
+    powerpoint: 'ぼかした白い楕円（透過40〜60%）を地面近くに重ね、軌跡「直線（左）」を数十pxだけ、「オートリバース」と「繰り返し」で',
+    cg: 'D5 Render：環境の「霧」（Fog）の濃さ・高さを設定し、動画モードで濃さにキー（時間で変化させる）／Lumion・Twinmotion：霧（Fog）の設定',
+    prompt: 'Keep the camera locked and the building unchanged. Low mist drifts slowly near the ground among the trees, the background softly appears and disappears, quiet early morning atmosphere',
+  },
+  E10: {
+    css: `/* 樹冠の色を、若葉 → 深緑 → 紅葉 → 冬枯れへ */
+.crown { animation: season 8s ease-in-out infinite; }
+@keyframes season { 0% { background-color: #9cc96e; } 25% { background-color: #4f7f45; } 50% { background-color: #d0773a; } 75% { background-color: rgb(138 122 104 / .3); } }`,
+    edit: 'After Effects：季節ごとの4枚のパース（または木の部分だけを「色相/彩度」で色替えしたもの）を不透明度のクロスフェードでつなぐ／Premiere Pro：4枚を「クロスディゾルブ」でつなぐ',
+    powerpoint: '季節ごとの4枚のスライドを画面切り替え「フェード」でつなぐ（同じ位置の木の画像を使い、「変形」にしても可）',
+    cg: 'D5 Render：季節（Season）の設定で植栽の葉の色を変えた視点を並べる（対応する植栽素材だけが変わる）／Lumion・Twinmotion：季節や葉の色の設定を変えた画像を並べる',
+    prompt: 'Keep the camera locked and the building unchanged. Time-lapse of the trees around the building changing through the four seasons: fresh spring green, deep summer green, autumn orange, bare winter branches',
+  },
 }
 
 /** 再現情報が欠けている見本の番号を返す（開発時の確認用） */
