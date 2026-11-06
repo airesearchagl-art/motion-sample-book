@@ -34,7 +34,8 @@ const checkView = (number: string, key: keyof Recipe): CheckView => {
   if (key === 'prompt') return { level: 'none', text: '確認の対象外（生成AIの結果は毎回変わる）' }
   const check = recipeChecks[number]?.[key as 'edit' | 'powerpoint' | 'cg']
   if (!check) return { level: 'unverified', text: '未確認' }
-  const tool = check.checkedWith.split('/')[0].replace(/\s*\(Microsoft 365\)/, '').trim()
+  // 「PowerPoint (Microsoft 365) 2610 / 日本語UI」→「PowerPoint 2610」、「After Effects 2026 (26.5)・Premiere Pro 2026 / 日本語UI」→「After Effects 2026・Premiere Pro 2026」
+  const tool = check.checkedWith.split('/')[0].replace(/\s*\([^)]*\)/g, '').trim()
   if (key === 'cg') {
     const tools = [check.status === 'device' || check.status === 'mismatch' ? 'SketchUp' : '', check.d5 ? 'D5 Render' : ''].filter(Boolean)
     const rest = '（Lumion／Twinmotion／Enscapeは未確認）'
