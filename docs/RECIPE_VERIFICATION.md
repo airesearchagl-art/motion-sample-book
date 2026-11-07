@@ -10,6 +10,7 @@
 - **D5 Render**：cg 22件すべてに `d5`（D5で実際に作った手順、または「D5では不可：理由」）を記録
 - **編集ソフト 50件**：After Effects 2026・Premiere Pro 2026 の日本語UIで確認し、device 37／mismatch 13。**要修正**：04, 14, V02, V05, V06, V08, V09, V16, T01, T02, T04, T06, T08
 - **未着手**：Lumion／Twinmotion／Enscapeの公式資料確認（ネット上の資料が一部しか読めず、cg の8件は unverified のまま）
+- **第3弾（E01〜E10・V21、2026-11-07）**：edit device 10／mismatch 1（**要修正**：E06）、powerpoint device 3／mismatch 8（**要修正**：E02, E03, E04, E05, E06, E07, E08, E09）、cg device 8／mismatch 3（**要修正**：E04, E07, E10）。cg の11件すべてに `d5`。反映は第1弾・第2弾と同じく `fix` で該当欄を置き換え、`d5` を cg 欄へ追記
 - **反映のお願い**
   1. mismatch 31件（PowerPoint 15、建築CG 3、編集ソフト 13）は、`recipe-checks.ts` の `fix` をそのまま `recipes.ts` の該当欄に置き換えてください
   2. cg 22件は、`d5` を `recipes.ts` の cg 欄へ「D5 Render：…」として追記してください（「D5では不可」の4件：V02, V20, T09, T10 は追記するか判断ください）
@@ -148,3 +149,97 @@
 - `G:\Claude_MCP\motion-sample-book\verification\verify_d5.drs`（D5プロジェクト）
 - `G:\Claude_MCP\motion-sample-book\verification\ae_dump2.jsx`／`ae_names.tsv`（After Effectsの名称一覧）、`verify_premiere.prproj`（Premiere Pro確認用）
 - 画像・動画はリポジトリに入れていない
+
+## 第3弾（環境の動き E01〜E10・V21）
+
+> 確認日：2026-11-07／対象：main `824f5e6` 時点の `src/recipes.ts`（E01〜E10・V21 の11件 × edit・powerpoint・cg）
+
+### 件数
+
+| 欄 | device | docs | unverified | mismatch |
+|---|---|---|---|---|
+| edit（11件） | 10 | 0 | 0 | 1 |
+| powerpoint（11件） | 3 | 0 | 0 | 8 |
+| cg（11件） | 8 | 0 | 0 | 3 |
+
+- `cg` は D5 Render で確かめた部分を `status` にしている（V21 だけは SketchUp 部分）。Lumion・Twinmotion は確認していない（`note` に記載）
+- `cg` の11件すべてに `d5`（D5 Render での手順）を書いた
+
+### 確認した環境（前回から変わったもの・足したもの）
+
+- D5 Render：3.1.1.0755（前回と同じ版）
+- Navisworks：閲覧用の Navisworks Freedom 2027 だけが入っている。ホームタブに「TimeLiner プレイバック」がある（TimeLiner を作るには Manage／Simulate が必要で、このPCには入っていない）
+- SketchUp：V21 用の検証モデル `verify_sketchup_v21.skp`（mm、タグ3つ・シーン3つ）をMCP（9876）で作成
+
+### 確認の方法
+
+- **PowerPoint**：検証資料（`verify_powerpoint_r3.pptx`）で効果を実際に付け、効果のオプション画面（効果・タイミング）、軌跡の方向、再生タブ、ビデオ形式タブの「色」、スライドショーの設定を確認。動画は黒背景の仮の雨の動画（ffmpegで作成）を入れて確認
+- **After Effects**：一時コンポジションにエフェクトを付けるスクリプトで、エフェクトとプロパティの日本語名を書き出して照合（一時コンポジションは削除）。E01 のエクスプレッション `time*40` は「展開」に入れて値（0秒=0、1秒=40、2秒=80）を確認。パペットのツール名は画面のツールチップで確認。描画モード（乗算・スクリーン・加算）は列挙値での確認で、日本語の表示名は画面で見ていない
+- **D5 Render**：環境パネル（Weather の Cloud・Fog・Wind・Precipitation・Seasonal Vegetation）を実際にオンにして項目名を確認。Path（Character・Vehicle）を引き、人物を追加してビューポートで歩くことを確認。平面に Water マテリアルを貼って項目を確認。動画モードでキーフレームを2つ置き、Fog の Density を変えた
+- **SketchUp**：MCP（9876）で構造・設備・仕上げのタグを分けたモデルを作り、シーン遷移（5秒）の途中を画面で撮影して、タグの表示が瞬時に変わることを確認
+
+### D5 Render で分かったこと
+
+- 環境の動きは Environment タブの **Weather** にまとまっている：Cloud（種類・Amount・Middle-level Clouds・Cirrus Clouds・Random Seed、Global Settings に Height・Speed・Direction・Rotate・Offset・Cast Shadow）、Fog（Density・Height・Base Height・Start Distance・Volume Light）、Wind（Strength・Direction）、Precipitation（Rain／Snow のスライダー・Strength・Puddle・Raindrop Transparency・Snow Flake Size・Water Mist）、Seasonal Vegetation（State）
+- 雲は Global Settings の Speed で、ビューポートでも流れる。雨はビューポートで降り、地面に水たまりが出る
+- 積雪（地面が白くなる）の項目は見当たらない
+- 人物と車は、ツールバーの **Path**（Path for Nature・Character・Vehicle・Animal・Custom paths）で線を引き、Content に素材を追加する。Character で追加した人物はビューポートで線に沿って歩く
+- 水は、マテリアルのテンプレート **Water**（Normal・Flow Velocity・Depth・Caustics）。素材は Assets > Material > Water
+- 動画モードでは、キーフレームごとに環境の値（Fog の Density）を持てる。再生で徐々に変わるかは確認できなかった
+- .skp を複数読み込むと、Object リストに別のモデルとして入る
+
+| 番号 | D5 Render での手順（`d5`） |
+|---|---|
+| E01 | Environment > Weather の「Wind」をオンにし、Strength（強さ）と Direction（向き）を設定。動画モードでカメラを動かさずに書き出す |
+| E02 | 水盤の面に Assets > Material > Water の水マテリアル（例：Blue pool water）を貼り、Normal で波の大きさ、Flow Velocity で速さを調整 |
+| E03 | ツールバーの Path > Character で歩かせたい線を引き、Content の＋から歩行アニメーション付きの人物を追加。Density（密度）と Speed で調整し、Road で一方向／双方向を切り替える |
+| E04 | Environment > Weather > Cloud をオンにし（種類と Amount で量）、Global Settings の Speed と Direction で流れを設定。動画モードでカメラを止めて書き出す |
+| E05 | 窓の外に木（Assets > Model > Nature）を置き、Geo Sky の時刻で日差しを入れて、Environment > Weather > Wind の Strength を上げる |
+| E06 | Environment > Weather > Precipitation をオンにし、Rain／Snow のスライダーを Rain 側に。Strength（強さ）・Puddle（水たまり）・Raindrop Transparency で調整 |
+| E07 | Environment > Weather > Precipitation をオンにし、スライダーを Snow 側に。Strength と Snow Flake Size で量と大きさを調整 |
+| E08 | Geo Sky の時刻を夜にし、Path > Vehicle で道路に沿って線を引き、Content の＋から車を追加（Speed で速さ）。光跡は書き出した動画に編集ソフトで「エコー」などを足す |
+| E09 | Environment > Weather > Fog をオンにし、Density（濃さ）・Height（高さ）・Base Height・Start Distance を設定。動画モードでキーフレームを2つ置き、それぞれで Density を変える |
+| E10 | Environment > Weather > Seasonal Vegetation をオンにし、State の値を変えた視点（またはキーフレーム）を並べる |
+| V21 | 構造・設備・仕上げを別々の .skp で書き出して順に読み込むと、Object リストに別のモデルとして入る（同じ位置に置くには Inspector の Location を揃える）。表示を切り替えて書き出した画像・動画を編集ソフトで重ねる。D5で.skpが別モデルになることは確認したが、V21の3ファイルでの表示切り替えは未確認 |
+
+### mismatch の一覧と修正案
+
+#### PowerPoint（8件）
+
+| 番号 | 現在の記載 | 違い | 修正案 |
+|---|---|---|---|
+| E02 | 映り込みの画像（上下反転）に軌跡「直線（右）」を数pxだけ付け、「オートリバース」と「繰り返し：スライドの最後まで」。水面に細い白線の図形を重ね、強調「透過性」で明滅 | 軌跡の方向の表記は「直線（右へ）」。軌跡にはオートリバースと繰り返しを同時に付けられる。強調「透過性」は継続時間が「スライドの最後まで」になり、繰り返しとオートリバースを付けられない（明滅しない）。強調「パルス」は繰り返しを付けられる | 映り込みの画像（上下反転）に軌跡「直線（右へ）」を数pxだけ付け、「オートリバース」と「繰り返し：スライドの最後まで」。水面に細い白線の図形を重ね、強調「パルス」を「繰り返し：スライドの最後まで」で明滅 |
+| E03 | 人のシルエット（図形または切り抜き画像）に軌跡「直線（右）」、奥の人には左向き。継続時間を手前は短く、奥は長くし、「滑らかに開始／終了」を0にして一定の速さで動かす | 軌跡の方向の表記は「直線（右へ）」「直線（左へ）」。効果のオプション画面で「滑らかに開始」「滑らかに終了」を0にできる | 人のシルエット（図形または切り抜き画像）に軌跡「直線（右へ）」、奥の人には「直線（左へ）」。継続時間を手前は短く、奥は長くし、「滑らかに開始」「滑らかに終了」を0にして一定の速さで動かす |
+| E04 | 空の部分に雲の画像を重ね、軌跡「直線（右）」を長い継続時間（20秒程度）で、「滑らかに開始／終了」を0に | 軌跡の方向の表記は「直線（右へ）」。「滑らかに開始」「滑らかに終了」は0にできる | 空の部分に雲の画像を重ね、軌跡「直線（右へ）」を長い継続時間（20秒程度）で、「滑らかに開始」「滑らかに終了」を0に |
+| E05 | ぼかした楕円（光の色、透過50%程度）をいくつか重ね、強調「透過性」を「オートリバース」と「繰り返し」で。継続時間を楕円ごとに変える | 強調「透過性」には繰り返しとオートリバースを付けられない（継続時間が「スライドの最後まで」になる）。強調「パルス」は繰り返しを付けられる | ぼかした楕円（光の色、透過50%程度）をいくつか重ね、強調「パルス」を「繰り返し：スライドの最後まで」で。継続時間を楕円ごとに変える |
+| E06 | 雨のストック動画（黒背景）を挿入し、色の「透明色を指定」または上に重ねて「再生：繰り返し」。PowerPointの効果だけで雨を作るのは難しい | 動画の繰り返しは再生タブの「停止するまで繰り返す」。ビデオ形式タブの「色」には「透明色を指定」がなく、黒背景の動画を透過できない（黒背景の仮の動画で確認） | 雨のストック動画を挿入し、再生タブで「停止するまで繰り返す」（動画には「透明色を指定」が使えないので、黒背景の動画はパースの上に重ねられない。パースと合成済みの動画を使う）。PowerPointの効果だけで雨を作るのは難しい |
+| E07 | 雪のストック動画を重ねて「再生：繰り返し」。図形で作るなら、白い小さな円に軌跡「直線（下）」を、円ごとに継続時間と開始を変える | 動画の繰り返しは再生タブの「停止するまで繰り返す」。動画の背景は透過できない。軌跡の方向の表記は「直線（下へ）」 | 雪のストック動画を挿入し、再生タブで「停止するまで繰り返す」（背景を透過できないので、パースと合成済みの動画を使う）。図形で作るなら、白い小さな円に軌跡「直線（下へ）」を、円ごとに継続時間と開始を変える |
+| E08 | 道路の上に細い光の線（グラデーション）を置き、開始効果「ワイプ（左から）」と終了効果「ワイプ」を「直前の動作の後」で繰り返す。赤い線は逆向き | 開始効果「ワイプ」（左から）、終了効果「ワイプ」、「直前の動作の後」はある。ただし開始と終了の組をまとめて繰り返す設定はない（「繰り返し」は効果ごと）。スライドショーの設定に「Esc キーが押されるまで繰り返す」がある | 道路の上に細い光の線（グラデーション）を置き、開始効果「ワイプ」（効果のオプション：左から）と終了効果「ワイプ」を「直前の動作の後」で続ける。赤い線は逆向き。繰り返し流すなら、スライドの切り替えを自動にし、スライドショーの設定で「Esc キーが押されるまで繰り返す」 |
+| E09 | ぼかした白い楕円（透過40〜60%）を地面近くに重ね、軌跡「直線（左）」を数十pxだけ、「オートリバース」と「繰り返し」で | 軌跡の方向の表記は「直線（左へ）」。オートリバースと繰り返しは同時に付けられる | ぼかした白い楕円（透過40〜60%）を地面近くに重ね、軌跡「直線（左へ）」を数十pxだけ、「オートリバース」と「繰り返し：スライドの最後まで」で |
+
+#### 編集ソフト（1件）
+
+| 番号 | 現在の記載 | 違い | 修正案 |
+|---|---|---|---|
+| E06 | After Effects：エフェクト「CC Rainfall」（雨の量・速さ・角度）を重ね、地面には小さな波紋の素材を合成。空と外観は「トーンカーブ」で暗く、彩度を少し下げる | 「CC Rainfall」の設定名は英語（Drops・Size・Speed・Wind など）で、「角度」という項目はない（雨の傾きは Wind）。「トーンカーブ」は確認 | After Effects：エフェクト「CC Rainfall」（Drops で量、Speed で速さ、Wind で傾き）を重ね、地面には小さな波紋の素材を合成。空と外観は「トーンカーブ」で暗く、彩度を少し下げる |
+
+#### 建築CG（D5 Render）（3件）
+
+| 番号 | 現在の記載 | 違い | 修正案 |
+|---|---|---|---|
+| E04 | D5 Render：空（Sky）で雲を表示し、雲の動き（風向・速さ）を設定して動画にする（項目名はバージョンで異なる）／Lumion・Twinmotion：雲の速さ・量を設定 | Lumion・Twinmotionは未確認。雲は Sky ではなく Environment > Weather > Cloud にあり、Global Settings の Speed・Direction で流れる（ビューポートで雲が動くことを確認） | D5 Render：環境の「天気」（Weather）の「Cloud」で雲を表示し、Global Settings の Speed（速さ）・Direction（向き）で動かして動画にする／Lumion・Twinmotion：雲の速さ・量を設定 |
+| E07 | D5 Render：環境の「天気」（Weather）で雪を有効にし、積雪の表現も調整／Lumion・Twinmotion：天気の雪と積雪 | Lumion・Twinmotionは未確認。雪は Precipitation のスライダーを Snow 側にして降らせる（大きさは Snow Flake Size）。積雪（地面が白くなる）の項目は見当たらない。雪が降る見た目は未確認 | D5 Render：環境の「天気」（Weather）の「Precipitation」を雪（Snow）側にして降らせる（積雪の項目はないので、地面を白く見せるのは別に作る）／Lumion・Twinmotion：天気の雪と積雪 |
+| E10 | D5 Render：季節（Season）の設定で植栽の葉の色を変えた視点を並べる（対応する植栽素材だけが変わる）／Lumion・Twinmotion：季節や葉の色の設定を変えた画像を並べる | Lumion・Twinmotionは未確認。季節の設定名は「Seasonal Vegetation」（季節の変化に対応した植栽をまとめて切り替える）で、値は State。State を変えたときの見た目は未確認 | D5 Render：環境の「Seasonal Vegetation」をオンにし、State を変えた視点を並べる（季節の変化に対応した植栽素材だけが変わる）／Lumion・Twinmotion：季節や葉の色の設定を変えた画像を並べる |
+
+### 確認できなかったこと
+
+- D5：植栽が風で揺れる見た目（E01・E05）、水の波が動く見た目（E02）、雪が降る見た目（E07）、車を走らせるところ（E08）、霧の濃さが再生で徐々に変わるか（E09）、Seasonal Vegetation の State を変えたときの見た目（E10）、V21 の3ファイルを読み込んで表示を切り替えるところ
+- After Effects：描画モード「乗算」「スクリーン」「加算」の日本語の表示名（列挙値では確認）。再生での見た目はどの見本も未確認
+- PowerPoint：「パルス」で明滅させたときの見た目（繰り返しを付けられることだけ確認）
+- Navisworks：TimeLiner を作るところ（Manage／Simulate が未導入）
+- Lumion・Twinmotion：これまでどおり確認していない
+
+### 確認に使ったファイル（リポジトリ外、PCのGドライブ）
+
+- `G:\Claude_MCP\motion-sample-book\verification\round3\`：`verify_powerpoint_r3.pptx`、`test_rain_black.mp4`（仮の雨の動画）、`ae_dump_r3.jsx`／`ae_names_r3.tsv`（After Effectsの名称一覧）、`verify_d5_r3`（D5プロジェクト）
+- `G:\Claude_MCP\SketchUp\motion-sample-book\verify_sketchup_v21.skp`（mm）、`shots_v21\`（シーン画像）、`d5_r3\`（D5読み込み用に書き出した .skp）

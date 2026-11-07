@@ -4,6 +4,7 @@
  * - edit は After Effects・Premiere Pro の日本語UIで、名称（エフェクト・プロパティ・プリセット・ツール・パネル）を確認した。動きの再生確認はしていない。
  * - mismatch の fix は、そのまま recipes.ts の該当欄に入れられる文。
  * - cg の d5 は D5 Render で実際に作った手順（recipes.ts の cg 欄へ「D5 Render：…」として追記する想定）。
+ * - 第3弾（E01〜E10・V21）は 2026-11-07 に確認。note に「名称の確認」か「動きを確認」かを書いた。
  * 詳細は docs/RECIPE_VERIFICATION.md を参照。
  */
 
@@ -246,5 +247,60 @@ export const recipeChecks: Record<string, Partial<Record<'edit' | 'powerpoint' |
     edit: { status: 'device', checkedWith: 'After Effects 2026 (26.5)・Premiere Pro 2026 / 日本語UI', date: '2026-11-07' },
     powerpoint: { status: 'device', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-01' },
     cg: { status: 'device', checkedWith: 'SketchUp Pro 2026 (26.2) / 日本語UI + MCP 9876 / D5 Render 3.1.1 / 英語UI', date: '2026-11-01', note: 'Lumion・Twinmotionは未確認', d5: 'D5では不可：SketchUpのテキスト（注記）は読み込まれず、D5に注記ツールもない。書き出した画像・動画に後から追記' },
+  },
+  'E01': {
+    edit: { status: 'device', checkedWith: 'After Effects 2026 (26.5) / 日本語UI', date: '2026-11-07', note: '「タービュレントディスプレイス」の「展開」に time*40 を入れると値が変わる（0秒=0、1秒=40）。パペットのツール名は「パペット位置ピンツール」' },
+    powerpoint: { status: 'device', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-07', note: '強調「シーソー」あり。「繰り返し：スライドの最後まで」は効果のオプション画面の「タイミング」タブ' },
+    cg: { status: 'device', checkedWith: 'D5 Render 3.1.1 / 英語UI', date: '2026-11-07', note: 'Lumion・Twinmotionは未確認。Environment > Weather > Wind（Strength・Direction）を確認。植栽が揺れる見た目は未確認', d5: 'Environment > Weather の「Wind」をオンにし、Strength（強さ）と Direction（向き）を設定。動画モードでカメラを動かさずに書き出す' },
+  },
+  'E02': {
+    edit: { status: 'device', checkedWith: 'After Effects 2026 (26.5) / 日本語UI', date: '2026-11-07', note: '「波形ワープ」の「波形の高さ」「波形の速度」、「ディスプレイスメントマップ」、「コースティック」を確認。名称の確認で、再生での見た目は未確認' },
+    powerpoint: { status: 'mismatch', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-07', note: '軌跡の方向の表記は「直線（右へ）」。軌跡にはオートリバースと繰り返しを同時に付けられる。強調「透過性」は継続時間が「スライドの最後まで」になり、繰り返しとオートリバースを付けられない（明滅しない）。強調「パルス」は繰り返しを付けられる', fix: '映り込みの画像（上下反転）に軌跡「直線（右へ）」を数pxだけ付け、「オートリバース」と「繰り返し：スライドの最後まで」。水面に細い白線の図形を重ね、強調「パルス」を「繰り返し：スライドの最後まで」で明滅' },
+    cg: { status: 'device', checkedWith: 'D5 Render 3.1.1 / 英語UI', date: '2026-11-07', note: 'Lumion・Twinmotionは未確認。マテリアルのテンプレート「Water」に Normal（波の強さ）・Flow Velocity（流れの速さ）・Depth・Caustics がある（素材は Assets > Material > Water）。波が動く見た目は未確認', d5: '水盤の面に Assets > Material > Water の水マテリアル（例：Blue pool water）を貼り、Normal で波の大きさ、Flow Velocity で速さを調整' },
+  },
+  'E03': {
+    edit: { status: 'device', checkedWith: 'After Effects 2026 (26.5)・Premiere Pro 2026 / 日本語UI', date: '2026-11-07', note: '特別なエフェクト名はない（素材の合成と位置・スケールだけ）' },
+    powerpoint: { status: 'mismatch', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-07', note: '軌跡の方向の表記は「直線（右へ）」「直線（左へ）」。効果のオプション画面で「滑らかに開始」「滑らかに終了」を0にできる', fix: '人のシルエット（図形または切り抜き画像）に軌跡「直線（右へ）」、奥の人には「直線（左へ）」。継続時間を手前は短く、奥は長くし、「滑らかに開始」「滑らかに終了」を0にして一定の速さで動かす' },
+    cg: { status: 'device', checkedWith: 'D5 Render 3.1.1 / 英語UI', date: '2026-11-07', note: 'Lumion・Twinmotionは未確認。Path > Character で引いた線に歩く人物を追加すると、ビューポートで線に沿って歩くことを確認', d5: 'ツールバーの Path > Character で歩かせたい線を引き、Content の＋から歩行アニメーション付きの人物を追加。Density（密度）と Speed で調整し、Road で一方向／双方向を切り替える' },
+  },
+  'E04': {
+    edit: { status: 'device', checkedWith: 'After Effects 2026 (26.5) / 日本語UI', date: '2026-11-07', note: '「フラクタルノイズ」の「展開」を確認。描画モード「乗算」は列挙値で確認し、日本語の表示名は画面で見ていない。名称の確認で、再生での見た目は未確認' },
+    powerpoint: { status: 'mismatch', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-07', note: '軌跡の方向の表記は「直線（右へ）」。「滑らかに開始」「滑らかに終了」は0にできる', fix: '空の部分に雲の画像を重ね、軌跡「直線（右へ）」を長い継続時間（20秒程度）で、「滑らかに開始」「滑らかに終了」を0に' },
+    cg: { status: 'mismatch', checkedWith: 'D5 Render 3.1.1 / 英語UI', date: '2026-11-07', note: 'Lumion・Twinmotionは未確認。雲は Sky ではなく Environment > Weather > Cloud にあり、Global Settings の Speed・Direction で流れる（ビューポートで雲が動くことを確認）', fix: 'D5 Render：環境の「天気」（Weather）の「Cloud」で雲を表示し、Global Settings の Speed（速さ）・Direction（向き）で動かして動画にする／Lumion・Twinmotion：雲の速さ・量を設定', d5: 'Environment > Weather > Cloud をオンにし（種類と Amount で量）、Global Settings の Speed と Direction で流れを設定。動画モードでカメラを止めて書き出す' },
+  },
+  'E05': {
+    edit: { status: 'device', checkedWith: 'After Effects 2026 (26.5) / 日本語UI', date: '2026-11-07', note: '「フラクタルノイズ」「しきい値」「レベル補正」を確認。描画モード「スクリーン」「加算」は列挙値で確認し、日本語の表示名は画面で見ていない。名称の確認で、再生での見た目は未確認' },
+    powerpoint: { status: 'mismatch', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-07', note: '強調「透過性」には繰り返しとオートリバースを付けられない（継続時間が「スライドの最後まで」になる）。強調「パルス」は繰り返しを付けられる', fix: 'ぼかした楕円（光の色、透過50%程度）をいくつか重ね、強調「パルス」を「繰り返し：スライドの最後まで」で。継続時間を楕円ごとに変える' },
+    cg: { status: 'device', checkedWith: 'D5 Render 3.1.1 / 英語UI', date: '2026-11-07', note: 'Lumion・Twinmotionは未確認。Wind は確認。木漏れ日の影が揺れる見た目は未確認', d5: '窓の外に木（Assets > Model > Nature）を置き、Geo Sky の時刻で日差しを入れて、Environment > Weather > Wind の Strength を上げる' },
+  },
+  'E06': {
+    edit: { status: 'mismatch', checkedWith: 'After Effects 2026 (26.5) / 日本語UI', date: '2026-11-07', note: '「CC Rainfall」の設定名は英語（Drops・Size・Speed・Wind など）で、「角度」という項目はない（雨の傾きは Wind）。「トーンカーブ」は確認', fix: 'After Effects：エフェクト「CC Rainfall」（Drops で量、Speed で速さ、Wind で傾き）を重ね、地面には小さな波紋の素材を合成。空と外観は「トーンカーブ」で暗く、彩度を少し下げる' },
+    powerpoint: { status: 'mismatch', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-07', note: '動画の繰り返しは再生タブの「停止するまで繰り返す」。ビデオ形式タブの「色」には「透明色を指定」がなく、黒背景の動画を透過できない（黒背景の仮の動画で確認）', fix: '雨のストック動画を挿入し、再生タブで「停止するまで繰り返す」（動画には「透明色を指定」が使えないので、黒背景の動画はパースの上に重ねられない。パースと合成済みの動画を使う）。PowerPointの効果だけで雨を作るのは難しい' },
+    cg: { status: 'device', checkedWith: 'D5 Render 3.1.1 / 英語UI', date: '2026-11-07', note: 'Lumion・Twinmotionは未確認。Weather > Precipitation で雨が降り、地面に水たまりが出ることをビューポートで確認', d5: 'Environment > Weather > Precipitation をオンにし、Rain／Snow のスライダーを Rain 側に。Strength（強さ）・Puddle（水たまり）・Raindrop Transparency で調整' },
+  },
+  'E07': {
+    edit: { status: 'device', checkedWith: 'After Effects 2026 (26.5) / 日本語UI', date: '2026-11-07', note: '「CC Snowfall」の設定名は英語（Flakes＝量、Size＝大きさ、Speed＝速さ、Wiggle＝揺れ）。名称の確認で、再生での見た目は未確認' },
+    powerpoint: { status: 'mismatch', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-07', note: '動画の繰り返しは再生タブの「停止するまで繰り返す」。動画の背景は透過できない。軌跡の方向の表記は「直線（下へ）」', fix: '雪のストック動画を挿入し、再生タブで「停止するまで繰り返す」（背景を透過できないので、パースと合成済みの動画を使う）。図形で作るなら、白い小さな円に軌跡「直線（下へ）」を、円ごとに継続時間と開始を変える' },
+    cg: { status: 'mismatch', checkedWith: 'D5 Render 3.1.1 / 英語UI', date: '2026-11-07', note: 'Lumion・Twinmotionは未確認。雪は Precipitation のスライダーを Snow 側にして降らせる（大きさは Snow Flake Size）。積雪（地面が白くなる）の項目は見当たらない。雪が降る見た目は未確認', fix: 'D5 Render：環境の「天気」（Weather）の「Precipitation」を雪（Snow）側にして降らせる（積雪の項目はないので、地面を白く見せるのは別に作る）／Lumion・Twinmotion：天気の雪と積雪', d5: 'Environment > Weather > Precipitation をオンにし、スライダーを Snow 側に。Strength と Snow Flake Size で量と大きさを調整' },
+  },
+  'E08': {
+    edit: { status: 'device', checkedWith: 'After Effects 2026 (26.5) / 日本語UI', date: '2026-11-07', note: '「エコー」（エコー時間・エコーの数・減衰）、「グロー」を確認。名称の確認で、再生での見た目は未確認' },
+    powerpoint: { status: 'mismatch', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-07', note: '開始効果「ワイプ」（左から）、終了効果「ワイプ」、「直前の動作の後」はある。ただし開始と終了の組をまとめて繰り返す設定はない（「繰り返し」は効果ごと）。スライドショーの設定に「Esc キーが押されるまで繰り返す」がある', fix: '道路の上に細い光の線（グラデーション）を置き、開始効果「ワイプ」（効果のオプション：左から）と終了効果「ワイプ」を「直前の動作の後」で続ける。赤い線は逆向き。繰り返し流すなら、スライドの切り替えを自動にし、スライドショーの設定で「Esc キーが押されるまで繰り返す」' },
+    cg: { status: 'device', checkedWith: 'D5 Render 3.1.1 / 英語UI', date: '2026-11-07', note: 'Lumion・Twinmotionは未確認。Path > Vehicle（Speed・Density・Road）を確認。車を追加して夜に走らせるところは未確認', d5: 'Geo Sky の時刻を夜にし、Path > Vehicle で道路に沿って線を引き、Content の＋から車を追加（Speed で速さ）。光跡は書き出した動画に編集ソフトで「エコー」などを足す' },
+  },
+  'E09': {
+    edit: { status: 'device', checkedWith: 'After Effects 2026 (26.5) / 日本語UI', date: '2026-11-07', note: '「フラクタルノイズ」の「展開」を確認。描画モード「スクリーン」は列挙値で確認。名称の確認で、再生での見た目は未確認' },
+    powerpoint: { status: 'mismatch', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-07', note: '軌跡の方向の表記は「直線（左へ）」。オートリバースと繰り返しは同時に付けられる', fix: 'ぼかした白い楕円（透過40〜60%）を地面近くに重ね、軌跡「直線（左へ）」を数十pxだけ、「オートリバース」と「繰り返し：スライドの最後まで」で' },
+    cg: { status: 'device', checkedWith: 'D5 Render 3.1.1 / 英語UI', date: '2026-11-07', note: 'Lumion・Twinmotionは未確認。Fog の Density・Height・Base Height・Start Distance を確認。動画モードでキーフレームごとに Density を変えられる（キーを選ぶと霧の濃さが切り替わる）。再生で濃さが徐々に変わるかは確認できなかった', d5: 'Environment > Weather > Fog をオンにし、Density（濃さ）・Height（高さ）・Base Height・Start Distance を設定。動画モードでキーフレームを2つ置き、それぞれで Density を変える' },
+  },
+  'E10': {
+    edit: { status: 'device', checkedWith: 'After Effects 2026 (26.5)・Premiere Pro 2026 / 日本語UI', date: '2026-11-07', note: '「色相/彩度」を確認。Premiere Pro の「クロスディゾルブ」は第2弾で確認済み' },
+    powerpoint: { status: 'device', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-07', note: '画面切り替え「フェード」「変形」を確認' },
+    cg: { status: 'mismatch', checkedWith: 'D5 Render 3.1.1 / 英語UI', date: '2026-11-07', note: 'Lumion・Twinmotionは未確認。季節の設定名は「Seasonal Vegetation」（季節の変化に対応した植栽をまとめて切り替える）で、値は State。State を変えたときの見た目は未確認', fix: 'D5 Render：環境の「Seasonal Vegetation」をオンにし、State を変えた視点を並べる（季節の変化に対応した植栽素材だけが変わる）／Lumion・Twinmotion：季節や葉の色の設定を変えた画像を並べる', d5: 'Environment > Weather > Seasonal Vegetation をオンにし、State の値を変えた視点（またはキーフレーム）を並べる' },
+  },
+  'V21': {
+    edit: { status: 'device', checkedWith: 'After Effects 2026 (26.5) / 日本語UI', date: '2026-11-07', note: '「リニアワイプ」、シェイプの「パスのトリミング」（第2弾で確認済み）' },
+    powerpoint: { status: 'device', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-07', note: '開始効果「ワイプ」の方向は 下から／左から／右から／上から。「フェード」と「直前の動作の後」も確認' },
+    cg: { status: 'device', checkedWith: 'SketchUp Pro 2026 (26.2) / 日本語UI + MCP 9876 / D5 Render 3.1.1 / 英語UI', date: '2026-11-07', note: 'SketchUp：構造・設備・仕上げをタグで分けたモデル（mm）で、表示タグを1つずつ増やしたシーンを3つ作り、遷移（5秒）の途中でもタグの表示が瞬時に切り替わる（補間されない）ことを確認。Navisworks は閲覧用の Freedom 2027 だけが入っていて、ホームタブに「TimeLiner プレイバック」がある（TimeLiner を作るには Manage／Simulate が必要。未導入）。Lumion・Twinmotionは未確認', d5: '構造・設備・仕上げを別々の .skp で書き出して順に読み込むと、Object リストに別のモデルとして入る（同じ位置に置くには Inspector の Location を揃える）。表示を切り替えて書き出した画像・動画を編集ソフトで重ねる。D5で.skpが別モデルになることは確認したが、V21の3ファイルでの表示切り替えは未確認' },
   },
 }
