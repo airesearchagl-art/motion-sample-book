@@ -550,6 +550,65 @@ const cameraScenes: Record<string, string> = {
           </span>
         </span>
         <small class="scene-caption">AXONOMETRIC</small>`,
+  // v1.2-1 つなぎ（V22〜V26）
+  matchcut: `
+        <span class="camera-layer mc-a" aria-hidden="true"><i class="mc-window"></i><small>EXTERIOR</small></span>
+        <span class="camera-layer mc-b" aria-hidden="true"><i class="mc-skylight"></i><i class="mc-floor"></i><small>INTERIOR</small></span>`,
+  whip: `
+        <span class="camera-layer wp-track" aria-hidden="true">
+          <span class="wp-scene a"><i></i><small>SCENE A</small></span><span class="wp-scene b"><i></i><small>SCENE B</small></span>
+        </span>`,
+  iris: `${transitionScene}<i class="iris-ring" aria-hidden="true"></i>`,
+  washout: `${transitionScene}<span class="camera-layer wash-flash" aria-hidden="true"></span>`,
+  split: `
+        <span class="camera-layer sp-panel p1" aria-hidden="true"><i></i><small>A案</small></span>
+        <span class="camera-layer sp-panel p2" aria-hidden="true"><i></i><small>B案</small></span>
+        <span class="camera-layer sp-panel p3" aria-hidden="true"><i></i><small>C案</small></span>`,
+  // v1.2-1 カメラ（V27〜V30）
+  dollyzoom: `
+        <span class="camera-layer dz-bg" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+        <span class="camera-layer dz-ground" aria-hidden="true"></span>
+        <span class="camera-layer dz-subject" aria-hidden="true"><i></i></span>`,
+  foreground: `
+        <span class="camera-layer fg-bg" aria-hidden="true"></span>
+        <span class="camera-layer fg-building" aria-hidden="true"><i></i></span>
+        <span class="camera-layer fg-near" aria-hidden="true"><i class="fg-column"></i><i class="fg-leaves"></i></span>`,
+  topdown: `
+        <span class="camera-layer td-sky" aria-hidden="true"></span>
+        <span class="td-view" aria-hidden="true">
+          <span class="td-plane"><i class="td-road"></i><i class="td-block b1"></i><i class="td-block b2"></i><i class="td-block b3"></i><i class="td-block b4"></i><i class="td-green"></i></span>
+        </span>
+        <span class="camera-layer td-eye" aria-hidden="true"><i></i><i></i><i></i></span>
+        <small class="scene-caption td-caption"><b>PLAN</b><b>EYE LEVEL</b></small>`,
+  hyperlapse: `
+        <span class="camera-layer hl-sky" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span class="camera-layer hl-street" aria-hidden="true"><i class="hl-l"></i><i class="hl-r"></i><i class="hl-road"></i></span>
+        <span class="camera-layer hl-flicker" aria-hidden="true"></span>`,
+  // v1.2-1 建築CG（V31〜V33）
+  lightscene: `
+        <span class="camera-layer ls-room" aria-hidden="true"><i class="ls-wall"></i><i class="ls-floor"></i><i class="ls-table"></i><i class="ls-sofa"></i></span>
+        <span class="camera-layer ls-light general" aria-hidden="true"></span>
+        <span class="camera-layer ls-light task" aria-hidden="true"><i></i><i></i></span>
+        <span class="camera-layer ls-light relax" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span class="camera-layer ls-light night" aria-hidden="true"></span>
+        <i class="ls-downlights" aria-hidden="true"></i>
+        <small class="scene-caption ls-label"><b>全般</b><b>作業</b><b>くつろぎ</b><b>常夜灯</b></small>`,
+  material: `
+        <span class="camera-layer mt-bg" aria-hidden="true"></span>
+        <span class="mt-wall" aria-hidden="true"><i class="mt-f concrete"></i><i class="mt-f wood"></i><i class="mt-f metal"></i><i class="mt-f tile"></i><i class="mt-opening"></i><i class="mt-sweep"></i></span>
+        <small class="scene-caption mt-label"><b>コンクリート</b><b>木</b><b>金属</b><b>タイル</b></small>`,
+  airflow: `
+        <span class="camera-layer af-bg" aria-hidden="true"></span>
+        <svg class="af-svg" viewBox="0 0 320 180" aria-hidden="true">
+          <path class="af-section" d="M30 150 H290 M40 150 V40 H280 V150 M40 95 H280" />
+          <rect class="af-diffuser" x="90" y="40" width="26" height="5" /><rect class="af-diffuser" x="204" y="40" width="26" height="5" />
+          <rect class="af-return" x="150" y="90" width="20" height="5" />
+          <path class="af-flow supply" d="M103 46 C 100 70, 80 80, 75 92" /><path class="af-flow supply" d="M217 46 C 220 70, 240 80, 245 92" />
+          <path class="af-flow ret" d="M80 92 C 110 78, 140 82, 158 90" /><path class="af-flow ret" d="M240 92 C 210 78, 180 82, 162 90" />
+          <path class="af-flow supply" d="M103 101 C 100 125, 80 135, 75 147" /><path class="af-flow supply" d="M217 101 C 220 125, 240 135, 245 147" />
+          <path class="af-people" d="M44 146 C 110 140, 150 120, 186 128 S 250 146, 276 140" />
+        </svg>
+        <small class="scene-caption af-legend"><b class="s">給気</b><b class="r">還気</b><b class="p">人の動線</b></small>`,
   // v1.0-4 構造 → 設備 → 仕上げを段階的に重ねる（左側は仕上げを外した切り欠き）
   layers: `
         <span class="camera-layer lb-bg" aria-hidden="true"></span>
