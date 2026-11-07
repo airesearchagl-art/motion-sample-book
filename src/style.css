@@ -1088,6 +1088,180 @@ footer a { color: var(--ink); text-decoration: none; font-weight: 600; }
   footer { padding-inline: 20px; align-items: flex-start; flex-direction: column; }
 }
 
+/* ---------- v1.2-2 UI 21〜30：入る・切り替える・建築の図面を操作する ---------- */
+.ui-scene .sg-grid, .ui-scene .ac-list, .ui-scene .ft-tabs, .ui-scene .sa-steps, .ui-scene .fs-picker { display: grid; }
+.ui-scene .sr-track { display: grid; }
+.sh-phone > span { position: absolute; display: block; }
+.ui-scene .ac-row { text-align: left; }
+
+/* 21 スライドイン：右から（向き「反対」で左から）パネルが滑り込む */
+.si-page { inset: 0; background: #f6f2ea; }
+.si-bar { left: 0; right: 0; top: 0; height: 14%; background: #25231f; }
+.si-line { left: 8%; height: 5%; border-radius: 3px; background: #d9d1c2; }
+.si-line.l1 { top: 26%; width: 44%; } .si-line.l2 { top: 38%; width: 34%; } .si-line.l3 { top: 50%; width: 40%; }
+.si-panel { right: 7%; top: 22%; width: 42%; bottom: 12%; overflow: hidden; border-radius: 8px; background: #fff; box-shadow: 0 14px 30px rgba(37,35,31,.22); }
+.si-panel .ui-photo { bottom: 26%; }
+.si-title { left: 10%; bottom: 8%; font-size: .62rem; letter-spacing: .12em; color: var(--ink); }
+.ui-effect-slidein.is-playing .si-panel { animation: si-in 2.2s cubic-bezier(.2,.8,.2,1) both; }
+[data-direction="reverse"] .ui-effect-slidein .si-panel { right: auto; left: 7%; }
+[data-direction="reverse"] .ui-effect-slidein .si-line { left: auto; right: 8%; }
+[data-direction="reverse"] .ui-effect-slidein.is-playing .si-panel { animation-name: si-in-reverse; }
+@keyframes si-in { 0%, 15% { transform: translateX(120%); opacity: 0; } 65%, 100% { transform: none; opacity: 1; } }
+@keyframes si-in-reverse { 0%, 15% { transform: translateX(-120%); opacity: 0; } 65%, 100% { transform: none; opacity: 1; } }
+
+/* 22 順に現れる：時間をずらして上から順に */
+.ui-effect-stagger { background: #f6f2ea; }
+.sg-grid { inset: 12% 10%; grid-template-columns: repeat(3, 1fr); gap: 8%; }
+.ui-scene .sg-tile { position: static; border-radius: 6px; background: linear-gradient(180deg, #a9c3cf 0 58%, #f1eadb 58%); box-shadow: 0 6px 14px rgba(37,35,31,.12); }
+.ui-scene .sg-tile:nth-child(2n) { background: linear-gradient(180deg, #cf9a80 0 58%, #f1eadb 58%); }
+.ui-effect-stagger.is-playing .sg-tile { animation: sg-in .6s cubic-bezier(.2,.8,.2,1) both; animation-delay: calc(.2s + var(--i) * .16s); }
+@keyframes sg-in { from { opacity: 0; transform: translateY(18px) scale(.96); } }
+
+/* 23 スクロールで現れる：内容が上に流れ、入ってきたものから浮かぶ */
+.ui-effect-scrollreveal { background: #f6f2ea; overflow: hidden; }
+.sr-track { left: 14%; right: 14%; top: 0; gap: 14px; padding-top: 16px; }
+.ui-scene .sr-block { position: relative; display: block; height: 96px; border-radius: 6px; background: #fff; box-shadow: 0 6px 14px rgba(37,35,31,.1); overflow: hidden; }
+.sr-block b { left: 12px; top: 12px; font-size: .6rem; letter-spacing: .14em; color: var(--coral); }
+.sr-text { left: 12px; top: 34px; width: 70%; height: 8px; border-radius: 4px; background: #ddd5c6; }
+.sr-text.short { top: 50px; width: 46%; }
+.sr-scrollbar { right: 8px; top: 10%; bottom: 10%; width: 4px; border-radius: 2px; background: rgba(37,35,31,.12); }
+.sr-scrollbar i { left: 0; right: 0; top: 0; height: 30%; border-radius: 2px; background: rgba(37,35,31,.45); }
+.ui-effect-scrollreveal.is-playing .sr-track { animation: sr-scroll 2.2s cubic-bezier(.45,0,.25,1) both; }
+.ui-effect-scrollreveal.is-playing .sr-scrollbar i { animation: sr-bar 2.2s cubic-bezier(.45,0,.25,1) both; }
+.ui-effect-scrollreveal.is-playing .sr-block.b2 { animation: sr-reveal 2.2s ease both; }
+.ui-effect-scrollreveal.is-playing .sr-block.b3 { animation: sr-reveal-late 2.2s ease both; }
+@keyframes sr-scroll { from { transform: translateY(0); } to { transform: translateY(-110px); } }
+@keyframes sr-bar { to { transform: translateY(230%); } }
+@keyframes sr-reveal { 0%, 20% { opacity: 0; transform: translateY(24px); } 55%, 100% { opacity: 1; transform: none; } }
+@keyframes sr-reveal-late { 0%, 50% { opacity: 0; transform: translateY(24px); } 85%, 100% { opacity: 1; transform: none; } }
+
+/* 24 開閉（アコーディオン） */
+.ui-effect-accordion { background: #f6f2ea; }
+.ac-list { left: 12%; right: 12%; top: 14%; gap: 8px; align-content: start; }
+.ui-scene .ac-row { position: relative; display: block; min-height: 34px; padding: 10px 14px; border: 1px solid var(--line); border-radius: 6px; background: #fff; overflow: hidden; }
+.ac-row b { position: static; font-size: .7rem; font-weight: 600; color: var(--ink); }
+.ac-chev { right: 14px; top: 12px; width: 8px; height: 8px; border-right: 2px solid var(--ink); border-bottom: 2px solid var(--ink); transform: rotate(45deg); }
+.ui-scene .ac-body { position: relative; display: block; height: 52px; margin-top: 8px; }
+.ac-body i { left: 0; height: 7px; border-radius: 4px; background: #ddd5c6; }
+.ac-body i:nth-child(1) { top: 6px; width: 80%; } .ac-body i:nth-child(2) { top: 22px; width: 64%; } .ac-body i:nth-child(3) { top: 38px; width: 72%; }
+.ac-row.r2 .ac-chev { transform: rotate(225deg); top: 16px; }
+.ui-effect-accordion.is-playing .ac-body { animation: ac-open 2.2s cubic-bezier(.3,.7,.2,1) both; }
+.ui-effect-accordion.is-playing .ac-row.r2 .ac-chev { animation: ac-chev 2.2s cubic-bezier(.3,.7,.2,1) both; }
+@keyframes ac-open { 0%, 20% { height: 0; margin-top: 0; opacity: 0; } 70%, 100% { height: 52px; margin-top: 8px; opacity: 1; } }
+@keyframes ac-chev { 0%, 20% { transform: rotate(45deg); top: 12px; } 70%, 100% { transform: rotate(225deg); top: 16px; } }
+
+/* 25 下から出るシート：後ろが暗くなる */
+.ui-effect-sheet { background: #dcd5c8; }
+.sh-phone { left: 50%; top: 6%; bottom: 6%; aspect-ratio: 9 / 16; transform: translateX(-50%); overflow: hidden; border: 4px solid #25231f; border-radius: 16px; background: #fff; }
+.sh-screen { inset: 0; }
+.sh-dim { inset: 0; background: rgba(17,18,19,.45); }
+.sh-sheet { left: 0; right: 0; bottom: 0; height: 56%; border-radius: 12px 12px 0 0; background: #fffdf7; box-shadow: 0 -8px 20px rgba(0,0,0,.18); }
+.sh-handle { left: 50%; top: 6px; width: 26px; height: 4px; margin-left: -13px; border-radius: 2px; background: #cfc6b5; }
+.sh-sheet b { left: 10%; top: 18px; font-size: .62rem; color: var(--ink); }
+.sh-row { left: 10%; right: 10%; height: 6px; border-radius: 3px; background: #e2dacb; }
+.sh-row.r1 { top: 40px; } .sh-row.r2 { top: 54px; right: 30%; }
+.sh-btn { left: 10%; right: 10%; bottom: 12px; height: 16px; border-radius: 999px; background: var(--coral); }
+.ui-effect-sheet.is-playing .sh-sheet { animation: sh-up 2.2s cubic-bezier(.2,.85,.25,1) both; }
+.ui-effect-sheet.is-playing .sh-dim { animation: sh-dim 2.2s ease both; }
+@keyframes sh-up { 0%, 15% { transform: translateY(105%); } 60%, 100% { transform: none; } }
+@keyframes sh-dim { 0%, 15% { opacity: 0; } 60%, 100% { opacity: 1; } }
+
+/* 26 タブの切り替え（フェードスルー）：消えてから次が出る（重ならない） */
+.ui-effect-fadethrough { background: #fff; }
+.ft-tabs { left: 0; right: 0; top: 0; height: 18%; grid-template-columns: repeat(3, 1fr); align-items: center; border-bottom: 1px solid var(--line); background: #fffdf7; }
+.ui-scene .ft-tabs i { position: static; text-align: center; font-style: normal; font-size: .66rem; font-weight: 600; color: #827c70; }
+.ui-scene .ft-tabs i:nth-child(2) { color: var(--ink); }
+.ft-ink { left: 33.333%; width: 33.333%; bottom: -1px; height: 3px; background: var(--coral); }
+.ft-view { left: 10%; right: 10%; top: 26%; bottom: 8%; overflow: hidden; border-radius: 6px; }
+.ft-view.a { opacity: 0; }
+.ft-view.b { background: #f4efe4; border: 2px solid rgba(37,35,31,.45); }
+.ft-room { background: rgba(207,121,95,.18); border: 1.5px solid rgba(37,35,31,.4); }
+.ft-room.r1 { left: 0; top: 0; width: 45%; height: 55%; } .ft-room.r2 { left: 45%; top: 0; right: 0; height: 55%; background: rgba(49,92,112,.15); }
+.ft-room.r3 { left: 0; top: 55%; width: 30%; bottom: 0; background: rgba(143,165,136,.25); } .ft-room.r4 { left: 30%; top: 55%; right: 0; bottom: 0; }
+.ui-effect-fadethrough.is-playing .ft-view.a { animation: ft-out 2.2s ease both; }
+.ui-effect-fadethrough.is-playing .ft-view.b { animation: ft-in 2.2s ease both; }
+.ui-effect-fadethrough.is-playing .ft-ink { animation: ft-ink 2.2s cubic-bezier(.4,0,.2,1) both; }
+.ui-effect-fadethrough.is-playing .ft-tabs i:nth-child(1) { animation: ft-tab-a 2.2s steps(1, end) both; }
+.ui-effect-fadethrough.is-playing .ft-tabs i:nth-child(2) { animation: ft-tab-b 2.2s steps(1, end) both; }
+@keyframes ft-out { 0%, 20% { opacity: 1; transform: scale(1); } 45%, 100% { opacity: 0; transform: scale(.94); } }
+@keyframes ft-in { 0%, 48% { opacity: 0; transform: scale(.94); } 75%, 100% { opacity: 1; transform: scale(1); } }
+@keyframes ft-ink { 0%, 20% { left: 0; } 45%, 100% { left: 33.333%; } }
+@keyframes ft-tab-a { 0% { color: var(--ink); } 33%, 100% { color: #827c70; } }
+@keyframes ft-tab-b { 0% { color: #827c70; } 33%, 100% { color: var(--ink); } }
+
+/* 27 前後へ進む（共有軸）：左へ抜け、右から入る。向き「反対」で戻る */
+.ui-effect-sharedaxis { background: #fffdf7; }
+.sa-steps { left: 18%; right: 18%; top: 10%; height: 10px; grid-template-columns: repeat(3, 1fr); align-items: center; justify-items: center; }
+.ui-scene .sa-steps i { position: relative; z-index: 2; width: 10px; height: 10px; border-radius: 50%; background: #cfc6b5; }
+.ui-scene .sa-steps i:nth-child(-n+2) { background: var(--coral); }
+.sa-bar { left: 16.666%; top: 4px; width: 33.333%; height: 2px; background: var(--coral); }
+.sa-bar::before { content: ''; position: absolute; left: 0; top: 0; width: 200%; height: 2px; background: #e2dacb; z-index: -1; }
+.sa-page { left: 14%; right: 14%; top: 26%; bottom: 10%; }
+.sa-page b { left: 0; top: 0; font-size: .62rem; letter-spacing: .14em; color: var(--coral); }
+.sa-fig { left: 0; top: 22%; width: 44%; bottom: 0; border-radius: 6px; background: linear-gradient(180deg, #a9c3cf 0 60%, #8e9d86 60%); }
+.sa-page.b .sa-fig { background: #f4efe4; border: 2px solid rgba(37,35,31,.4); }
+.sa-text { right: 0; top: 30%; width: 44%; height: 40%; background: repeating-linear-gradient(180deg, #ddd5c6 0 6px, transparent 6px 14px); }
+.sa-page.a { opacity: 0; }
+.ui-effect-sharedaxis.is-playing .sa-page.a { animation: sa-out 2.2s cubic-bezier(.4,0,.2,1) both; }
+.ui-effect-sharedaxis.is-playing .sa-page.b { animation: sa-in 2.2s cubic-bezier(.4,0,.2,1) both; }
+.ui-effect-sharedaxis.is-playing .sa-bar { animation: sa-bar 2.2s cubic-bezier(.4,0,.2,1) both; }
+.ui-effect-sharedaxis.is-playing .sa-steps i:nth-child(2) { animation: sa-dot 2.2s steps(1, end) both; }
+[data-direction="reverse"] .ui-effect-sharedaxis.is-playing .sa-page.a { animation-name: sa-out-reverse; }
+[data-direction="reverse"] .ui-effect-sharedaxis.is-playing .sa-page.b { animation-name: sa-in-reverse; }
+@keyframes sa-out { 0%, 20% { opacity: 1; transform: none; } 50%, 100% { opacity: 0; transform: translateX(-30%); } }
+@keyframes sa-in { 0%, 40% { opacity: 0; transform: translateX(30%); } 75%, 100% { opacity: 1; transform: none; } }
+@keyframes sa-out-reverse { 0%, 20% { opacity: 1; transform: none; } 50%, 100% { opacity: 0; transform: translateX(30%); } }
+@keyframes sa-in-reverse { 0%, 40% { opacity: 0; transform: translateX(-30%); } 75%, 100% { opacity: 1; transform: none; } }
+@keyframes sa-bar { 0%, 30% { width: 0; } 70%, 100% { width: 33.333%; } }
+@keyframes sa-dot { 0% { background: #cfc6b5; } 60%, 100% { background: var(--coral); } }
+
+/* 28 注目点の脈動：輪が静かに広がり続ける */
+.hp-spot { left: var(--x); top: var(--y); width: 0; height: 0; z-index: 3; }
+.hp-dot { left: -7px; top: -7px; width: 14px; height: 14px; border-radius: 50%; background: var(--coral); box-shadow: 0 0 0 3px #fff, 0 2px 6px rgba(0,0,0,.3); }
+.hp-ring { left: -7px; top: -7px; width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--coral); opacity: 0; }
+.ui-effect-hotspot.is-playing .hp-ring { animation: hp-ring 1.1s ease-out 2 both; animation-delay: calc(var(--i) * .18s); }
+.ui-effect-hotspot.is-playing .hp-ring.r2 { animation-delay: calc(.45s + var(--i) * .18s); }
+@keyframes hp-ring { from { opacity: .9; transform: scale(1); } to { opacity: 0; transform: scale(3.6); } }
+
+/* 29 階の切り替え：重なった平面から 2F が浮き上がる */
+.ui-effect-floorswitch { background: #eef1f2; }
+.fs-stack { left: 14%; width: 54%; top: 12%; bottom: 10%; perspective: 600px; }
+.fs-floor { position: absolute; left: 0; right: 0; height: 46%; transform-origin: 50% 50%; background: rgba(255,253,247,.92); border: 2px solid rgba(37,35,31,.5); box-shadow: 0 8px 16px rgba(37,35,31,.12); }
+.fs-floor.f3 { top: 0; transform: rotateX(58deg) rotateZ(-30deg); opacity: .35; }
+.fs-floor.f2 { top: 26%; transform: rotateX(58deg) rotateZ(-30deg) translateZ(22px); }
+.fs-floor.f1 { top: 52%; transform: rotateX(58deg) rotateZ(-30deg); opacity: .35; }
+.fs-room { border: 1.5px solid rgba(37,35,31,.35); }
+.fs-room.a { left: 0; top: 0; width: 50%; height: 60%; } .fs-room.b { left: 50%; top: 0; right: 0; height: 60%; background: rgba(207,121,95,.25); } .fs-room.c { left: 0; top: 60%; right: 0; bottom: 0; }
+.fs-floor.f2 .fs-room.b { background: rgba(207,121,95,.55); }
+.fs-picker { right: 10%; top: 50%; transform: translateY(-50%); gap: 6px; }
+.ui-scene .fs-picker i { position: static; width: 34px; padding: 5px 0; text-align: center; font-style: normal; font-size: .62rem; font-weight: 700; border: 1px solid var(--line); border-radius: 6px; background: #fff; color: var(--ink); }
+.ui-scene .fs-picker i:nth-child(2) { background: var(--ink); color: #fff; }
+.ui-effect-floorswitch.is-playing .fs-floor.f2 { animation: fs-lift 2.2s cubic-bezier(.3,.7,.2,1) both; }
+.ui-effect-floorswitch.is-playing .fs-floor.f1, .ui-effect-floorswitch.is-playing .fs-floor.f3 { animation: fs-fade 2.2s ease both; }
+.ui-effect-floorswitch.is-playing .fs-picker i:nth-child(2) { animation: fs-pick 2.2s steps(1, end) both; }
+@keyframes fs-lift { 0%, 25% { transform: rotateX(58deg) rotateZ(-30deg); } 70%, 100% { transform: rotateX(58deg) rotateZ(-30deg) translateZ(22px); } }
+@keyframes fs-fade { 0%, 25% { opacity: 1; } 70%, 100% { opacity: .35; } }
+@keyframes fs-pick { 0% { background: #fff; color: var(--ink); } 25%, 100% { background: var(--ink); color: #fff; } }
+
+/* 30 平面図の部屋を強調：指した部屋に色と名前、ほかは薄く */
+.ui-effect-roomhighlight { background: #f6f2ea; }
+.rh-plan { left: 12%; right: 12%; top: 12%; bottom: 12%; background: #fffdf7; border: 3px solid #5b574e; }
+.rh-room { border: 1.5px solid #5b574e; background: transparent; }
+.rh-room.r1 { left: 0; top: 0; width: 40%; height: 55%; } .rh-room.r2 { left: 40%; top: 0; width: 34%; height: 55%; }
+.rh-room.r3 { left: 74%; top: 0; right: 0; height: 55%; } .rh-room.r4 { left: 0; top: 55%; width: 55%; bottom: 0; } .rh-room.r5 { left: 55%; top: 55%; right: 0; bottom: 0; }
+.rh-room.r2 { background: rgba(207,121,95,.4); }
+.rh-label { left: 42%; top: 22%; padding: 3px 8px; border-radius: 4px; background: var(--ink); color: #fff; font-size: .6rem; white-space: nowrap; }
+.rh-cursor { position: absolute; left: 56%; top: 34%; z-index: 5; width: 0; height: 0; border-left: 7px solid transparent; border-right: 7px solid transparent; border-bottom: 14px solid #25231f; transform: rotate(-30deg); filter: drop-shadow(0 1px 1px rgba(255,255,255,.9)); }
+.ui-effect-roomhighlight .rh-room:not(.r2) { opacity: .45; }
+.ui-effect-roomhighlight.is-playing .rh-cursor { animation: rh-cursor 2.2s cubic-bezier(.4,0,.2,1) both; }
+.ui-effect-roomhighlight.is-playing .rh-room.r2 { animation: rh-on 2.2s ease both; }
+.ui-effect-roomhighlight.is-playing .rh-room:not(.r2) { animation: rh-dim 2.2s ease both; }
+.ui-effect-roomhighlight.is-playing .rh-label { animation: rh-label 2.2s ease both; }
+@keyframes rh-cursor { 0% { left: 18%; top: 78%; } 45%, 100% { left: 56%; top: 34%; } }
+@keyframes rh-on { 0%, 45% { background: transparent; } 65%, 100% { background: rgba(207,121,95,.4); } }
+@keyframes rh-dim { 0%, 45% { opacity: 1; } 65%, 100% { opacity: .45; } }
+@keyframes rh-label { 0%, 50% { opacity: 0; transform: translateY(6px); } 70%, 100% { opacity: 1; transform: none; } }
+
 /* ---------- v1.2-1 つなぎ・カメラ・建築CG（V22〜V33） ---------- */
 /* V22 マッチカット：外壁の丸窓 → 室内の丸い天窓。同じ位置・大きさでつなぐ */
 .mc-a { background: repeating-linear-gradient(0deg, #b96f55 0 10px, #a9614a 10px 11px), #b96f55; }

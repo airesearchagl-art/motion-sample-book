@@ -63,7 +63,7 @@ export const storyTemplates: StoryTemplate[] = [
     purpose: 'study',
     slots: [
       { role: '敷地と条件', note: '敷地の位置や日照の条件', candidates: ['V20', 'V13', '20'], seconds: 4 },
-      { role: '構成の考え方', note: '平面から立体、各階の重なり', candidates: ['V14', 'V15', 'V21', 'V33'], seconds: 5 },
+      { role: '構成の考え方', note: '平面から立体、各階の重なり', candidates: ['V14', 'V15', 'V21', 'V33', '29', '30'], seconds: 5 },
       { role: '断面で内部', note: '吹抜けや階のつながり', candidates: ['V11'], seconds: 4 },
       { role: '案や前後の比較', note: 'A案B案、改修前後', candidates: ['11', 'V26', '16', 'V03', 'V32'], seconds: 4 },
       { role: '規模と数値', note: '面積・階数・寸法', candidates: ['T08', 'T09'], seconds: 3 },

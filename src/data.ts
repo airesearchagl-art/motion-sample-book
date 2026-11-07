@@ -46,6 +46,17 @@ export const samples: MotionSample[] = [
   { id: 'gridreflow', number: '18', name: 'グリッドの並び替え', english: 'Grid reflow', description: '絞り込むと、外れた画像が消え、残りが滑らかに詰まる。', category: 'quiet', categoryLabel: '静か', hint: '作品の用途別フィルター', avoid: '並び順に意味がある一覧', feel: ['整理', '滑らか', '分かりやすい'] },
   { id: 'hscroll', number: '19', name: '横スクロール', english: 'Horizontal scroll', description: '縦にスクロールすると、パネルが横に流れていく。', category: 'decorative', categoryLabel: '装飾', hint: '作品の連続表示・工程の時系列', avoid: '長い文章', feel: ['流れ', '連続', '軽快'] },
   { id: 'pindrop', number: '20', name: 'ピンが落ちる', english: 'Pin drop', description: '地図の上にマーカーが弾んで刺さり、位置を示す。', category: 'dynamic', categoryLabel: 'はっきり', hint: '敷地・物件の位置表示', avoid: '地点が多すぎる地図', feel: ['楽しい', '注目させる', '弾む'] },
+  // v1.2-2 入る・切り替える・建築の図面を操作する（100種類へ）
+  { id: 'slidein', number: '21', name: 'スライドイン', english: 'Slide in', description: '要素が横から滑り込み、少し透けた状態からはっきり現れる。', category: 'quiet', categoryLabel: '静か', hint: 'お知らせ・パネル・次の内容', avoid: '常に表示されている要素', feel: ['すっと', '自然', '軽い'] },
+  { id: 'stagger', number: '22', name: '順に現れる', english: 'Staggered list', description: 'カードが少しずつ時間をずらして、上から順に現れる。', category: 'quiet', categoryLabel: '静か', hint: '作品一覧・検索結果', avoid: '数が多すぎる一覧', feel: ['リズム', '整然', '心地よい'] },
+  { id: 'scrollreveal', number: '23', name: 'スクロールで現れる', english: 'Scroll reveal', description: 'スクロールして画面に入った内容から、ふわっと浮かび上がる。', category: 'decorative', categoryLabel: '装飾', hint: '紹介ページ・コンセプトの説明', avoid: '何度も見返す資料', feel: ['物語', '期待', 'ゆったり'] },
+  { id: 'accordion', number: '24', name: '開閉（アコーディオン）', english: 'Accordion', description: '見出しを押すと中身が下に開き、矢印が回る。', category: 'quiet', categoryLabel: '静か', hint: '仕様・よくある質問・部屋の内訳', avoid: '最初から全部読んでほしい文章', feel: ['整理', '分かりやすい', '控えめ'] },
+  { id: 'sheet', number: '25', name: '下から出るシート', english: 'Bottom sheet', description: '画面の下からシートがせり上がり、後ろが少し暗くなる。', category: 'dynamic', categoryLabel: 'はっきり', hint: 'スマートフォンの詳細・選択肢', avoid: '大きな画面の主な内容', feel: ['手元', 'すっと', '分かりやすい'] },
+  { id: 'fadethrough', number: '26', name: 'タブの切り替え（フェードスルー）', english: 'Fade through', description: '今の内容が少し縮みながら消え、次の内容が浮かび上がる。', category: 'quiet', categoryLabel: '静か', hint: 'タブ・下部のメニュー', avoid: '前後のつながりを見せたい移動', feel: ['すっきり', '落ち着き', '切り替え'] },
+  { id: 'sharedaxis', number: '27', name: '前後へ進む（共有軸）', english: 'Shared axis', description: '今の画面が左へ抜け、次の画面が右から入る。手順の進み具合も動く。', category: 'quiet', categoryLabel: '静か', hint: '手順・ページ送り・ステップの説明', avoid: '関係のない画面への切り替え', feel: ['進む', '順番', '分かりやすい'] },
+  { id: 'hotspot', number: '28', name: '注目点の脈動', english: 'Hotspot pulse', description: '写真の上の注目点から、輪が静かに広がり続ける。', category: 'dynamic', categoryLabel: 'はっきり', hint: '写真・パースの見どころ・押せる場所', avoid: '注目点が多すぎる画像', feel: ['注目させる', '誘う', '静かに'] },
+  { id: 'floorswitch', number: '29', name: '階の切り替え', english: 'Floor switch', description: '重なった各階の平面から、選んだ階が浮き上がり、ほかの階は薄くなる。', category: 'dynamic', categoryLabel: 'はっきり', hint: 'フロア案内・各階の平面計画', avoid: '1階建ての建物', feel: ['立体的', '分かりやすい', '選ぶ'] },
+  { id: 'roomhighlight', number: '30', name: '平面図の部屋を強調', english: 'Room highlight', description: '指した部屋に色が付いて名前が出て、ほかの部屋は薄くなる。', category: 'quiet', categoryLabel: '静か', hint: '平面図の説明・部屋の案内', avoid: '部屋の区切りがない大空間', feel: ['分かりやすい', '案内', '控えめ'] },
 ]
 
 export const videoSamples: Sample[] = [
@@ -125,7 +136,7 @@ export const finderWords = ['ふわっと', '一瞬で', '高級感', '勢いが
 
 /* v0.4-3 再生の調整：速度はすべての見本、強さ・向きは意味のある見本だけに効く */
 export const strengthSamples = new Set(['01', '02', '04', '05', '06', '13', '14', 'V04', 'V07', 'V17', 'V20', 'V27', 'T01', 'T03', 'T04', 'T06', 'E01', 'E02', 'E09'])
-export const directionSamples = new Set(['07', '08', '09', '12', '17', '19', 'V03', 'V05', 'V06', 'V08', 'V09', 'V12', 'V13', 'V16', 'V21', 'V23', 'V28', 'T05', 'E03', 'E04', 'E08'])
+export const directionSamples = new Set(['21', '27', '07', '08', '09', '12', '17', '19', 'V03', 'V05', 'V06', 'V08', 'V09', 'V12', 'V13', 'V16', 'V21', 'V23', 'V28', 'T05', 'E03', 'E04', 'E08'])
 
 export type Setting = 'speed' | 'strength' | 'direction'
 export const settingOptions: Record<Setting, { label: string, options: [string, string][] }> = {

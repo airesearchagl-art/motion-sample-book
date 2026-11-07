@@ -173,6 +173,84 @@ items.forEach((el) => { const a = before.get(el), b = el.getBoundingClientRect()
     prompt: 'Map markers drop and bounce onto a site plan to show building locations, playful but clean UI animation',
   },
 
+  /* ---------- v1.2-2 UI 21〜30 ---------- */
+  '21': {
+    css: `@keyframes slide-in { from { transform: translateX(120%); opacity: 0; } }
+.panel { animation: slide-in .6s cubic-bezier(.2,.8,.2,1) both; } /* 左からは translateX(-120%) */`,
+    edit: 'After Effects：パネルの位置Xを画面の外から定位置へ、不透明度を 0→100% に（イージーイーズ）。Premiere Pro：「モーション」の位置にキー',
+    powerpoint: '開始効果「スライドイン」（効果のオプション：右から）。少し透けた状態から出すなら、開始効果「フェード」を「直前の動作と同時」に重ねる',
+    prompt: 'A UI card panel slides in smoothly from the right edge of the screen and settles into place, clean and minimal',
+  },
+  '22': {
+    css: `@keyframes rise { from { opacity: 0; transform: translateY(18px) scale(.96); } }
+.tile { animation: rise .5s cubic-bezier(.2,.8,.2,1) both; animation-delay: calc(var(--i) * .08s); }`,
+    edit: 'After Effects：カードのレイヤーに同じアニメーション（位置Y＋不透明度）を付け、「シーケンスレイヤー」やレイヤーを数フレームずつずらして順に出す',
+    powerpoint: '各カードに開始効果「フェード」（またはライズアップ）を付け、2つ目以降を「直前の動作の後」、遅延 0.1 秒で順に',
+    prompt: 'A grid of architecture project cards appears one by one in a staggered sequence, each card fading and rising slightly',
+  },
+  '23': {
+    css: `/* 画面に入ったら .is-visible を付ける */
+new IntersectionObserver((entries) => entries.forEach((e) => e.target.classList.toggle('is-visible', e.isIntersecting)), { threshold: .2 }).observe(el);
+.block { opacity: 0; transform: translateY(24px); transition: .7s ease; } .block.is-visible { opacity: 1; transform: none; }`,
+    edit: 'After Effects：画面全体を上へ流すスクロールのキー（位置Y）に合わせて、各ブロックの不透明度と位置Yのキーを順に置く',
+    powerpoint: '縦長のスライドの内容を、ブロックごとに開始効果「フェード」（またはライズアップ）を「クリック時」で出す（スクロールの代わりにクリックで進める）',
+    prompt: 'A long architecture website page scrolls down, and each section of text and images softly fades up as it enters the screen',
+  },
+  '24': {
+    css: `/* details と summary を使うと、開閉は標準で動く。高さの動きは grid-template-rows で付ける */
+.body { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .3s ease; } .is-open .body { grid-template-rows: 1fr; }
+.body > div { overflow: hidden; } .is-open .chev { transform: rotate(180deg); }`,
+    edit: 'After Effects：中身のレイヤーにマスクを付け、マスクの下端を下へ伸ばす（同時に下の行の位置Yも下げる）。矢印の回転にキー',
+    powerpoint: '中身の図形に開始効果「ワイプ」（効果のオプション：上から）。下の行は軌跡「直線（下へ）」で同時に下げる',
+    prompt: 'A clean accordion list of building specifications, one row expands downward to reveal its details while its arrow rotates',
+  },
+  '25': {
+    css: `@keyframes up { from { transform: translateY(105%); } } @keyframes dim { from { opacity: 0; } }
+.sheet { animation: up .45s cubic-bezier(.2,.85,.25,1) both; } .backdrop { background: rgb(0 0 0 / .45); animation: dim .45s both; }`,
+    edit: 'After Effects：シートの位置Yを画面の下から上へ（オーバーシュート少し）、後ろに黒の平面の不透明度 0→45% を同時に',
+    powerpoint: 'シートの図形に開始効果「スライドイン」（下から）、全面の黒い四角（透過50%程度）に開始効果「フェード」を「直前の動作と同時」に',
+    prompt: 'On a smartphone screen, a bottom sheet with room details slides up from the bottom while the background dims slightly',
+  },
+  '26': {
+    css: `/* 前の内容を縮めながら消し、消えきってから次を出す（重ねない） */
+@keyframes out { to { opacity: 0; transform: scale(.94); } } @keyframes in { from { opacity: 0; transform: scale(.94); } }
+.old { animation: out .09s ease both; } .new { animation: in .21s .09s ease both; }`,
+    edit: 'After Effects：前の内容の不透明度とスケール（100→94%）を短く下げ、消えたあとで次の内容を 94→100% に上げる（2つを重ねない）',
+    powerpoint: 'タブごとにスライドを分け、画面切り替え「フェード」（効果のオプション：スムーズ）を短め（0.3 秒）に',
+    prompt: 'A tab bar with exterior, plan and section; switching tabs makes the current content shrink and fade out before the next content fades in',
+  },
+  '27': {
+    css: `@keyframes out { to { opacity: 0; transform: translateX(-30%); } } @keyframes in { from { opacity: 0; transform: translateX(30%); } }
+.old { animation: out .3s cubic-bezier(.4,0,.2,1) both; } .new { animation: in .3s .1s cubic-bezier(.4,0,.2,1) both; }`,
+    edit: 'After Effects：前の画面を左へ少し動かしながら不透明度を下げ、次の画面を右から少し動かして出す。手順の線（シェイプ）の幅にキー',
+    powerpoint: '手順ごとにスライドを分け、画面切り替え「プッシュ」（効果のオプション：右から）。手順の線は「変形」で伸ばす',
+    prompt: 'A step-by-step guide, the current step slides left and fades while the next step slides in from the right, and the progress line grows',
+  },
+  '28': {
+    css: `@keyframes ring { from { opacity: .9; transform: scale(1); } to { opacity: 0; transform: scale(3.6); } }
+.ring { border: 2px solid; border-radius: 50%; animation: ring 1.1s ease-out infinite; } .ring + .ring { animation-delay: .45s; }`,
+    edit: 'After Effects：円のシェイプのスケール（100→360%）と不透明度（90→0%）にキーを打ち、ループ（loopOut()）。2つの輪を半分ずらす',
+    powerpoint: '注目点の円に強調「パルス」を「繰り返し：スライドの最後まで」で。外側の輪は、開始効果「ズーム」と終了効果「フェード」を組み合わせる',
+    prompt: 'Hotspot markers on an architectural photo, each emitting a soft pulsing ring that expands and fades, inviting the viewer to look',
+  },
+  '29': {
+    css: `/* 各階を rotateX・rotateZ で寝かせて重ね、選んだ階だけ translateZ で持ち上げる */
+.floor { transform: rotateX(58deg) rotateZ(-30deg); transition: transform .5s, opacity .5s; }
+.floor:not(.is-active) { opacity: .35; } .floor.is-active { transform: rotateX(58deg) rotateZ(-30deg) translateZ(22px); }`,
+    edit: 'After Effects：各階の平面を 3D レイヤーにして重ね、選んだ階の位置Z（または位置Y）を上げ、ほかの階の不透明度を下げる',
+    powerpoint: '各階の平面図を斜めに重ねて置き、選ぶ階に軌跡「直線（上へ）」、ほかの階に強調「透過性」（効果のオプション：50%）',
+    cg: 'SketchUp：階ごとにタグを分け、選んだ階だけを上へ移動したシーンと、ほかの階を非表示（または X線）にしたシーンを作る',
+    prompt: 'An exploded axonometric of stacked floor plans; the selected second floor lifts up from the stack while the other floors fade, clean diagram style',
+  },
+  '30': {
+    css: `/* 部屋ごとに要素（SVG の path なら hover）を作り、指した部屋に色と名前、ほかは薄く */
+.plan:hover .room { opacity: .45; } .plan .room:hover { opacity: 1; fill: rgb(207 121 95 / .4); }
+.room:hover + .label { opacity: 1; transform: none; }`,
+    edit: 'After Effects：部屋ごとのシェイプの塗り（不透明度）にキーを打ち、カーソルの位置の動きに合わせて色を付け、部屋名のテキストを出す',
+    powerpoint: '部屋の図形に強調「塗りつぶしの色」、ほかの部屋に強調「透過性」、部屋名のテキストに開始効果「フェード」を同時に',
+    prompt: 'An architectural floor plan, a cursor moves over a meeting room which fills with a warm color and shows its name and area, while other rooms fade',
+  },
+
   /* ---------- 動画・カメラ ---------- */
   V01: {
     css: '/* 切り替え時に、次の画面を0秒で表示するだけ */\n.scene-b { opacity: 0; } .scene-b.is-active { opacity: 1; }',
