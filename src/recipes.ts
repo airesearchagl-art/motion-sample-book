@@ -239,7 +239,7 @@ new IntersectionObserver((entries) => entries.forEach((e) => e.target.classList.
 .floor:not(.is-active) { opacity: .35; } .floor.is-active { transform: rotateX(58deg) rotateZ(-30deg) translateZ(22px); }`,
     edit: 'After Effects：各階の平面を 3D レイヤーにして重ね、選んだ階の位置Z（または位置Y）を上げ、ほかの階の不透明度を下げる',
     powerpoint: '各階の平面図を斜めに重ねて置き、選ぶ階に軌跡「直線（上へ）」、ほかの階に強調「透過性」（効果のオプション：50%）',
-    cg: 'SketchUp：階ごとにタグを分け、選んだ階だけを上へ移動したシーンと、ほかの階を非表示（または X線）にしたシーンを作る',
+    cg: 'SketchUp：階ごとにタグを分け、選んだ階を上へずらした複製を別のタグで用意して、表示するタグを切り替えたシーンを作る（グループの位置はシーンに保存されない。切り替えは瞬時）。ほかの階は非表示にするか、面スタイル「X 線」のスタイルを保存してシーンに割り当てる',
     prompt: 'An exploded axonometric of stacked floor plans; the selected second floor lifts up from the stack while the other floors fade, clean diagram style',
   },
   '30': {
@@ -441,7 +441,7 @@ new IntersectionObserver((entries) => entries.forEach((e) => e.target.classList.
 @keyframes cut { 0%, 49% { opacity: 0; } 50%, 100% { opacity: 1; } }`,
     edit: 'Premiere Pro：2つのクリップをカットでつなぎ、後ろのクリップの「モーション」の位置とスケールで、丸い形が前のクリップと同じ位置・大きさに来るように合わせる。つなぎ目の前後に少しだけスケールのキーを入れると自然',
     powerpoint: '2枚のスライドで、丸い形（窓と天窓）を同じ位置・同じ大きさに置く（「配置」やスマートガイドで揃える）。画面切り替えは「なし」か短い「フェード」',
-    cg: 'SketchUp／D5 Render：2つの視点（外観の丸窓、室内の天窓）で、丸い形が画面の同じ位置・大きさに来るようにカメラを置いて書き出し、編集ソフトでカットでつなぐ',
+    cg: 'D5 Render：外観の丸窓と室内の天窓を、丸が画面の同じ位置・大きさに来るように視点を合わせ、画像モード（または動画モードのクリップ2本）で別々に書き出す。つなぎは編集ソフトでカット／SketchUp：2つの視点のシーンを作り、同じように丸の位置・大きさを合わせて書き出す',
     prompt: 'Match cut: a round window on a brick facade, then a cut to a round skylight inside the building in exactly the same position and size in the frame, smooth and elegant transition',
   },
   V23: {
@@ -449,18 +449,18 @@ new IntersectionObserver((entries) => entries.forEach((e) => e.target.classList.
 .track { animation: move 2.2s cubic-bezier(.85,0,.15,1) both, blur 2.2s cubic-bezier(.85,0,.15,1) both; }
 @keyframes move { 0%, 25% { transform: translateX(0); } 75%, 100% { transform: translateX(-50%); } }
 @keyframes blur { 50% { filter: blur(10px); } }`,
-    edit: 'After Effects：前後のクリップを並べて位置にキーを打ち、つなぎ目の前後数フレームで速く動かして「ブラー（方向）」（方向 90°）をかける。Premiere Pro では同じく「モーション」の位置にキーと「ブラー（方向）」',
+    edit: 'After Effects：前後のクリップを並べて位置にキーを打ち、つなぎ目の前後数フレームで速く動かして「ブラー(方向）」（方向 90°）をかける。Premiere Pro では同じく「モーション」の位置にキーと「ブラー (方向)」',
     powerpoint: '画面切り替え「プッシュ」（効果のオプション：右から）を、期間 0.3〜0.5 秒と短めに',
-    cg: 'D5 Render／Lumion／Twinmotion：2本の動画を書き出し、つなぎ目は編集ソフトで作る（カメラを速く振ったクリップを最後と最初に少し足すと自然）',
+    cg: 'D5 Render：動画モードでクリップを2本作り、前のクリップの最後と次のクリップの最初にカメラを横へ速く振るキーフレームを足して書き出す。つなぎと方向ブラーは編集ソフトで足す／Lumion・Twinmotion：同じように2本の動画を書き出し、つなぎ目は編集ソフトで作る',
     prompt: 'A fast whip pan from a building exterior to the next scene, strong horizontal motion blur in the middle of the camera move, energetic transition',
   },
   V24: {
     css: `/* 次の場面を円で切り抜き、中央から広げる */
 .scene-b { clip-path: circle(0% at 50% 50%); animation: iris 2.2s cubic-bezier(.65,0,.35,1) both; }
 @keyframes iris { 15% { clip-path: circle(0% at 50% 50%); } 85%, 100% { clip-path: circle(75% at 50% 50%); } }`,
-    edit: 'Premiere Pro：トランジション「アイリス（円形）」（中心を注目点に動かせる）／After Effects：次のクリップに楕円のマスクを付け、マスクの拡張にキー',
+    edit: 'Premiere Pro：ビデオトランジション「アイリス (円形)」（レガシー）／After Effects：次のクリップに楕円のマスクを付け、マスクの拡張にキー',
     powerpoint: '画面切り替え「図形」（効果のオプション：円）',
-    cg: 'D5 Render／SketchUp：不可（書き出した画像・動画を編集ソフトかPowerPointでつなぐ）',
+    cg: 'D5 Render：不可（動画モードにクリップ間のトランジションがない）。前後の視点を書き出し、編集ソフトの「アイリス (円形)」や PowerPoint の画面切り替え「図形」（円）でつなぐ／SketchUp：不可（同じく書き出してつなぐ）',
     prompt: 'Iris transition: the next scene of a building interior opens from a small circle at the center of the frame and expands to fill the screen',
   },
   V25: {
@@ -470,7 +470,7 @@ new IntersectionObserver((entries) => entries.forEach((e) => e.target.classList.
 @keyframes flash { 0%, 10% { opacity: 0; } 46%, 54% { opacity: 1; } 90%, 100% { opacity: 0; } }`,
     edit: 'Premiere Pro：トランジション「ホワイトアウト」（白みを長くするならデュレーションを長めに）／After Effects：白の平面レイヤーの不透明度にキーを打ち、前のクリップの「露光量」も上げる',
     powerpoint: '画面切り替え「フラッシュ」、または白い四角形を全面に置いて開始効果「フェード」→ 次のスライドへ',
-    cg: 'D5 Render：露出（Exposure）を上げたキーで白く飛ばした動画を書き出し、つなぎは編集ソフトで作る',
+    cg: 'D5 Render：動画モードで同じ視点のキーフレームを2つ置き、2つ目のキーを選んで Inspector の Property「Exposure Compensation」を上げる（例 5）。白く飛んだところで次のクリップへ、つなぎは編集ソフトで',
     prompt: 'The image of a building washes out into bright white light, and the next scene of a morning interior emerges from the glow, dreamy time-skip transition',
   },
   V26: {
@@ -478,9 +478,9 @@ new IntersectionObserver((entries) => entries.forEach((e) => e.target.classList.
 .p2 { animation: two 2.2s both; } .p3 { animation: three 2.2s both; }
 @keyframes two { 40%, 55% { clip-path: inset(0 0 0 50%); } 85%, 100% { clip-path: inset(0 33.3% 0 33.3%); } }
 @keyframes three { 0%, 55% { clip-path: inset(0 0 0 100%); } 85%, 100% { clip-path: inset(0 0 0 66.7%); } }`,
-    edit: 'Premiere Pro：3つのクリップを上下のトラックに重ね、「エフェクト」の「クロップ」で幅を切り、「モーション」の位置で並べる（左右の切り抜きにキーを打つと分割していく動きになる）',
+    edit: 'Premiere Pro：3つのクリップを上下のトラックに重ね、エフェクト「クロップ」（レガシー。「モーション」の切り抜きでも可）で幅を切り、「モーション」の位置で並べる（左右の切り抜きにキーを打つと分割していく動きになる）',
     powerpoint: '3つの画像を横に並べて置き、開始効果「ワイプ」（効果のオプション：左から）を「直前の動作の後」で順に。境目に細い白線を引く',
-    cg: 'D5 Render／SketchUp：案ごとに同じ視点の画像・動画を書き出し、編集ソフトかPowerPointで並べる',
+    cg: 'D5 Render：不可（1つの画面に複数の視点を並べられない）。案ごとに同じ視点の画像・動画を書き出し、編集ソフトの「クロップ」や PowerPoint で並べる／SketchUp：同じく案ごとに書き出して並べる',
     prompt: 'Split screen showing three design options of the same building side by side, each panel slides in one after another, clean white dividers',
   },
   V27: {
@@ -489,7 +489,7 @@ new IntersectionObserver((entries) => entries.forEach((e) => e.target.classList.
 @keyframes dolly-zoom { to { transform: scale(1.7); } }`,
     edit: 'After Effects：3D カメラの位置（Z）を被写体から離しながら、カメラの「ズーム」を上げて被写体の大きさを保つ（2つのキーを同時に打つ）。合成なら、背景のレイヤーだけ「スケール」を上げる',
     powerpoint: '背景の画像に強調「拡大/収縮」（例 150%）を、手前の建物（背景を削除した画像）は動かさずに重ねる',
-    cg: 'SketchUp：カメラを後ろに引いたシーンと、「カメラ」>「視野」を狭くしたシーンを作り、遷移で切り替える／D5 Render：カメラを引きながら視野角（FOV）を狭めたキーフレームを2つ置く',
+    cg: 'D5 Render：動画モードで、被写体に近い位置のキーフレーム（FOV 90° など）を置く。カメラを後ろへ引いて2つ目のキーを置き、そのキーを選んで Inspector の「FOV (Horizontal)」を、被写体が同じ大きさに見えるまで狭める（例 40°。途中で被写体が少し小さくなる）／SketchUp：カメラを後ろに引いたシーンと、「カメラ」>「視野」を狭くしたシーンを作り、遷移で切り替える',
     prompt: 'Dolly zoom (vertigo effect): the building in the foreground stays the same size while the background city appears to stretch and rush toward the camera, dramatic',
   },
   V28: {
@@ -499,7 +499,7 @@ new IntersectionObserver((entries) => entries.forEach((e) => e.target.classList.
 @keyframes out { to { transform: translateX(-82%); } } @keyframes drift { from { transform: translateX(6%) scale(1.04); } }`,
     edit: 'After Effects：手前（ぼかした柱や葉）・奥（建物）を別レイヤーにし、手前の位置を大きく、奥を少しだけ動かす（「ブラー（ガウス）」で手前をぼかす）。実写なら、柱の陰からカメラを横に動かして撮る',
     powerpoint: '手前の柱の画像（ぼかし）に終了効果「スライドアウト」（左へ）、奥の建物の画像に強調「拡大/収縮」（少し縮小）を同時に',
-    cg: 'D5 Render／Lumion／Twinmotion：手前に柱や木がある位置から、横へ動くカメラのキーフレーム（またはパス）を置く。被写界深度で手前をぼかすと前景らしくなる／SketchUp：柱の陰の視点と、抜けた視点のシーンを2つ作る',
+    cg: 'D5 Render：手前に柱や木がある位置にキーフレームを置き、カメラを横へ動かして2つ目のキーを置く（前景が大きく、奥が少しだけ動く）。被写界深度（Depth of Field）で手前をぼかすと前景らしくなる／Lumion・Twinmotion：同じように横へ動くカメラのキーフレーム（またはパス）を置く／SketchUp：柱の陰の視点と、抜けた視点のシーンを2つ作る',
     prompt: 'The camera slides out from behind a blurred column and tree leaves in the foreground, revealing the building facade behind, cinematic parallax reveal',
   },
   V29: {
@@ -509,7 +509,7 @@ new IntersectionObserver((entries) => entries.forEach((e) => e.target.classList.
 @keyframes descend { from { transform: rotateX(0) scale(1); } to { transform: translateY(18%) rotateX(74deg) scale(1.9); } }`,
     edit: 'After Effects：配置図を 3D レイヤーにし、「X 回転」を 0° から 70° 前後へ、同時に 3D カメラを下げる。最後に目線のパースへクロスディゾルブ',
     powerpoint: '配置図のスライドと目線のパースのスライドを、画面切り替え「ズーム」（または同じ建物を置いて「変形」）でつなぐ',
-    cg: 'D5 Render：真上から見下ろすキーフレームと、人の目線の高さのキーフレームを置く（間は自動でつながる）／SketchUp：「上」（平面）と目線のシーンを作り、遷移の時間を長めに',
+    cg: 'D5 Render：真上から見下ろすキーフレームと、人の目線の高さのキーフレームを置く（間は自動でつながる）／SketchUp：標準ビュー「平面」と目線のシーンを作り、モデル情報の「アニメーション」で「シーンの切り替え」の秒数を長めに',
     prompt: 'The camera starts directly above the site plan looking straight down, then smoothly tilts and descends to eye level in front of the building',
   },
   V30: {
@@ -519,7 +519,7 @@ new IntersectionObserver((entries) => entries.forEach((e) => e.target.classList.
 @keyframes lapse { to { transform: scale(1.9); } } @keyframes cloud { to { transform: translateX(-160%); } }`,
     edit: 'Premiere Pro：歩きながら撮った（または一定間隔で撮った）素材の「速度・デュレーション」を 1000% 前後に上げ、エフェクト「ワープスタビライザー」で揺れを抑える',
     powerpoint: '少しずつ前に進んだ数枚の画像を、画面切り替え「なし」・自動で 0.2 秒ごとに切り替える（コマ送り）',
-    cg: 'D5 Render／Lumion／Twinmotion：アプローチに沿った長いカメラパスで書き出し、編集ソフトで速度を上げる。空の雲や人の動きも速くなるように、時刻や雲の速さを上げておく',
+    cg: 'D5 Render：動画モードでアプローチに沿ってキーフレームを並べ（Edit Path で経路を調整）、1つ目のキーの前に朝、最後のキーの前に夕方の時刻を設定してから置く（時刻はキーごとに記録され補間される）。雲は Cloud の Global Settings「Speed」を上げる。書き出した動画を編集ソフトで速める／Lumion・Twinmotion：アプローチに沿った長いカメラパスで書き出し、編集ソフトで速度を上げる',
     prompt: 'Hyperlapse walking along a street toward the building, the camera moves forward in quick steps, clouds and people rush by, time passing fast',
   },
   V31: {
@@ -529,7 +529,7 @@ new IntersectionObserver((entries) => entries.forEach((e) => e.target.classList.
 @keyframes s2 { 0%, 18% { opacity: 0; } 28%, 45% { opacity: 1; } 55%, 100% { opacity: 0; } }`,
     edit: 'After Effects／Premiere Pro：照明シーンごとに書き出した同じ視点の画像を重ね、「クロスディゾルブ」（または不透明度のキー）で順に切り替え、シーン名のテロップを添える',
     powerpoint: '照明シーンごとの画像を同じ位置に重ね、開始効果「フェード」を「直前の動作の後」で順に（またはスライドを分けて画面切り替え「フェード」）',
-    cg: 'D5 Render：照明（ライト）の強さ（Intensity）と色温度を変えたシーンごとに、同じ視点の画像を書き出す（動画ならキーフレームごとに変える）／SketchUp：照明の計算はできないため、レンダリングソフトで作る',
+    cg: 'D5 Render：ライトの強さ（Intensity）と色温度（Temperature）を変えるごとに、同じ視点の画像を書き出す（動画モードではライトの強さ・色温度を変えられないので、画像を編集ソフトでつなぐ）／SketchUp：照明の計算はできないため、レンダリングソフトで作る',
     prompt: 'The same living room interior with the camera locked, the lighting changes from bright general lighting, to task lights over the table, to warm relaxing wall-washing light, to a dim night light',
   },
   V32: {
@@ -539,7 +539,7 @@ new IntersectionObserver((entries) => entries.forEach((e) => e.target.classList.
 .sweep { animation: sweep .73s linear 3; } @keyframes sweep { from { left: 0; } to { left: 100%; } }`,
     edit: 'After Effects：仕上げごとに書き出した同じ視点の画像を重ね、上の画像に「リニアワイプ」（変換終了にキー）で順に入れ替える。境目に細い光の線を添える',
     powerpoint: '仕上げごとの画像を同じ位置に重ね、開始効果「ワイプ」（効果のオプション：左から）を「直前の動作の後」で順に。仕上げ名のテキストも切り替える',
-    cg: 'D5 Render：外壁のマテリアルを差し替えた同じ視点の画像を書き出す（仕上げごとに）／SketchUp：シーンはマテリアルを保存しないため、仕上げごとの面をタグで分け、シーンで表示するタグを切り替える',
+    cg: 'D5 Render：通常の画面でマテリアルピッカー（I キー）で外壁を選び、仕上げのマテリアルを差し替えるたびに、同じ視点（画像モード）で1枚ずつ書き出す（動画モードではマテリアルを変えられない）／SketchUp：シーンはマテリアルを保存しないため、仕上げごとの面をタグで分け、シーンで表示するタグを切り替える',
     prompt: 'The same building facade with the camera locked, the exterior finish changes one after another from exposed concrete to wood, to metal panels, to tiles, with a thin light sweep at each change',
   },
   V33: {
@@ -547,8 +547,8 @@ new IntersectionObserver((entries) => entries.forEach((e) => e.target.classList.
 .flow { fill: none; stroke-dasharray: 6 7; animation: flow .55s linear infinite; }
 @keyframes flow { from { stroke-dashoffset: 26; } to { stroke-dashoffset: 0; } }`,
     edit: 'After Effects：断面図の上に、シェイプレイヤーで流れの曲線を描き、線を破線にして「破線」の「オフセット」にキー（または「パスのトリミング」で伸ばす）。給気は青、還気は赤に',
-    powerpoint: '断面図の上に曲線の矢印を描き、開始効果「ワイプ」（効果のオプション：流れの向き）を「直前の動作の後」で順に。人の動線は点線で',
-    cg: 'D5 Render：不可（気流の計算はできない。気流解析（CFD）ソフトの結果の流線を画像・動画で書き出して重ねる）／SketchUp：流れの曲線をタグで分け、シーンで順に表示する',
+    powerpoint: '断面図の上に曲線の矢印を描き、開始効果「ワイプ」（効果のオプションは上下左右の4方向だけなので、流れに近い向きを選ぶ）を「直前の動作の後」で順に。人の動線は点線で',
+    cg: 'D5 Render：不可（気流の計算はできない）。気流解析（CFD）ソフトの結果の流線を画像・動画で書き出して重ねるか、流線を線のモデルとして読み込んで表示を切り替える／SketchUp：流れの曲線をタグで分け、シーンで順に表示する',
     prompt: 'A clean architectural section diagram: blue supply air streams flow down from ceiling diffusers, red return air flows back to the return grille, and a dotted green line shows how people move through the space',
   },
 
