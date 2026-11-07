@@ -628,6 +628,61 @@ const run = (el, to, ms) => { const t0 = performance.now(); const step = (t) => 
     cg: 'SketchUp：「テキスト」ツールで引き出し線付きの注記を付け、注記の有無でシーンを分ける／Twinmotion・Lumion：書き出した画像に後から注記／D5 Render：不可（SketchUpのテキスト（注記）は読み込まれず、D5に注記ツールもない。書き出した画像・動画に後から追記）',
     prompt: 'Leader callouts appear on an architectural rendering: a dot, a thin line and a label naming the facade material, one after another',
   },
+  /* ---------- v1.2-3 文字・数値（T11〜T17） ---------- */
+  T11: {
+    css: `@keyframes blur-in { from { opacity: 0; filter: blur(12px); transform: scale(1.06); } }
+.char { display: inline-block; animation: blur-in 1.2s cubic-bezier(.2,.7,.2,1) both; animation-delay: calc(var(--i) * .07s); }`,
+    edit: 'After Effects：テキストに「ブラー（ガウス）」をかけ、ブラーの量を 30→0、不透明度を 0→100% に。文字ごとにずらすならテキストアニメーターの「ブラー」と範囲セレクター',
+    powerpoint: '開始効果「フェード」に、テキストの「ぼかし」はアニメーションできないため、ぼかした文字の画像とはっきりした文字を重ね、ぼかしの方に終了効果「フェード」・はっきりした方に開始効果「フェード」を同時に',
+    prompt: 'A Japanese title slowly comes into focus from a soft blur, letter by letter, calm and elegant opening title',
+  },
+  T12: {
+    css: `/* 言葉を縦に並べ、枠からはみ出た分を隠して、上へ送る */
+.slot { display: inline-block; height: 1.3em; overflow: hidden; } .roll b { display: block; height: 1.3em; }
+.roll { animation: roll 6s cubic-bezier(.7,0,.3,1) infinite; } @keyframes roll { 33% { transform: translateY(-1.3em); } 66% { transform: translateY(-2.6em); } }`,
+    edit: 'After Effects：入れ替える言葉を縦に並べた1つのテキストにマスクを付け、位置Yを1行ずつ上げるキーを（イージーイーズ）',
+    powerpoint: '言葉ごとのテキストボックスを同じ位置に重ね、前の言葉に終了効果「スライドアウト」（上へ）・次の言葉に開始効果「スライドイン」（下から）を「直前の動作と同時」に',
+    prompt: 'A Japanese phrase where only one word keeps rolling up and changing — work, gather, relax — kinetic typography, clean background',
+  },
+  T13: {
+    css: `/* 帯をグラデーションで描き、background-size を 0→100% に */
+mark { background: linear-gradient(transparent 58%, rgb(234 107 77 / .42) 58% 92%, transparent 92%) no-repeat 0 0 / 0% 100%; transition: background-size 1s cubic-bezier(.6,0,.3,1); }
+.is-visible mark { background-size: 100% 100%; }`,
+    edit: 'After Effects：言葉の下に半透明の長方形（シェイプ）を置き、「パスのトリミング」または長方形のスケールX（アンカーは左端）を 0→100% に',
+    powerpoint: '言葉の下に半透明の四角形を置き、開始効果「ワイプ」（効果のオプション：左から）',
+    prompt: 'A highlighter marker stroke is drawn from left to right under the key phrase in a Japanese sentence, simple clean presentation style',
+  },
+  T14: {
+    css: `/* JS：ランダムな文字に入れ替えながら、左から順に正しい文字に決める */
+const step = (p) => el.textContent = [...target].map((c, i) => i < p * target.length ? c : chars[Math.random() * chars.length | 0]).join('');
+// requestAnimationFrame で p を 0→1 に`,
+    edit: 'After Effects：テキストアニメーターの「文字のオフセット」（または「文字の値」）を追加し、範囲セレクターの開始を 0→100% に動かすと、決まっていない文字がランダムに変わる',
+    powerpoint: '標準機能ではできない。ランダムな文字のテキストを数枚重ね、画面切り替え「なし」で短く自動切り替えし、最後に正しい文字のスライド',
+    prompt: 'Digital text scramble effect: random letters and numbers flicker rapidly and lock into place from left to right, revealing a project code',
+  },
+  T15: {
+    css: `@keyframes bar { from { clip-path: inset(0 100% 0 0); } } @keyframes text { from { opacity: 0; transform: translateX(-10px); } }
+.lower-third { animation: bar .6s cubic-bezier(.2,.8,.2,1) both; } .title { animation: text .4s .35s both; } .sub { animation: text .4s .5s both; }`,
+    edit: 'Premiere Pro：「テキスト」パネル（またはグラフィックテンプレート）で帯と文字を作り、帯に「クロップ」の右にキー、文字の不透明度と位置にキー。After Effects なら帯のマスクと文字の位置',
+    powerpoint: '帯の四角形に開始効果「ワイプ」（左から）、名前と場所のテキストに開始効果「フェード」を「直前の動作の後」で順に',
+    prompt: 'A clean lower-third title bar slides in at the bottom left of an architecture video, showing the building name and location in Japanese',
+  },
+  T16: {
+    css: `@keyframes grow { from { transform: scaleY(0); } }
+.bar { height: var(--h); transform-origin: bottom; animation: grow .8s cubic-bezier(.2,.8,.2,1) both; animation-delay: calc(var(--i) * .15s); }`,
+    edit: 'After Effects：棒ごとの長方形のスケールY（アンカーは下端）を 0→100% に、棒ごとに数フレームずつずらす。数値は「番号」エフェクトかテキストのソーステキストにキー',
+    powerpoint: 'グラフ（棒グラフ）に開始効果「ワイプ」（下から）、効果のオプションの「連続」を「系列別」または「項目別」に',
+    prompt: 'An animated bar chart of floor areas per level, bars grow upward one after another and their values appear, clean infographic style',
+  },
+  T17: {
+    css: `/* SVG の円に pathLength="100" を付け、stroke-dasharray を 0 100 → 32 100 に */
+.ring { fill: none; stroke-width: 10; stroke-linecap: round; stroke-dasharray: 32 100; transform: rotate(-90deg); animation: draw 1.6s cubic-bezier(.2,.7,.2,1) both; }
+@keyframes draw { from { stroke-dasharray: 0 100; } }`,
+    edit: 'After Effects：楕円のシェイプの線に「パスのトリミング」を追加し、終了を 0→32% に。中央の数字は「番号」エフェクト（またはソーステキストのエクスプレッション）で 0→32',
+    powerpoint: '円グラフ（ドーナツ）に開始効果「ホイール」、または円弧（ブロック円弧）に開始効果「ホイール」。中央の数字は別のテキストで「フェード」',
+    prompt: 'A donut ring chart fills to 32 percent with a smooth stroke animation while the number in the center counts up, green ratio for planting rate',
+  },
+
 
   /* ---------- 環境の動き（v1.0-3）：建物とカメラは止め、環境だけを動かす ---------- */
   E01: {

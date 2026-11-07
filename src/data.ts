@@ -111,6 +111,14 @@ export const textSamples: Sample[] = [
   { id: 'counter', number: 'T08', name: '数字のカウントアップ', english: 'Count up', description: '数字が0から回り、面積・階数・高さの値で止まる。', categoryLabel: 'リズム', hint: '延床面積・階数・高さ・戸数', avoid: '正確に読ませたい表', feel: ['勢いがある', 'スケール感', '注目させる'] },
   { id: 'dimension', number: 'T09', name: '寸法線と一緒に表示', english: 'Dimension reveal', description: '寸法線が両側へ伸び、その上に寸法の数値が現れる。', categoryLabel: '静か', hint: '寸法・スケールの説明', avoid: '寸法が多い図', feel: ['正確', '図面', 'すっきり'] },
   { id: 'callout', number: 'T10', name: '引き出し線の注記', english: 'Leader callout', description: '点から引き出し線が伸び、素材や部位のラベルが出る。', categoryLabel: 'リズム', hint: 'パースへの注記・素材の説明', avoid: '注記が多すぎる画面', feel: ['分かりやすい', '説明', '図面'] },
+  // v1.2-3 文字・数値を追加（100種類へ）
+  { id: 'blurin', number: 'T11', name: 'ぼかしから浮かぶ', english: 'Blur in', description: 'ぼやけた文字が、ピントが合うように少しずつはっきりする。', categoryLabel: '静か', hint: '静かなタイトル・映像の冒頭', avoid: '小さな文字・長い文章', feel: ['しっとり', '上品', '余韻'] },
+  { id: 'wordrotate', number: 'T12', name: '単語の入れ替え', english: 'Word rotate', description: '文の一部の言葉だけが、上下に回るように次々と入れ替わる。', categoryLabel: 'リズム', hint: 'コンセプトの言葉・使われ方の紹介', avoid: '1つの意味を伝えたい見出し', feel: ['軽快', '広がり', '楽しい'] },
+  { id: 'marker', number: 'T13', name: 'マーカーが引かれる', english: 'Highlight marker', description: '大事な言葉の下に、蛍光ペンのような帯が左から引かれる。', categoryLabel: 'リズム', hint: '要点の強調・提案のキーワード', avoid: '強調が多すぎる文章', feel: ['分かりやすい', '親しみ', '要点'] },
+  { id: 'scramble', number: 'T14', name: 'ばらばらの文字から確定', english: 'Text scramble', description: 'ランダムな文字がめまぐるしく変わり、左から順に正しい文字に決まる。', categoryLabel: '演出', hint: 'プロジェクト名・数値・技術的な演出', avoid: '落ち着いた住宅の紹介', feel: ['デジタル', '緊張感', 'かっこいい'] },
+  { id: 'lowerthird', number: 'T15', name: 'テロップ（画面下の帯）', english: 'Lower third', description: '映像の下の方に帯が伸び、場所や名前の文字が続けて出る。', categoryLabel: '静か', hint: '動画の場所名・人名・施設名', avoid: '静止画の資料', feel: ['分かりやすい', '番組らしい', '整理'] },
+  { id: 'barchart', number: 'T16', name: '棒グラフが伸びる', english: 'Bar chart grow', description: '各階の面積などの棒が、順に下から伸びて数値が出る。', categoryLabel: '数値', hint: '面積・人数・コストの比較', avoid: '正確な値を細かく読ませる場面', feel: ['比べる', '分かりやすい', '説得力'] },
+  { id: 'ratioring', number: 'T17', name: '割合のリング', english: 'Ratio ring', description: '円の線が割合の分だけ伸び、中の数字が上がっていく。', categoryLabel: '数値', hint: '緑化率・省エネ率・面積の割合', avoid: '項目が多い内訳', feel: ['説得力', 'すっきり', '注目させる'] },
 ]
 
 /**
