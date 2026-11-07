@@ -1088,6 +1088,107 @@ footer a { color: var(--ink); text-decoration: none; font-weight: 600; }
   footer { padding-inline: 20px; align-items: flex-start; flex-direction: column; }
 }
 
+/* ---------- v1.2-4 環境（E11〜E20） ---------- */
+/* E11 桜吹雪・落ち葉 */
+.ev-sakura { left: -6%; top: -8%; width: 40%; height: 52%; z-index: 3; border-radius: 50%; background: radial-gradient(circle at 40% 50%, #f4c6d0 0 30%, transparent 31%), radial-gradient(circle at 70% 35%, #f7d3dc 0 32%, transparent 33%), radial-gradient(circle at 60% 75%, #efb5c3 0 30%, transparent 31%); }
+.ev-petal { z-index: 4; left: var(--x); top: var(--y); width: 9px; height: 6px; border-radius: 60% 0 60% 0; background: #f4bfcd; transform: rotate(var(--r)); }
+.env-effect-petals.is-playing .ev-petal { animation: ev-petal 2.4s linear both; animation-delay: calc(var(--d) * -1); }
+@keyframes ev-petal { from { transform: translate(20px, -120px) rotate(var(--r)); } to { transform: translate(-20px, 120px) rotate(calc(var(--r) + 540deg)); } }
+
+/* E12 はためき：旗を根元から波打たせる（強さで大きく） */
+.ev-pole { left: var(--x); bottom: 18%; width: 2px; height: 52%; z-index: 3; background: #5b574e; }
+.ev-flag { left: calc(var(--x) + 2px); top: 32%; width: 12%; height: 12%; z-index: 3; transform-origin: 0 50%; background: linear-gradient(90deg, #cf795f, #e19a80); }
+.ev-flag:nth-of-type(4n) { background: linear-gradient(90deg, #315c70, #4f7f94); }
+.env-effect-flutter.is-playing .ev-flag { animation: ev-flutter .6s ease-in-out 4; animation-delay: calc(var(--i) * -.15s); }
+@keyframes ev-flutter { 0%, 100% { transform: skewY(0) scaleX(1); } 25% { transform: skewY(calc(6deg * var(--strength))) scaleX(.94); } 75% { transform: skewY(calc(-5deg * var(--strength))) scaleX(.97); } }
+
+/* E13 湯気・煙：屋上の排気口から立ちのぼる */
+.ev-vent { left: 64%; top: -2px; width: 14%; height: 8%; transform: translateY(-100%); background: #8c877d; }
+.env-effect-steam .ev-bldg { overflow: visible; }
+.ev-puff { left: 58%; top: 12%; z-index: 4; width: 10%; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(closest-side, rgba(255,255,255,.85), rgba(255,255,255,0)); opacity: .0; }
+.env-effect-steam .ev-puff { opacity: .6; transform: translate(calc(var(--i) * 6px), calc(var(--i) * -14px)) scale(calc(1 + var(--i) * .4)); }
+.env-effect-steam.is-playing .ev-puff { animation: ev-puff 1.2s ease-out 2; animation-delay: calc(var(--i) * -.24s); }
+@keyframes ev-puff { from { opacity: .9; transform: translate(0, 0) scale(.6); } to { opacity: 0; transform: translate(18px, -70px) scale(2.6); } }
+
+/* E14 噴水：弧を描く水と、水面のしぶき（強さで高く） */
+.ev-basin { left: 26%; right: 26%; bottom: 6%; height: 10%; z-index: 3; border-radius: 50%; background: radial-gradient(ellipse at 50% 40%, #a8cbd8, #6e9fb2); border: 3px solid #d8d0c0; }
+.ev-jet { left: 50%; bottom: 12%; z-index: 4; width: 3px; height: calc(30% * var(--strength)); margin-left: -1px; border-radius: 3px; background: linear-gradient(180deg, rgba(255,255,255,.95), rgba(190,220,232,.6)); transform-origin: 50% 100%; transform: rotate(calc(var(--k) * 16deg)); }
+.ev-splash { left: calc(36% + var(--i) * 5.5%); bottom: 13%; z-index: 4; width: 5px; height: 5px; border-radius: 50%; background: rgba(255,255,255,.9); opacity: 0; }
+.env-effect-fountain.is-playing .ev-jet { animation: ev-jet .4s ease-in-out 6; animation-delay: calc(var(--k) * .05s); }
+.env-effect-fountain.is-playing .ev-splash { animation: ev-splash .6s ease-out 4; animation-delay: calc(var(--i) * .1s); }
+@keyframes ev-jet { 0%, 100% { transform: rotate(calc(var(--k) * 16deg)) scaleY(1); } 50% { transform: rotate(calc(var(--k) * 17deg)) scaleY(.9); } }
+@keyframes ev-splash { 0% { opacity: .9; transform: translate(0, 0); } 100% { opacity: 0; transform: translate(0, -12px) scale(.4); } }
+
+/* E15 人が集まる・とどまる：中央の広場へ歩いてきて、止まって小さく揺れる */
+.ev-plaza { left: 30%; right: 30%; bottom: 4%; height: 12%; z-index: 2; border-radius: 50%; background: rgba(240,232,214,.6); }
+.ev-person.g0 { left: 40%; } .ev-person.g1 { left: 46%; height: 13%; } .ev-person.g2 { left: 56%; } .ev-person.g3 { left: 52%; height: 14%; } .ev-person.g4 { left: 43%; bottom: 9%; height: 12%; } .ev-person.g5 { left: 60%; bottom: 9%; height: 12%; }
+.env-effect-crowd.is-playing .ev-person { animation: ev-gather 2.4s cubic-bezier(.3,.6,.3,1) both; }
+@keyframes ev-gather { 0% { left: var(--x); } 70% { transform: translateY(0); } 80% { transform: translateY(-3%); } 90%, 100% { transform: none; } }
+
+/* E16 鳥が横切る：V字の羽を上下させながら群れで飛ぶ（向き「反対」で右から左） */
+.ev-bird { left: var(--x); top: var(--y); z-index: 4; width: 16px; height: 8px; }
+.ev-bird::before, .ev-bird::after { content: ''; position: absolute; top: 0; width: 9px; height: 2px; border-radius: 2px; background: #3b3a36; transform-origin: 100% 50%; }
+.ev-bird::before { left: 0; transform: rotate(20deg); }
+.ev-bird::after { right: 0; transform-origin: 0 50%; transform: rotate(-20deg); }
+.env-effect-birds.is-playing .ev-bird { animation: ev-fly 2.4s linear both; }
+.env-effect-birds.is-playing .ev-bird::before { animation: ev-wing-l .3s ease-in-out 8; }
+.env-effect-birds.is-playing .ev-bird::after { animation: ev-wing-r .3s ease-in-out 8; }
+[data-direction="reverse"] .env-effect-birds.is-playing .ev-bird { animation-direction: reverse; }
+@keyframes ev-fly { from { left: calc(var(--x) - 35%); top: calc(var(--y) + 6%); } to { left: calc(var(--x) + 35%); top: calc(var(--y) - 4%); } }
+@keyframes ev-wing-l { 50% { transform: rotate(-25deg); } }
+@keyframes ev-wing-r { 50% { transform: rotate(25deg); } }
+
+/* E17 夜景のまたたき */
+.ev-night-sky { inset: 0; background: linear-gradient(180deg, #0d1424, #24304a 70%, #3a3550); }
+.ev-tower { bottom: 0; width: 9%; height: calc(34% + var(--i) * 4%); left: calc(var(--i) * 14% + 1%); background: #263049; }
+.ev-tower:nth-of-type(even) { height: calc(52% - var(--i) * 3%); }
+.ev-light { left: var(--x); top: var(--y); z-index: 2; width: 3px; height: 3px; border-radius: 1px; background: #ffd889; box-shadow: 0 0 4px rgba(255,216,137,.8); }
+.ev-light:nth-of-type(3n) { background: #fff3d6; }
+.ev-beacon { z-index: 3; width: 5px; height: 5px; border-radius: 50%; background: #ff4a3d; box-shadow: 0 0 8px #ff4a3d; }
+.ev-beacon.b1 { left: 31%; top: 40%; } .ev-beacon.b2 { left: 73%; top: 32%; }
+.env-effect-twinkle.is-playing .ev-light { animation: ev-twinkle .6s steps(2, end) 4; animation-delay: calc(var(--i) * -.09s); }
+.env-effect-twinkle.is-playing .ev-beacon { animation: ev-beacon 1.2s steps(1, end) 2; }
+.env-effect-twinkle.is-playing .ev-beacon.b2 { animation-delay: -.6s; }
+@keyframes ev-twinkle { 50% { opacity: .25; } }
+@keyframes ev-beacon { 50% { opacity: .15; } }
+
+/* E18 雨上がりの水たまり：濡れた地面に建物が映り、しずくの波紋が時々広がる */
+.env-effect-puddle .ev-sky { background: linear-gradient(180deg, #9fb3bd, #dfe7ea 72%); }
+.env-effect-puddle .ev-ground { background: #6f756f; }
+.ev-wet { left: 0; right: 0; bottom: 0; height: 24%; z-index: 3; overflow: hidden; }
+.ev-pool-refl { left: 32%; width: 36%; top: 0; height: 100%; opacity: .35; background: linear-gradient(90deg, rgba(37,35,31,.25) 0 2px, transparent 2px) 0 0 / 25% 100%, linear-gradient(0deg, #f2ebdd, #e0d3bd); }
+.ev-puddle { border-radius: 50%; background: rgba(170,195,205,.45); }
+.ev-puddle.p1 { left: 22%; top: 26%; width: 34%; height: 40%; } .ev-puddle.p2 { left: 58%; top: 52%; width: 26%; height: 30%; }
+.ev-ripple { width: 10%; height: 14%; border: 1px solid rgba(255,255,255,.85); border-radius: 50%; opacity: 0; }
+.ev-ripple.r1 { left: 34%; top: 36%; } .ev-ripple.r2 { left: 66%; top: 58%; }
+.env-effect-puddle.is-playing .ev-pool-refl { animation: ev-shimmer .8s ease-in-out 3; }
+.env-effect-puddle.is-playing .ev-ripple { animation: ev-ripple 1.2s ease-out 2; }
+.env-effect-puddle.is-playing .ev-ripple.r2 { animation-delay: .5s; }
+
+/* E19 ガラスに映る雲が流れる：各ガラス面に同じ空を映し、位置をずらしながら流す（向き） */
+.ev-curtain { left: 30%; width: 40%; top: 10%; bottom: 24%; z-index: 2; display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(3, 1fr); gap: 3px; padding: 3px; background: #3e4a52; }
+.env-scene .ev-curtain { display: grid; }
+.env-scene .ev-pane { position: relative; background: radial-gradient(ellipse 30% 18% at 30% 40%, rgba(255,255,255,.9), transparent 70%), radial-gradient(ellipse 24% 14% at 75% 65%, rgba(255,255,255,.8), transparent 70%), linear-gradient(180deg, #7fa4b8, #b9d0da); background-size: 400% 300%; background-position: calc(var(--c) * 33.3%) calc(var(--r) * 50%); }
+.env-effect-glassreflect.is-playing .ev-pane { animation: ev-glass 2.4s linear both; }
+[data-direction="reverse"] .env-effect-glassreflect.is-playing .ev-pane { animation-direction: reverse; }
+@keyframes ev-glass { to { background-position: calc(var(--c) * 33.3% + 40%) calc(var(--r) * 50%); } }
+
+/* E20 縦の動線：ガラス越しにエレベーターが昇り、エスカレーターの人が上がる */
+.ev-atrium { inset: 0; background: linear-gradient(180deg, #e9e3d8, #d9cfbf); }
+.ev-floors { inset: 0; z-index: 1; background: repeating-linear-gradient(180deg, transparent 0 31%, #b9ad99 31% 33.3%); }
+.ev-shaft { left: 12%; width: 16%; top: 4%; bottom: 0; z-index: 2; background: rgba(160,190,205,.35); border-left: 2px solid #8b97a0; border-right: 2px solid #8b97a0; }
+.ev-car { left: 8%; right: 8%; bottom: 4%; height: 22%; background: #f6f2ea; border: 2px solid #5b574e; box-shadow: inset 0 -4px 0 #cf795f; }
+.ev-escalator { left: 38%; width: 52%; top: 30%; bottom: 0; z-index: 2; }
+.ev-rail { left: 0; bottom: 0; width: 115%; height: 8px; transform-origin: 0 100%; transform: rotate(-33deg); background: repeating-linear-gradient(90deg, #8c877d 0 6px, #a8a294 6px 12px); }
+.ev-rider { left: 8%; bottom: 8%; width: 5%; height: 22%; z-index: 3; border-radius: 40% 40% 10% 10%; background: #3b3b37; }
+.ev-rider::before { content: ''; position: absolute; left: 15%; width: 70%; top: -30%; aspect-ratio: 1; border-radius: 50%; background: inherit; }
+.env-effect-vertical .ev-car { transform: translateY(-260%); }
+.env-effect-vertical .ev-rider { transform: translate(calc(var(--i) * 300%), calc(var(--i) * -130%)); }
+.env-effect-vertical.is-playing .ev-car { animation: ev-car 2.4s cubic-bezier(.45,0,.3,1) both; }
+.env-effect-vertical.is-playing .ev-rider { animation: ev-ride 2.4s linear both; }
+@keyframes ev-car { from { transform: translateY(0); } to { transform: translateY(-260%); } }
+@keyframes ev-ride { from { transform: translate(calc(var(--i) * 300% - 300%), calc(var(--i) * -130% + 130%)); } to { transform: translate(calc(var(--i) * 300%), calc(var(--i) * -130%)); } }
+
 /* ---------- v1.2-3 文字・数値（T11〜T17） ---------- */
 /* T11 ぼかしから浮かぶ：共通の文字を、文字ごとに少しずらしてピントを合わせる */
 .text-effect-blurin.is-playing .ch { animation: tx-blur 1.2s cubic-bezier(.2,.7,.2,1) both; animation-delay: calc(.15s + var(--i) * .07s); }

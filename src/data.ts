@@ -136,6 +136,17 @@ export const environmentSamples: Sample[] = [
   { id: 'trails', number: 'E08', name: '車の光跡', english: 'Light trails', description: '夜の道路を、車のライトが光の筋になって流れる。', categoryLabel: '人・車', hint: '夜景の外観・駅前・幹線道路沿い', avoid: '静けさを伝えたい住宅地', feel: ['都会的', 'スピード', 'ドラマチック'] },
   { id: 'mist', number: 'E09', name: '霧・もや', english: 'Drifting mist', description: '低い霧が地面近くを流れ、奥の景色が見え隠れする。', categoryLabel: '天気', hint: '森の中の施設・朝の外観・余韻', avoid: '建物をはっきり見せたい場面', feel: ['幻想的', '静か', '余韻'] },
   { id: 'seasons', number: 'E10', name: '季節の移ろい', english: 'Seasons', description: '木々の色が若葉 → 深緑 → 紅葉 → 冬枯れへと移り変わる。', categoryLabel: '季節', hint: '植栽計画・一年の使われ方の説明', avoid: '1つの季節だけを見せたい場面', feel: ['時間経過', '季節感', '変化'] },
+  // v1.2-4 環境の動きを追加（100種類へ）
+  { id: 'petals', number: 'E11', name: '桜吹雪・落ち葉', english: 'Falling petals', description: '花びらがくるくる回りながら、斜めに舞い落ちる。', categoryLabel: '季節', hint: '春の外観・並木道・入学や竣工の映像', avoid: '季節を決めたくない場面', feel: ['華やか', '季節感', 'やさしい'] },
+  { id: 'flutter', number: 'E12', name: 'はためき（旗・カーテン）', english: 'Fluttering fabric', description: '旗や幕が風を受けて、波打つようにはためく。', categoryLabel: '風', hint: '外構のサイン・バナー・窓辺のカーテン', avoid: '無風の静かな場面', feel: ['にぎわい', '風', '軽やか'] },
+  { id: 'steam', number: 'E13', name: '湯気・煙', english: 'Rising steam', description: '白い湯気がゆらぎながら立ちのぼり、薄れて消える。', categoryLabel: '空気', hint: 'カフェ・厨房・温浴施設・冬の朝', avoid: '火災を連想させる場面', feel: ['あたたかい', '生活感', 'ゆったり'] },
+  { id: 'fountain', number: 'E14', name: '噴水・水しぶき', english: 'Fountain', description: '噴水の水が弧を描いて上がり、しぶきが水面に落ちる。', categoryLabel: '水', hint: '広場・中庭・エントランスの外構', avoid: '水景のない計画', feel: ['涼しい', '華やか', 'にぎわい'] },
+  { id: 'crowd', number: 'E15', name: '人が集まる・とどまる', english: 'Gathering crowd', description: '人が広場の中央に集まってきて、立ち止まって話す。', categoryLabel: '人・車', hint: '広場・ホール・イベントの使われ方', avoid: '人の配置を決めていない計画段階', feel: ['にぎわい', 'コミュニティ', '温かい'] },
+  { id: 'birds', number: 'E16', name: '鳥が横切る', english: 'Birds flying', description: '鳥の群れが羽ばたきながら、空を横切っていく。', categoryLabel: '空', hint: '余韻のカット・外観の導入・水辺', avoid: '都市の中心で違和感が出る場面', feel: ['のびやか', '余韻', '自然'] },
+  { id: 'twinkle', number: 'E17', name: '夜景のまたたき', english: 'City lights', description: '遠くの街の明かりや航空障害灯が、ちらちらとまたたく。', categoryLabel: '光', hint: '夜景の外観・高層の眺望', avoid: '昼の場面', feel: ['都会的', '静か', 'ロマンチック'] },
+  { id: 'puddle', number: 'E18', name: '雨上がりの水たまり', english: 'Puddle reflection', description: '濡れた舗装の水たまりに建物が映り、しずくの波紋が時々広がる。', categoryLabel: '水', hint: '雨上がりの外観・夜の舗装', avoid: '乾いた晴天の場面', feel: ['しっとり', '映画的', '静か'] },
+  { id: 'glassreflect', number: 'E19', name: 'ガラスに映る雲が流れる', english: 'Glass reflection', description: 'カーテンウォールのガラスに映った雲が、ゆっくり流れていく。', categoryLabel: '光', hint: 'ガラスの外観・高層のファサード', avoid: 'ガラスの少ない外観', feel: ['透明感', '上品', 'ゆったり'] },
+  { id: 'vertical', number: 'E20', name: '縦の動線（エレベーター・エスカレーター）', english: 'Vertical circulation', description: 'ガラス越しにエレベーターが昇り、エスカレーターの人が上がっていく。', categoryLabel: '人・車', hint: '吹抜け・駅・商業施設・オフィスのロビー', avoid: '平屋の建物', feel: ['活気', 'つながり', '動き'] },
 ]
 
 export const allSamples: Sample[] = [...samples, ...videoSamples, ...textSamples, ...environmentSamples]
@@ -143,8 +154,8 @@ export const allSamples: Sample[] = [...samples, ...videoSamples, ...textSamples
 export const finderWords = ['ふわっと', '一瞬で', '高級感', '勢いがある', '上品', '奥行き', '注目させる', 'リズム']
 
 /* v0.4-3 再生の調整：速度はすべての見本、強さ・向きは意味のある見本だけに効く */
-export const strengthSamples = new Set(['01', '02', '04', '05', '06', '13', '14', 'V04', 'V07', 'V17', 'V20', 'V27', 'T01', 'T03', 'T04', 'T06', 'E01', 'E02', 'E09'])
-export const directionSamples = new Set(['21', '27', '07', '08', '09', '12', '17', '19', 'V03', 'V05', 'V06', 'V08', 'V09', 'V12', 'V13', 'V16', 'V21', 'V23', 'V28', 'T05', 'E03', 'E04', 'E08'])
+export const strengthSamples = new Set(['01', '02', '04', '05', '06', '13', '14', 'V04', 'V07', 'V17', 'V20', 'V27', 'T01', 'T03', 'T04', 'T06', 'E01', 'E02', 'E09', 'E12', 'E14'])
+export const directionSamples = new Set(['21', '27', '07', '08', '09', '12', '17', '19', 'V03', 'V05', 'V06', 'V08', 'V09', 'V12', 'V13', 'V16', 'V21', 'V23', 'V28', 'T05', 'E03', 'E04', 'E08', 'E16', 'E19'])
 
 export type Setting = 'speed' | 'strength' | 'direction'
 export const settingOptions: Record<Setting, { label: string, options: [string, string][] }> = {

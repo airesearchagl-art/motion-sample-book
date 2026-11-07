@@ -779,7 +779,110 @@ const step = (p) => el.textContent = [...target].map((c, i) => i < p * target.le
     powerpoint: '季節ごとの4枚のスライドを画面切り替え「フェード」でつなぐ（同じ位置の木の画像を使い、「変形」にしても可）',
     cg: 'D5 Render：環境の「Seasonal Vegetation」をオンにし、State を変えた視点を並べるか、動画のキーフレームで State を変えて葉の色を少しずつ変える（季節の変化に対応した植栽素材だけが変わる）／Lumion・Twinmotion：季節や葉の色の設定を変えた画像を並べる',
     prompt: 'Keep the camera locked and the building unchanged. Time-lapse of the trees around the building changing through the four seasons: fresh spring green, deep summer green, autumn orange, bare winter branches',
+  },  E11: {
+    css: `/* 花びらを、回しながら斜めに落とす（数枚の開始時刻をずらす） */
+.petal { animation: petal 4s linear infinite; }
+.petal:nth-child(2) { animation-delay: -1.3s; }
+@keyframes petal { to { transform: translate(-40px, 220px) rotate(540deg); } }`,
+    edit: 'After Effects：「CC Particle World」で花びら（または落ち葉）の画像を粒子にして、重力を弱く・風（Extra）を横向きに付けて舞わせる。手前と奥で2層に分けると奥行きが出る／Premiere Pro：花びらが舞う素材動画（黒背景）を上のトラックに置き、描画モード「スクリーン」で重ねる',
+    powerpoint: '花びらの画像を数枚置き、アニメーションの軌跡「ユーザー設定パス」で斜め下へゆらゆら落ちる線を描く。強調「スピン」を「直前の動作と同時」で重ね、開始の遅延をずらして「繰り返し：スライドの最後まで」にする',
+    cg: 'D5 Render：Particle（パーティクル）や Assets の舞う花びら・落ち葉の素材があれば置き、Wind をオンにしてから動画のキーを置く（ない場合は、編集ソフトで重ねる）／Lumion・Twinmotion：落ち葉・花びらのエフェクトや素材を置く',
+    prompt: 'Keep the camera locked and the building unchanged. Cherry blossom petals drift down diagonally across the frame in a gentle breeze, rotating as they fall',
   },
+  E12: {
+    css: `/* 旗を根元（左端）から波打たせる */
+.flag { transform-origin: 0 50%; animation: flutter .6s ease-in-out infinite; }
+@keyframes flutter { 25% { transform: skewY(6deg) scaleX(.94); } 75% { transform: skewY(-5deg) scaleX(.97); } }`,
+    edit: 'After Effects：旗やのぼり、日よけ布のレイヤーに「波形ワープ」（波形の高さ・波形の速度、ピン留め：左端）をかける。布の付け根を固定し、先ほど大きく揺らす／Premiere Pro：布の部分を切り抜いて「波形ワープ」をかける',
+    powerpoint: '旗の画像に強調「シーソー」をかけ、効果のオプションで「繰り返し：スライドの最後まで」。揺れの中心は画像の中央になるため、旗の左端に透明な余白を足した画像にすると根元で揺れて見える',
+    cg: 'D5 Render：Assets の旗・のぼり・布（Filter で Dynamic）を置き、Wind をオンにしてから動画のキーを置く（風の強さで揺れが変わる）／Lumion・Twinmotion：風で動く旗の素材を置き、風の強さを設定する',
+    prompt: 'Keep the camera locked and the building unchanged. Flags and fabric awnings in front of the building flutter in a steady breeze',
+  },
+  E13: {
+    css: `/* 湯気を、ふくらませながら上へ消す（数個の開始時刻をずらす） */
+.puff { animation: puff 2s ease-out infinite; }
+.puff:nth-child(2) { animation-delay: -.7s; }
+@keyframes puff { from { opacity: .9; transform: scale(.6); } to { opacity: 0; transform: translate(18px, -70px) scale(2.6); } }`,
+    edit: 'After Effects：排気口の位置に「CC Particle World」（粒子：ぼかした円、上向き、重力を負）か、「フラクタルノイズ」をマスクで切り抜いて上へ流し、描画モード「スクリーン」で重ねる／Premiere Pro：煙・湯気の素材動画（黒背景）を描画モード「スクリーン」で重ねる',
+    powerpoint: '白いぼかした円の画像を排気口の上に置き、軌跡「直線（上へ）」と強調「拡大/収縮」、終了「フェード」を「直前の動作と同時」で重ね、数個の開始をずらして繰り返す',
+    cg: 'D5 Render：Particle や煙・湯気の素材（Assets のエフェクト）があれば排気口に置く。ない場合は Fog（霧）を局所的には付けられないため、編集ソフトで重ねる／Lumion・Twinmotion：煙・蒸気のエフェクトを置く',
+    prompt: 'Keep the camera locked and the building unchanged. Soft white steam rises slowly from the rooftop vent and fades into the sky',
+  },
+  E14: {
+    css: `/* 水の弧を、わずかに伸び縮みさせる。しぶきは上がって消す */
+.jet { transform-origin: 50% 100%; animation: jet .4s ease-in-out infinite; }
+.splash { animation: splash .6s ease-out infinite; }
+@keyframes jet { 50% { transform: scaleY(.9); } }
+@keyframes splash { from { opacity: .9; } to { opacity: 0; transform: translateY(-12px) scale(.4); } }`,
+    edit: 'After Effects：「CC Particle Systems II」（または CC Particle World）で、発生位置を噴水口、上向きの速さと重力を付けて水の弧を作り、水面に「CC Drizzle」で波紋を足す／Premiere Pro：噴水の素材動画を切り抜いて合成する',
+    powerpoint: '水の弧の画像に強調「パルス」を「繰り返し：スライドの最後まで」でかけ、しぶきの小さな円に開始「ズーム」と終了「フェード」を繰り返す',
+    cg: 'D5 Render：Assets の噴水（Filter で Dynamic）を置くか、Particle の水の素材を使う。水盤には Water マテリアルを貼り、深さと暗い底を付ける（波が見えやすい）／Lumion・Twinmotion：噴水のエフェクトを置き、高さ・量を設定する',
+    prompt: 'Keep the camera locked and the building unchanged. The fountain in the plaza sprays arcs of water that splash softly into the basin',
+  },
+  E15: {
+    css: `/* 人を周りから広場へ歩かせ、止まったら小さく揺らす */
+.person { animation: gather 2.4s cubic-bezier(.3, .6, .3, 1) both; }
+@keyframes gather { 0% { left: var(--start); } 80% { transform: translateY(-3%); } 100% { transform: none; } }`,
+    edit: 'After Effects：切り抜いた人物の素材を、周りから広場へ歩かせ（位置のキーフレーム）、着いたら立ち止まって話す素材に切り替える。人数は奥ほど小さく、手前ほど大きく／Premiere Pro：人物の素材動画を切り抜いて重ねる',
+    powerpoint: '人物の画像を広場の周りに置き、軌跡「直線」で広場の中央へ動かして「滑らかに終了」を大きく。着いた後に強調「シーソー」を小さくかける',
+    cg: 'D5 Render：Path の人物（Character）でパスを広場へ向けて引き、終点で止まる人物と、その場で話す・立つ動きの人物（Assets の Filter で Dynamic）を置く／Lumion・Twinmotion：人物を配置し、立ち止まる人物と歩く人物を混ぜる',
+    prompt: 'Keep the camera locked and the building unchanged. People walk in from the edges and gather in the plaza in front of the building, then stand and chat in small groups',
+  },
+  E16: {
+    css: `/* 鳥を群れで横切らせ、羽を上下させる */
+.bird { animation: fly 4s linear infinite; }
+.bird::before, .bird::after { animation: wing .3s ease-in-out infinite; }
+@keyframes fly { from { left: -10%; } to { left: 110%; top: 10%; } }
+@keyframes wing { 50% { transform: rotate(-25deg); } }`,
+    edit: 'After Effects：鳥が飛ぶ素材（または「CC Particle World」で V字の小さな画像を粒子にしたもの）を、空の部分に横切らせる。数羽の位置と高さをずらす／Premiere Pro：鳥が横切る素材動画を描画モード「乗算」で空に重ねる',
+    powerpoint: '鳥の画像（または GIF アニメ）を数羽置き、軌跡「直線（右へ）」で画面の外まで動かす。開始の遅延を少しずつずらし、「繰り返し：スライドの最後まで」にする',
+    cg: 'D5 Render：Assets の鳥の群れ（Filter で Dynamic）を空に置くか、Path に鳥の素材を使う。動画で羽ばたきが再生されるかを確かめる／Lumion・Twinmotion：鳥の群れのエフェクトを置く',
+    prompt: 'Keep the camera locked and the building unchanged. A small flock of birds flies across the sky above the building from left to right, wings flapping',
+  },
+  E17: {
+    css: `/* 窓の明かりを、ばらばらにまたたかせる。航空障害灯は点滅 */
+.light { animation: twinkle .6s steps(2, end) infinite; }
+.light:nth-child(3n) { animation-delay: -.2s; }
+.beacon { animation: beacon 1.2s steps(1, end) infinite; }
+@keyframes twinkle { 50% { opacity: .25; } }
+@keyframes beacon { 50% { opacity: .15; } }`,
+    edit: 'After Effects：夜景のパースに、窓の明かりだけのレイヤー（しきい値などで明るい部分を抜いたもの）を重ね、「ウィグラー」で不透明度をわずかに揺らす。航空障害灯は小さな赤い円の不透明度をキーフレームで点滅させ、「グロー」をかける／Premiere Pro：明かりのレイヤーの不透明度をキーフレームで揺らす',
+    powerpoint: '明かりの小さな画像に強調「点滅」（または「透過性」をオートリバース）をかけ、開始をずらして「繰り返し：スライドの最後まで」にする',
+    cg: 'D5 Render：動画モードで時刻を夜にし、窓の Emissive（発光）マテリアルと周りの街の明かりを置く。またたきは編集ソフトで足す（D5 の発光は時間で変えられない場合がある）／Lumion・Twinmotion：夜の設定で発光マテリアルを使い、明滅は編集ソフトで足す',
+    prompt: 'Keep the camera locked and the building unchanged. Night city skyline; scattered window lights twinkle softly and red aviation lights blink on the rooftops',
+  },
+  E18: {
+    css: `/* 水たまりの映り込みを揺らし、波紋を時々広げる */
+.reflection { animation: shimmer .8s ease-in-out infinite; }
+.ripple { animation: ripple 1.2s ease-out infinite; }
+@keyframes shimmer { 25% { transform: skewX(4deg) scaleY(.97); } 75% { transform: skewX(-4deg) scaleY(1.02); } }
+@keyframes ripple { from { opacity: .9; transform: scale(.2); } to { opacity: 0; transform: scale(1.4); } }`,
+    edit: 'After Effects：地面に、上下反転した建物のレイヤーを不透明度を下げて重ね（映り込み）、水たまりの形のマスクで切り抜いて「波形ワープ」を弱くかける。しずくは「CC Drizzle」で波紋を足す／Premiere Pro：映り込みのレイヤーを反転して重ね、マスクで切り抜く',
+    powerpoint: '上下反転した建物の画像を地面に重ねて透明度を上げ、水たまりの形にトリミングする。波紋は円の図形に開始「ズーム」と終了「フェード」を「直前の動作と同時」で繰り返す',
+    cg: 'D5 Render：天気を雨上がりにし（Weather の Wet・Puddle の項目があれば使う）、地面を濡れた素材にして水たまりの Water マテリアルを置く。映り込みはリアルタイムで出る。波紋は Rain を弱くすると出る場合がある／Lumion・Twinmotion：濡れた地面（Wetness・Puddles）の設定を使う',
+    prompt: 'Keep the camera locked and the building unchanged. After the rain: the wet pavement reflects the building, and occasional drops make small ripples in the puddles',
+  },
+  E19: {
+    css: `/* ガラス面に映した空の画像を、横へ流す（向きは方向の切り替えで逆に） */
+.pane { background-image: url(sky.jpg); background-size: 400% 300%; animation: glass 8s linear infinite; }
+@keyframes glass { to { background-position: 40% 0; } }`,
+    edit: 'After Effects：ガラス面の形のマスク（またはトラックマット）の中に、空と雲の画像を置いて位置を横へゆっくり動かし、描画モード「スクリーン」や不透明度を下げて重ねる。マリオンの線は上のレイヤーに残す／Premiere Pro：空の素材を「トラックマットキー」でガラスの形に切り抜き、位置を動かす',
+    powerpoint: '空と雲の画像をガラス面の形にトリミングして建物の画像の上に置き、透明度を上げる。軌跡「直線（左／右）」でゆっくり動かすと、窓枠から外れるので、窓枠の画像を一番上に重ねる',
+    cg: 'D5 Render：ガラスの外装は反射でそのまま空を映すため、動画モードで空（HDRI の回転、または雲の動き）を動かすと映り込みも流れる。ガラスのマテリアルの反射の強さを上げる／Lumion・Twinmotion：空の雲の動き（Cloud speed など）を付け、ガラスの反射を上げる',
+    prompt: 'Keep the camera locked and the building unchanged. Clouds drift slowly across the reflective glass curtain wall, mirroring the moving sky',
+  },
+  E20: {
+    css: `/* エレベーターのかごを上げ、エスカレーターの人を斜めに上げる */
+.car { animation: car 6s cubic-bezier(.45, 0, .3, 1) infinite alternate; }
+.rider { animation: ride 6s linear infinite; }
+@keyframes car { to { transform: translateY(-260%); } }
+@keyframes ride { from { transform: translate(-100%, 45%); } to { transform: translate(100%, -45%); } }`,
+    edit: 'After Effects：吹抜けのパースに、エレベーターのかごのレイヤーを置いて位置（縦）をキーフレームで動かし（イージーイーズ）、シャフトの形のマスクで切り抜く。エスカレーターの人物は、斜めの線に沿って位置を動かす／Premiere Pro：かごと人物のレイヤーを重ね、位置をキーフレームで動かす',
+    powerpoint: 'かごの画像に軌跡「直線（上へ）」をかけ、「滑らかに開始／終了」を付ける。エスカレーターの人物には軌跡「ユーザー設定パス」で斜めの線を描き、開始をずらして繰り返す',
+    cg: 'D5 Render：エレベーターのかごをモデルとして置き、動画の「Animation」（物体のアニメーション）で位置を上下させる。エスカレーターは Path の人物をエスカレーターの斜面に沿って引く（または Assets のエスカレーターの素材）／Lumion・Twinmotion：物体を動かす機能（Move・Animation）でかごを動かし、人物のパスを斜面に引く',
+    prompt: 'Keep the camera locked and the building unchanged. Inside the glass atrium, an elevator car glides upward while people ride the escalator to the upper floor',
+  },
+
 }
 
 /** 再現情報が欠けている見本の番号を返す（開発時の確認用） */
