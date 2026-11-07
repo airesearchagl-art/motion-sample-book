@@ -11,6 +11,7 @@
 - **編集ソフト 50件**：After Effects 2026・Premiere Pro 2026 の日本語UIで確認し、device 37／mismatch 13。**要修正**：04, 14, V02, V05, V06, V08, V09, V16, T01, T02, T04, T06, T08
 - **未着手**：Lumion／Twinmotion／Enscapeの公式資料確認（ネット上の資料が一部しか読めず、cg の8件は unverified のまま）
 - **第3弾（E01〜E10・V21、2026-11-07）**：edit device 10／mismatch 1（**要修正**：E06）、powerpoint device 3／mismatch 8（**要修正**：E02, E03, E04, E05, E06, E07, E08, E09）、cg device 8／mismatch 3（**要修正**：E04, E07, E10）。cg の11件すべてに `d5`。反映は第1弾・第2弾と同じく `fix` で該当欄を置き換え、`d5` を cg 欄へ追記
+- **第3弾の続き（D5 の見た目、2026-11-07）**：8件のうち、動画で動きを確かめたのは E01・E05・E07・E09・E10・V21 の6件（E07 は地形が白っぽくなる点を `fix` に反映。E10 は第3弾の名称の修正に「キーで補間される」を追加）。E02（波）と E08（車）は動きを確かめられなかった（理由は下の節）。**要修正**：E07, E10（`fix` を更新）。`d5` は8件とも実際の手順に更新
 - **反映のお願い**
   1. mismatch 31件（PowerPoint 15、建築CG 3、編集ソフト 13）は、`recipe-checks.ts` の `fix` をそのまま `recipes.ts` の該当欄に置き換えてください
   2. cg 22件は、`d5` を `recipes.ts` の cg 欄へ「D5 Render：…」として追記してください（「D5では不可」の4件：V02, V20, T09, T10 は追記するか判断ください）
@@ -243,3 +244,42 @@
 
 - `G:\Claude_MCP\motion-sample-book\verification\round3\`：`verify_powerpoint_r3.pptx`、`test_rain_black.mp4`（仮の雨の動画）、`ae_dump_r3.jsx`／`ae_names_r3.tsv`（After Effectsの名称一覧）、`verify_d5_r3`（D5プロジェクト）
 - `G:\Claude_MCP\SketchUp\motion-sample-book\verify_sketchup_v21.skp`（mm）、`shots_v21\`（シーン画像）、`d5_r3\`（D5読み込み用に書き出した .skp）
+
+## 第3弾の続き（D5 Render の見た目）
+
+> 確認日：2026-11-07／D5 Render 3.1.1.0755（前回と同じ版）／書き出しは 720p・mp4・約3秒。動きの確かめ方は、ffmpeg で1秒（霧・季節は0.25秒）ごとの静止画を切り出し、フレーム間の差を数値と画像で比べた
+
+### 結果
+
+| 番号 | 結果 | 何を動かし、何が見えたか | 書き出したファイル |
+|---|---|---|---|
+| E01 | 動いた | Wind（Strength 1）をオンにすると葉と枝が揺れる。Wind オフと比べ、葉の部分のフレーム間の差が約4倍。建物は動かない | `E01_wind_off.mp4`／`E01_wind_on2.mp4` |
+| E05 | 動いた（屋外） | 地面に落ちた木の影が Wind で揺れる。窓のある室内に落ちる影は未確認 | `E05_shadow_wind_on.mp4` |
+| E02 | 試せなかった | 浅い水盤に Water マテリアルを貼り、Normal 1・Flow Velocity 1 でも波の動きは見えなかった。透明な水面越しに下の舗装が見えていたためと思われる（深さのある水盤・暗い底で再確認が必要）。夜は水面に木が映った | `E02_water_flow005.mp4`／`E02_water_flow1_normal1.mp4`／`E02_water_low_flow1.mp4` |
+| E07 | 動いた（記載と違う点あり） | Precipitation を Snow 側にすると雪が降る。積雪の調整項目はないが、D5 の地形（Terrain）が白っぽくなった。スライダーが中間だと雨と雪が混ざる | `E07_snow.mp4` |
+| E09 | 動いた（補間される） | Density 0.1 と 1 のキーフレーム2つで、再生中に霧が少しずつ濃くなる（地平線付近のコントラストが3秒で滑らかに下がった） | `E09_fog_key.mp4` |
+| E08 | 試せなかった | 無料の車（New energy Car 03）を Vehicle パスに入れ、Light をオンにして夜の動画を書き出したが、車が映らなかった（原因は未特定） | `E08_car_night.mp4` |
+| E10 | 動いた（補間される） | 季節対応の木（Acer truncatum 01）で、State 150（緑）→ 300（黄葉）のキー2つで、葉の色が少しずつ変わる。State 1 では葉がない | `E10_season_key.mp4` |
+| V21 | 書き出せた | 3つの .skp を重ね、Object リストの目のアイコンで表示を切り替えて、構造／構造＋設備／全体の3枚を書き出した | `V21_1_structure.png`／`V21_2_structure_mep.png`／`V21_3_all_b.png` |
+
+### D5 で分かった挙動
+
+- **動画モードの環境はキーフレームごとに記録される**：Weather（Wind・Fog・Precipitation・Seasonal Vegetation など）や時刻は、キーフレームを置いた時点の値がそのキーに入る。キーを置いたあとで Wind をオンにしても、その動画には反映されなかった。手順は「環境を決めてからキーを置く」。値を変えたキーを2つ置くと、霧の濃さや季節は再生中に補間される
+- 動画モードと通常の画面では、環境の設定が別々に持たれている（通常の画面で夜にしても、動画モードの新しいクリップは昼のままだった）
+- 植栽の揺れは、Assets の Filter で **Dynamic**（風で動く）の素材を選ぶ。季節で色が変わるのは **Seasonal** の素材。今回は両方に当てはまる無料の木（Acer truncatum 01）を使った
+- 木の Inspector にも Seasonal Vegetation（State・Following Global Settings）があり、全体の設定に従うか個別にするかを選べる
+- Vehicle パスの Inspector に Speed・Density・Road・Random Color・Left-hand drive・Light がある
+- 読み込んだ .skp は、基準点が箱の下の中央になる。別々のファイルを重ねるには、SketchUp 上の位置の差を Location に入れる
+- 視点の上下移動は **Q で上、E で下**（ヒントの WSADQE）。F は平行投影に切り替わる
+- 画像の書き出しでは、本体の PNG のほかに AI 用の画像（Albedo・Material・Normal）も同じ場所に出力された
+
+### 確認できなかったこと
+
+- E02：水面の波が動く見た目（深さのある水盤・暗い底で再確認が必要）
+- E08：車が Vehicle パスを走る見た目（書き出した動画に車が映らなかった）
+- E05：窓のある室内に落ちる影の揺れ（屋外の地面の影で確認）
+
+### 確認に使ったファイル（リポジトリ外、PCのGドライブ）
+
+- `G:\Claude_MCP\motion-sample-book\verification\round3-d5\`：書き出した動画・画像、切り出した静止画、比較画像、`motion_check.sh`（ffmpeg で静止画を切り出して差を出すスクリプト）、D5 プロジェクト `verify_d5_visual\`
+- `G:\Claude_MCP\SketchUp\motion-sample-book\d5_visual\d5_visual_scene.skp`（mm。建物・水盤・道路・室内の箱）、`d5_r3\v21_*.skp`（V21 の3ファイル）
