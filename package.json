@@ -8,7 +8,8 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "guide:capture": "node scripts/capture-guide-map.cjs",
-    "thumbs:capture": "node scripts/capture-thumbs.cjs"
+    "thumbs:capture": "node scripts/capture-thumbs.cjs",
+    "story-guide:capture": "node scripts/capture-story-guide.cjs"
   },
   "devDependencies": {
     "typescript": "^5.9.3",

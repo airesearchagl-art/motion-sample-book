@@ -211,9 +211,9 @@ body.has-compare-tray footer { padding-bottom: 110px; }
 .purpose-clear { border: 1px solid var(--line); background: transparent; border-radius: 999px; padding: 5px 12px; font-size: .78rem; cursor: pointer; }
 .purpose-clear:hover, .purpose-clear:focus-visible { border-color: var(--ink); }
 .story-entry { margin-top: 16px; padding-top: 16px; border-top: 1px dashed var(--line); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 20px; }
-.story-entry > div:first-child { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; }
+.story-entry > div:first-child { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; }
 .story-entry strong { font-size: .98rem; }
-.story-entry span { font-size: .82rem; color: #5b574e; }
+.story-entry > div > span { font-size: .82rem; color: #5b574e; }
 .story-entry-buttons { display: flex; flex-wrap: wrap; gap: 8px; }
 .story-open { border: 1px solid var(--ink); background: var(--ink); color: var(--cream); border-radius: 999px; padding: 8px 16px; font-size: .84rem; cursor: pointer; }
 .story-open:hover, .story-open:focus-visible { background: #3a3730; }
@@ -250,6 +250,21 @@ body.has-compare-tray footer { padding-bottom: 110px; }
 .story-pptx { border: 1px solid var(--coral); background: var(--coral); color: #fff; border-radius: 999px; padding: 10px 20px; font-weight: 600; cursor: pointer; }
 .story-pptx:disabled { opacity: .6; cursor: progress; }
 .story-pptx:focus-visible, .story-copy:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+/* 構成づくりの詳しい手順（story-guide.html）へのリンク。リンクだと分かるよう、枠・アイコン・矢印・下線を付ける */
+.story-help { display: inline-flex; align-items: center; gap: 8px; padding: 7px 16px 7px 8px; border: 1.5px solid var(--blue); border-radius: 999px; background: rgba(49,92,112,.07); color: var(--blue); font-size: .92rem; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; transition: background .15s; }
+.story-help:hover { background: rgba(49,92,112,.15); text-decoration-thickness: 2px; }
+.story-help:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }
+.story-help-icon { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--blue); color: #fff; font-size: .78rem; font-weight: 700; text-decoration: none; }
+.story-help-arrow { text-decoration: none; transition: transform .15s; }
+.story-help:hover .story-help-arrow { transform: translateX(3px); }
+.story-entry .story-help { flex-basis: auto; margin-top: 2px; }
+.compare-dialog-head .story-help { margin: 8px 0 0; padding: 5px 14px 5px 6px; font-size: .84rem; }
+.compare-dialog-head .story-help-icon { width: 20px; height: 20px; }
+.story-help-lead { text-decoration: inherit; }
+@media (max-width: 760px) {
+  .story-help-lead { display: none; }
+  .story-help { font-size: .88rem; }
+}
 .story-open-custom { border: 1px dashed var(--ink); background: transparent; color: var(--ink); border-radius: 999px; padding: 8px 16px; font-size: .84rem; cursor: pointer; }
 .story-open-custom:hover, .story-open-custom:focus-visible { background: rgba(37,35,31,.06); }
 .story-template.is-custom { border-style: dashed; }

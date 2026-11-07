@@ -170,7 +170,7 @@ app.innerHTML = `
       </div>
       <p class="purpose-status" aria-live="polite" hidden><span></span><button class="purpose-clear" type="button">目的の選択を解除</button></p>
       <div class="story-entry">
-        <div><strong>構成を組む</strong><span>型を選んで見本を並べ、カット割り表としてコピーできます。</span></div>
+        <div><strong>構成を組む</strong><span>型を選んで見本を並べ、カット割り表としてコピーできます。</span><a class="story-help" href="/story-guide.html"><span class="story-help-icon" aria-hidden="true">?</span><span class="story-help-lead">はじめての方へ：</span>構成づくりの詳しい手順（写真つき）<span class="story-help-arrow" aria-hidden="true">→</span></a></div>
         <div class="story-entry-buttons">${storyTemplates.map((template) => `<button class="story-open" type="button" data-story="${template.id}">${template.name}</button>`).join('')}<button class="story-open-custom" type="button">＋ 自分の型を作る</button><button class="story-open-ai" type="button">AIに構成を頼む</button></div>
       </div>
     </section>
@@ -306,6 +306,7 @@ app.innerHTML = `
         <div>
           <p class="eyebrow">STORYBOARD</p>
           <h2 id="story-title">構成を組む</h2>
+          <a class="story-help" href="/story-guide.html" target="_blank" rel="noopener"><span class="story-help-icon" aria-hidden="true">?</span>詳しい手順（写真つき・別タブで開く）<span class="story-help-arrow" aria-hidden="true">↗</span></a>
         </div>
         <div class="compare-dialog-actions">
           <button class="story-close" type="button">閉じる</button>

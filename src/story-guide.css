@@ -1,0 +1,58 @@
+/* 構成づくり 詳しい手順（story-guide.html）。色や書体は style.css・guide.css の変数とクラスを使う */
+.sg-header-links { display: flex; gap: 8px; }
+.sg-mark-sample { padding: 0 4px; border-radius: 4px; outline: 2px solid var(--coral); outline-offset: 1px; color: #a8432b; font-weight: 600; }
+
+.sg-flow { padding: 36px 5vw 44px; border-bottom: 1px solid var(--line); }
+.sg-flow .eyebrow { color: var(--coral); margin: 0; }
+.sg-flow h2 { margin: 4px 0 18px; font-size: clamp(1.5rem, 2.6vw, 2.1rem); letter-spacing: -.03em; }
+.sg-flow-main { margin: 0 0 16px; padding: 0; list-style: none; counter-reset: flow; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.sg-flow-main li { counter-increment: flow; position: relative; display: grid; gap: 4px; padding: 16px 18px 16px 52px; border: 1px solid var(--line); background: rgba(255,253,247,.7); border-radius: 8px; }
+.sg-flow-main li::before { content: counter(flow); position: absolute; left: 16px; top: 16px; display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--coral); color: #fff; font-size: .8rem; font-weight: 700; }
+.sg-flow-main li:not(:last-child)::after { content: '→'; position: absolute; right: -12px; top: 50%; transform: translateY(-50%); z-index: 1; color: var(--coral); font-weight: 700; }
+.sg-flow-main strong { font-size: .98rem; }
+.sg-flow-main span { font-size: .8rem; color: #5b574e; line-height: 1.5; }
+.sg-flow-note { margin: 0 0 18px; font-size: .9rem; color: #3f3c36; }
+.sg-flow-note a, .sg-next a { color: var(--blue); }
+.sg-courses { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.sg-courses a { display: grid; grid-template-columns: 32px minmax(0, 1fr); grid-template-areas: "num title" "num meta"; column-gap: 12px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 8px; color: var(--ink); text-decoration: none; background: #fffdf7; }
+.sg-courses a:hover, .sg-courses a:focus-visible { border-color: var(--ink); }
+.sg-courses a:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+.sg-course-num { grid-area: num; display: grid; place-items: center; width: 32px; height: 32px; border-radius: 8px; background: var(--ink); color: var(--cream); font-weight: 700; }
+.sg-courses strong { grid-area: title; font-size: .92rem; }
+.sg-courses small { grid-area: meta; font-size: .76rem; color: #827c70; }
+
+.sg-course { max-width: 1180px; margin: 0 auto; padding: 56px 5vw 36px; border-bottom: 1px solid var(--line); scroll-margin-top: 8px; }
+.sg-course-head h2 { margin: 4px 0 6px; font-size: clamp(1.6rem, 3vw, 2.3rem); letter-spacing: -.03em; }
+.sg-course-meta { margin: 0 0 10px; font-size: .82rem; color: var(--coral); font-weight: 600; }
+.sg-course-head .g-lead { max-width: 760px; line-height: 1.8; }
+.sg-steps { margin: 26px 0 0; padding: 0; list-style: none; display: grid; gap: 28px; }
+.sg-step { display: grid; grid-template-columns: minmax(260px, 2fr) minmax(0, 3fr); gap: clamp(18px, 3vw, 40px); align-items: start; padding-top: 24px; border-top: 1px dashed var(--line); scroll-margin-top: 8px; }
+.sg-step:first-child { border-top: 0; padding-top: 0; }
+.sg-step-num { display: flex; align-items: center; gap: 10px; margin: 0 0 6px; font-size: .76rem; color: #827c70; letter-spacing: .04em; }
+.sg-step-num span { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--coral); color: #fff; font-size: .9rem; font-weight: 700; }
+.sg-step h3 { margin: 0 0 8px; font-size: 1.2rem; }
+.sg-step p { line-height: 1.85; font-size: .95rem; color: #3f3c36; }
+.sg-step .g-tip { margin-top: 12px; font-size: .88rem; }
+.sg-shot { margin: 0; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--cream); box-shadow: 0 12px 30px rgba(37,35,31,.08); }
+.sg-shot img { display: block; width: 100%; height: auto; }
+.sg-shot a { display: block; }
+.sg-shot a:focus-visible { outline: 3px solid var(--blue); outline-offset: -3px; }
+.sg-shot figcaption { padding: 6px 12px; font-size: .72rem; color: #827c70; border-top: 1px solid var(--line); background: #fffdf7; }
+.sg-shot.is-empty { display: grid; place-items: center; min-height: 160px; border-style: dashed; box-shadow: none; }
+.sg-shot.is-empty p { margin: 0; padding: 16px; font-size: .86rem; color: #827c70; text-align: center; }
+.sg-next { display: flex; justify-content: space-between; gap: 12px; margin: 28px 0 0; font-size: .88rem; }
+.sg .g-faq { max-width: 860px; margin-top: 18px; }
+
+@media (max-width: 960px) {
+  .sg-flow-main { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .sg-flow-main li:nth-child(2)::after { display: none; }
+  .sg-courses { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .sg-step { grid-template-columns: 1fr; }
+}
+@media (max-width: 760px) {
+  .sg-flow { padding: 28px 20px 36px; }
+  .sg-flow-main, .sg-courses { grid-template-columns: 1fr; }
+  .sg-flow-main li::after { display: none; }
+  .sg-course { padding: 44px 20px 28px; }
+  .sg-header-links .guide-link:first-child { display: none; }
+}
