@@ -124,5 +124,5 @@ PR #6〜#9でリリース済み（使い方ページはPR #10）。確認しや�
    - v1.0-2b：AIへの依頼文をコピーして、場面からおすすめの構成を作る（PR #19でリリース済み）。
 3. v1.0-3：環境の動きを追加する（PR #22でリリース済み）。環境タブ E01〜E10、目的「空気感を足す」、構成の型の候補にも追加。再現情報は未確認（Windowsスレッドで確認）。
 4. v1.0-4：建築CGの残り「構造・設備・仕上げを重ねる」（V21）を追加する（PR #23でリリース済み）。これで当初の建築CG候補7つがそろう。
-5. 再現情報の実機確認：PowerPoint・SketchUp・D5 Renderの結果を反映済み（PR #16・#17）。Premiere Pro／After Effectsの結果を反映済み（PR #20・#21）。未確認：Lumion／Twinmotion／Enscape、環境 E01〜E10 と V21（Windowsスレッドで確認予定）。
+5. 再現情報の実機確認：PowerPoint・SketchUp・D5 Renderの結果を反映済み（PR #16・#17）。Premiere Pro／After Effectsの結果を反映済み（PR #20・#21）。環境 E01〜E10 と V21 の結果を反映済み（PR #25・#26）。未確認：Lumion／Twinmotion／Enscape／Navisworks、D5 の一部の見た目（植栽の揺れ・水の波・雪・車・霧の変化・季節の見た目）。
 6. v1.0のあと：未定（Humanと決める）。

@@ -38,8 +38,11 @@ const checkView = (number: string, key: keyof Recipe): CheckView => {
   // 「PowerPoint (Microsoft 365) 2610 / 日本語UI」→「PowerPoint 2610」、「After Effects 2026 (26.5)・Premiere Pro 2026 / 日本語UI」→「After Effects 2026・Premiere Pro 2026」
   const tool = check.checkedWith.split('/')[0].replace(/\s*\([^)]*\)/g, '').trim()
   if (key === 'cg') {
-    const tools = [check.status === 'device' || check.status === 'mismatch' ? 'SketchUp' : '', check.d5 ? 'D5 Render' : ''].filter(Boolean)
-    const rest = '（Lumion／Twinmotion／Enscapeは未確認）'
+    // 実機で確かめた道具（SketchUp は checkedWith にあるときだけ）と、欄に書かれているが未確認の道具
+    const sketchup = /SketchUp/.test(check.checkedWith) && (check.status === 'device' || check.status === 'mismatch')
+    const tools = [sketchup ? 'SketchUp' : '', check.d5 ? 'D5 Render' : ''].filter(Boolean)
+    const others = ['Lumion', 'Twinmotion', 'Enscape', 'Navisworks'].filter((name) => recipes[number]?.cg?.includes(name))
+    const rest = others.length ? `（${others.join('／')}は未確認）` : ''
     return tools.length ? { level: 'device', text: `${tools.join('・')}は実機で確認${rest}` } : { level: 'unverified', text: '未確認' }
   }
   if (check.status === 'device') return { level: 'device', text: `実機で確認（${tool}）` }
