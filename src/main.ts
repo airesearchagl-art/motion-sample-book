@@ -771,6 +771,35 @@ const textScenes: Record<string, string> = {
       <span class="co-photo" aria-hidden="true"><i class="ph-sky"></i><i class="ph-far"></i><i class="ph-building"></i><i class="ph-ground"></i></span>
       <span class="co-note n1" aria-hidden="true"><i class="co-dot"></i><i class="co-leader"></i><b class="co-label">Low-E複層ガラス</b></span>
       <span class="co-note n2" aria-hidden="true"><i class="co-dot"></i><i class="co-leader"></i><b class="co-label">木製ルーバー</b></span>`,
+  // v1.2-3 文字・数値（T11〜T17）。T11 は共通の文字（動きで見つける）を使う
+  wordrotate: `
+      <span class="wr-frame" aria-hidden="true">
+        <span class="wr-line">ここで、<span class="wr-slot"><span class="wr-roll"><b>働く</b><b>集う</b><b>憩う</b><b>働く</b></span></span></span>
+        <span class="text-sub">ONE PLACE, MANY USES</span>
+      </span>`,
+  marker: `
+      <span class="mk-frame" aria-hidden="true">
+        <span class="mk-line">自然光が<mark class="mk-mark">奥まで届く</mark>オフィス</span>
+        <span class="text-sub">DAYLIGHT OFFICE</span>
+      </span>`,
+  scramble: `
+      <span class="sc-frame" aria-hidden="true">
+        <span class="sc-label">PROJECT CODE</span>
+        <span class="sc-text" data-scramble="ATRIUM-2026">ATRIUM-2026</span>
+      </span>`,
+  lowerthird: `
+      <span class="lt-photo" aria-hidden="true"><i class="ph-sky"></i><i class="ph-far"></i><i class="ph-building"></i><i class="ph-ground"></i></span>
+      <span class="lt-bar" aria-hidden="true"><i class="lt-accent"></i><b class="lt-title">みなと区立図書館</b><small class="lt-sub">東京都港区 ／ 2026年 竣工</small></span>`,
+  barchart: `
+      <span class="bc-frame" aria-hidden="true">
+        <small class="bc-caption">各階の面積（㎡）</small>
+        ${[['1F', 1240, 92], ['2F', 980, 72], ['3F', 980, 72], ['4F', 620, 46]].map(([label, value, height], index) => `<span class="bc-col" style="--h:${height}%;--i:${index}"><b class="bc-value">${Number(value).toLocaleString('ja-JP')}</b><i class="bc-bar"></i><small>${label}</small></span>`).join('')}
+      </span>`,
+  ratioring: `
+      <span class="rr-frame" aria-hidden="true">
+        <svg class="rr-svg" viewBox="0 0 120 120"><circle class="rr-track" cx="60" cy="60" r="48" /><circle class="rr-value" cx="60" cy="60" r="48" pathLength="100" /></svg>
+        <span class="rr-number"><b><span data-count-to="32">32</span><em>%</em></b><small>緑化率</small></span>
+      </span>`,
 }
 
 textGrid.innerHTML = textSamples.map((sample) => `
@@ -1059,6 +1088,28 @@ const playMotion = (stage: HTMLButtonElement) => {
 /** 動画・文字：ホバー／タップ／フォーカスで2.4秒再生。連続再生しても前のタイマーで止まらない */
 /** 数字のカウントアップ（T08）。CSSでは数えられないので、再生のたびにJSで0から数える */
 const counterFrames = new WeakMap<HTMLElement, number>()
+/** T14 ばらばらの文字から確定：ランダムな文字を入れ替えながら、左から順に正しい文字に決める */
+const scrambleFrames = new WeakMap<HTMLElement, number>()
+const scrambleChars = 'ABCDEFGHJKLMNPQRSTUVWXYZ0123456789#%&*+'
+const runScrambles = (stage: HTMLElement) => {
+  stage.querySelectorAll<HTMLElement>('[data-scramble]').forEach((element) => {
+    const target = element.dataset.scramble ?? ''
+    const previous = scrambleFrames.get(element)
+    if (previous !== undefined) window.cancelAnimationFrame(previous)
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { element.textContent = target; return }
+    const start = performance.now() + 150 / speed()
+    const duration = 1500 / speed()
+    const step = (now: number) => {
+      const progress = Math.min(Math.max((now - start) / duration, 0), 1)
+      const fixed = Math.floor(progress * target.length)
+      element.textContent = [...target].map((char, index) => (index < fixed || char === '-' ? char : scrambleChars[Math.floor(Math.random() * scrambleChars.length)])).join('')
+      if (progress < 1) scrambleFrames.set(element, window.requestAnimationFrame(step))
+      else { element.textContent = target; scrambleFrames.delete(element) }
+    }
+    scrambleFrames.set(element, window.requestAnimationFrame(step))
+  })
+}
+
 const runCounters = (stage: HTMLElement) => {
   stage.querySelectorAll<HTMLElement>('[data-count-to]').forEach((element) => {
     const to = Number(element.dataset.countTo)
@@ -1095,6 +1146,7 @@ const playPreview = (stage: HTMLButtonElement) => {
   stage.classList.add('is-playing')
   applySpeed(stage)
   runCounters(stage)
+  runScrambles(stage)
 
   const timer = window.setTimeout(() => {
     stage.classList.remove('is-playing')

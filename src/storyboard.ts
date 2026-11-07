@@ -40,7 +40,7 @@ export const storyTemplates: StoryTemplate[] = [
       { role: '建物の全体', note: '建物の形と大きさが分かるカット', candidates: ['V08', 'V06', 'V05', 'V12'], seconds: 5 },
       { role: '空間に入る', note: '人の目線で中へ', candidates: ['V18', 'V28', 'V07', 'V09', 'V22'], seconds: 5 },
       { role: 'ディテール', note: '素材や納まりに寄る', candidates: ['V10', 'V04', 'V32', 'T10'], seconds: 4 },
-      { role: '締め：余韻を残す', note: '時間の移ろいやタイトルで終える', candidates: ['V12', 'V02', 'T06', 'E04', 'E09'], seconds: 5 },
+      { role: '締め：余韻を残す', note: '時間の移ろいやタイトルで終える', candidates: ['V12', 'V02', 'T06', 'T11', 'E04', 'E09'], seconds: 5 },
     ],
   },
   {
@@ -66,7 +66,7 @@ export const storyTemplates: StoryTemplate[] = [
       { role: '構成の考え方', note: '平面から立体、各階の重なり', candidates: ['V14', 'V15', 'V21', 'V33', '29', '30'], seconds: 5 },
       { role: '断面で内部', note: '吹抜けや階のつながり', candidates: ['V11'], seconds: 4 },
       { role: '案や前後の比較', note: 'A案B案、改修前後', candidates: ['11', 'V26', '16', 'V03', 'V32'], seconds: 4 },
-      { role: '規模と数値', note: '面積・階数・寸法', candidates: ['T08', 'T09'], seconds: 3 },
+      { role: '規模と数値', note: '面積・階数・寸法', candidates: ['T08', 'T16', 'T17', 'T09'], seconds: 3 },
       { role: '完成イメージへ', note: 'スケッチから完成形へ', candidates: ['V19', 'V17'], seconds: 5 },
     ],
   },
