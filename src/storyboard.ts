@@ -40,7 +40,7 @@ export const storyTemplates: StoryTemplate[] = [
       { role: '建物の全体', note: '建物の形と大きさが分かるカット', candidates: ['V08', 'V06', 'V05', 'V12'], seconds: 5 },
       { role: '空間に入る', note: '人の目線で中へ', candidates: ['V18', 'V28', 'V07', 'V09', 'V22'], seconds: 5 },
       { role: 'ディテール', note: '素材や納まりに寄る', candidates: ['V10', 'V04', 'V32', 'T10'], seconds: 4 },
-      { role: '締め：余韻を残す', note: '時間の移ろいやタイトルで終える', candidates: ['V12', 'V02', 'T06', 'T11', 'E04', 'E09'], seconds: 5 },
+      { role: '締め：余韻を残す', note: '時間の移ろいやタイトルで終える', candidates: ['V12', 'V02', 'T06', 'T11', 'E04', 'E09', 'E16'], seconds: 5 },
     ],
   },
   {
@@ -49,11 +49,11 @@ export const storyTemplates: StoryTemplate[] = [
     description: '近づく → 入口 → 室内 → 素材 → 夕景。人が実際に歩く順で空間を体験させる。',
     purpose: 'experience',
     slots: [
-      { role: '近づく', note: 'アプローチを歩く目線で建物へ', candidates: ['V09', 'V07', 'V16', 'E01', 'E03'], seconds: 5 },
+      { role: '近づく', note: 'アプローチを歩く目線で建物へ', candidates: ['V09', 'V07', 'V16', 'E01', 'E03', 'E11'], seconds: 5 },
       { role: '入口を抜ける', note: '外から内へのつなぎ', candidates: ['V18', 'V28', 'V07', 'V22'], seconds: 4 },
-      { role: '室内を見渡す', note: '広がりや吹抜けを見せる', candidates: ['V05', 'V06', 'V09', 'E05'], seconds: 5 },
+      { role: '室内を見渡す', note: '広がりや吹抜けを見せる', candidates: ['V05', 'V06', 'V09', 'E05', 'E20'], seconds: 5 },
       { role: '素材に寄る', note: '手に触れる素材を印象づける', candidates: ['V10', 'V04', 'T10'], seconds: 4 },
-      { role: '夕景で締める', note: '明かりが灯る外観で終える', candidates: ['V12', 'V02', 'E08'], seconds: 5 },
+      { role: '夕景で締める', note: '明かりが灯る外観で終える', candidates: ['V12', 'V02', 'E08', 'E17'], seconds: 5 },
     ],
   },
   {

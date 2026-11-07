@@ -844,6 +844,17 @@ const envScenes: Record<string, string> = {
   trails: `${envBase(Array.from({ length: 9 }, () => '<i></i>').join(''))}<i class="ev-road"></i><i class="ev-trail head l1"></i><i class="ev-trail head l2"></i><i class="ev-trail tail l3"></i><i class="ev-trail tail l4"></i>`,
   mist: `${envBase()}<i class="ev-forest"></i><i class="ev-mist m1"></i><i class="ev-mist m2"></i>`,
   seasons: `${envBase()}${envTrees()}<small class="scene-caption ev-season"><b>春</b><b>夏</b><b>秋</b><b>冬</b></small>`,
+  // v1.2-4 環境（E11〜E20）
+  petals: `${envBase()}<i class="ev-sakura"></i><i class="ev-petal" style="--x:10%;--y:12%;--d:0s;--r:20deg"></i><i class="ev-petal" style="--x:28%;--y:30%;--d:0.3s;--r:-40deg"></i><i class="ev-petal" style="--x:46%;--y:8%;--d:0.6s;--r:60deg"></i><i class="ev-petal" style="--x:64%;--y:44%;--d:0.15s;--r:-20deg"></i><i class="ev-petal" style="--x:82%;--y:22%;--d:0.45s;--r:35deg"></i><i class="ev-petal" style="--x:20%;--y:58%;--d:0.9s;--r:-55deg"></i><i class="ev-petal" style="--x:56%;--y:36%;--d:1.1s;--r:15deg"></i><i class="ev-petal" style="--x:74%;--y:66%;--d:0.75s;--r:-30deg"></i><i class="ev-petal" style="--x:38%;--y:50%;--d:1.3s;--r:45deg"></i><i class="ev-petal" style="--x:90%;--y:18%;--d:1.0s;--r:-10deg"></i>`,
+  flutter: `${envBase()}${[18, 34, 66, 82].map((x, index) => `<i class="ev-pole" style="--x:${x}%"></i><i class="ev-flag" style="--x:${x}%;--i:${index}"></i>`).join('')}`,
+  steam: `${envBase('<i class="ev-vent"></i>')}${[0, 1, 2, 3, 4].map((index) => `<i class="ev-puff" style="--i:${index}"></i>`).join('')}`,
+  fountain: `${envBase()}<i class="ev-basin"></i>${[-2, -1, 0, 1, 2].map((index) => `<i class="ev-jet" style="--k:${index}"></i>`).join('')}${Array.from({ length: 6 }, (_, index) => `<i class="ev-splash" style="--i:${index}"></i>`).join('')}`,
+  crowd: `${envBase()}<i class="ev-plaza"></i>${[[8, 0], [20, .2], [88, .1], [76, .3], [30, .5], [66, .4]].map(([x, d], index) => `<i class="ev-person near g${index}" style="--x:${x}%;--d:${d}s"></i>`).join('')}`,
+  birds: `${envBase()}${[[0, 22], [9, 16], [16, 26], [24, 19], [30, 29]].map(([x, y], index) => `<i class="ev-bird" style="--x:${x}%;--y:${y}%;--i:${index}"></i>`).join('')}`,
+  twinkle: `<i class="ev-night-sky"></i>${Array.from({ length: 7 }, (_, index) => `<i class="ev-tower" style="--i:${index}"></i>`).join('')}${Array.from({ length: 26 }, (_, index) => `<i class="ev-light" style="--x:${(index * 37) % 96 + 2}%;--y:${58 + ((index * 23) % 30)}%;--i:${index % 7}"></i>`).join('')}<i class="ev-beacon b1"></i><i class="ev-beacon b2"></i>`,
+  puddle: `${envBase()}<span class="ev-wet"><i class="ev-pool-refl"></i><i class="ev-puddle p1"></i><i class="ev-puddle p2"></i><i class="ev-ripple r1"></i><i class="ev-ripple r2"></i></span>`,
+  glassreflect: `<i class="ev-sky"></i><span class="ev-curtain">${Array.from({ length: 12 }, (_, index) => `<i class="ev-pane" style="--c:${index % 4};--r:${Math.floor(index / 4)}"></i>`).join('')}</span><i class="ev-ground"></i>`,
+  vertical: `<i class="ev-atrium"></i><span class="ev-shaft"><i class="ev-car"></i></span><span class="ev-escalator"><i class="ev-rail"></i>${[0, 1, 2].map((index) => `<i class="ev-rider" style="--i:${index}"></i>`).join('')}</span><i class="ev-floors"></i>`,
 }
 
 const environmentGrid = document.querySelector<HTMLDivElement>('#environment-grid')!
