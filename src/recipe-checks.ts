@@ -106,6 +106,46 @@ export const recipeChecks: Record<string, Partial<Record<'edit' | 'powerpoint' |
     edit: { status: 'device', checkedWith: 'After Effects 2026 (26.5)・Premiere Pro 2026 / 日本語UI', date: '2026-11-07' },
     powerpoint: { status: 'device', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-01' },
   },
+  '21': {
+    edit: { status: 'device', checkedWith: 'After Effects 2026 (26.5)・Premiere Pro 2026 / 日本語UI', date: '2026-11-07', note: 'After Effects の位置・不透明度のキーと、キーフレーム補助の「イージーイーズ」（F9）。Premiere Pro の「モーション」の位置' },
+    powerpoint: { status: 'device', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-07', note: '開始効果は「スライドイン」（英語版の Fly In）。効果のオプションは 下から／左下から／左から／左上から／上から／右上から／右から／右下から。「右から」で設定できた。「フェード」を「直前の動作と同時」で重ねられる' },
+  },
+  '22': {
+    edit: { status: 'device', checkedWith: 'After Effects 2026 (26.5)・Premiere Pro 2026 / 日本語UI', date: '2026-11-07', note: 'After Effects のキーフレーム補助に「シーケンスレイヤー...」がある' },
+    powerpoint: { status: 'device', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-07', note: '「ライズアップ」は「その他の開始効果」にある（第1弾で確認）。遅延は秒で入れられる' },
+  },
+  '23': {
+    edit: { status: 'device', checkedWith: 'After Effects 2026 (26.5)・Premiere Pro 2026 / 日本語UI', date: '2026-11-07', note: 'After Effects の位置（Y 位置）・不透明度のキー' },
+    powerpoint: { status: 'device', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-07', note: '開始効果「フェード」と開始のタイミング「クリック時」がある' },
+  },
+  '24': {
+    edit: { status: 'device', checkedWith: 'After Effects 2026 (26.5)・Premiere Pro 2026 / 日本語UI', date: '2026-11-07', note: 'After Effects のマスクのプロパティ（マスクパス・マスクの拡張など）と、位置Y・回転のキー' },
+    powerpoint: { status: 'device', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-07', note: '開始効果「ワイプ」（上から）と軌跡「直線」（効果のオプション：直線(下へ)）を「直前の動作と同時」で組める' },
+  },
+  '25': {
+    edit: { status: 'device', checkedWith: 'After Effects 2026 (26.5)・Premiere Pro 2026 / 日本語UI', date: '2026-11-07', note: 'After Effects の位置Y と平面の不透明度のキー' },
+    powerpoint: { status: 'device', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-07', note: '開始効果「スライドイン」の効果のオプションに「下から」がある。四角形の透明度は図形の書式で設定' },
+  },
+  '26': {
+    edit: { status: 'device', checkedWith: 'After Effects 2026 (26.5)・Premiere Pro 2026 / 日本語UI', date: '2026-11-07', note: 'After Effects の不透明度とスケールのキー' },
+    powerpoint: { status: 'device', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-07', note: '画面切り替え「フェード」の効果のオプションは スムーズ／黒いスクリーンから。「スムーズ」・期間 0.3 秒に設定できた' },
+  },
+  '27': {
+    edit: { status: 'device', checkedWith: 'After Effects 2026 (26.5)・Premiere Pro 2026 / 日本語UI', date: '2026-11-07', note: 'After Effects の位置・不透明度のキーと、シェイプのキー' },
+    powerpoint: { status: 'device', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-07', note: '画面切り替え「プッシュ」（右から）がある。同じ名前の線の幅を変えた2枚に「変形」を設定できた（伸びる見た目は未確認）' },
+  },
+  '28': {
+    edit: { status: 'device', checkedWith: 'After Effects 2026 (26.5)・Premiere Pro 2026 / 日本語UI', date: '2026-11-07', note: 'After Effects のスケール・不透明度のキーに、エクスプレッション loopOut() をエラーなく付けられた' },
+    powerpoint: { status: 'device', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-07', note: '強調「パルス」があり、効果のダイアログのタイミング「繰り返し」に「スライドの最後まで」がある（ほかに なし／2／3／4／5／10／次のクリックまで）。開始効果「ズーム」と終了効果「フェード」もある' },
+  },
+  '29': {
+    edit: { status: 'device', checkedWith: 'After Effects 2026 (26.5)・Premiere Pro 2026 / 日本語UI', date: '2026-11-07', note: 'After Effects の 3D レイヤーの位置（Z 位置）と不透明度のキー' },
+    powerpoint: { status: 'device', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-07', note: '軌跡「直線」（直線(上へ)）と強調「透過性」がある。透過性の効果のオプションは 25%／50%／75%／100%（50% で設定）' },
+  },
+  '30': {
+    edit: { status: 'device', checkedWith: 'After Effects 2026 (26.5)・Premiere Pro 2026 / 日本語UI', date: '2026-11-07', note: 'After Effects のシェイプの塗り（不透明度）のキー' },
+    powerpoint: { status: 'device', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-07', note: '強調「塗りつぶしの色」「透過性」と開始効果「フェード」がある' },
+  },
   'V01': {
     edit: { status: 'device', checkedWith: 'After Effects 2026 (26.5)・Premiere Pro 2026 / 日本語UI', date: '2026-11-07', note: '「Jカット／Lカット」は機能名ではなく編集手法（映像と音声の切り替え位置をずらす）' },
     powerpoint: { status: 'device', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-01' },
@@ -302,5 +342,53 @@ export const recipeChecks: Record<string, Partial<Record<'edit' | 'powerpoint' |
     edit: { status: 'device', checkedWith: 'After Effects 2026 (26.5) / 日本語UI', date: '2026-11-07', note: '「リニアワイプ」、シェイプの「パスのトリミング」（第2弾で確認済み）' },
     powerpoint: { status: 'device', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-07', note: '開始効果「ワイプ」の方向は 下から／左から／右から／上から。「フェード」と「直前の動作の後」も確認' },
     cg: { status: 'device', checkedWith: 'SketchUp Pro 2026 (26.2) / 日本語UI + MCP 9876 / D5 Render 3.1.1 / 英語UI', date: '2026-11-07', note: 'SketchUp：構造・設備・仕上げをタグで分けたモデル（mm）で、表示タグを1つずつ増やしたシーンを3つ作り、遷移（5秒）の途中でもタグの表示が瞬時に切り替わる（補間されない）ことを確認。Navisworks は閲覧用の Freedom 2027 だけが入っていて、ホームタブに「TimeLiner プレイバック」がある（TimeLiner を作るには Manage／Simulate が必要。未導入）。D5 は見た目も画像で確認（2026-11-07）：3つの .skp を読み込んで重ね、Object リストの目のアイコンで表示を切り替えて、構造／構造＋設備／全体の3枚を書き出せた。D5 では読み込んだモデルの基準点が箱の下の中央になるため、同じ Location では重ならず、SketchUp 上の位置の差を Location に入れて揃えた。仕上げの半透明ガラスは D5 では暗いガラスになった。Lumion・Twinmotionは未確認', d5: '構造・設備・仕上げを別々の .skp で書き出して順に読み込むと、Object リストに別のモデルとして入る。D5 では各モデルの基準点が箱の下の中央になるので、Inspector の Location に SketchUp 上の位置の差を入れて重ねる。Object リストの目のアイコンで表示を切り替え、段階ごとに画像（または動画）を書き出して編集ソフトで重ねる' },
+  },  'V22': {
+    edit: { status: 'device', checkedWith: 'After Effects 2026 (26.5)・Premiere Pro 2026 / 日本語UI', date: '2026-11-07', note: 'Premiere Pro のエフェクトコントロール「モーション」の「位置」「スケール」（第2弾で確認）。合わせた見た目は未確認' },
+    powerpoint: { status: 'device', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-07', note: '画面切り替え「フェード」の期間を 0.3 秒にできることを確認（「なし」も既定で選べる）。2枚の丸い形を同じ位置・大きさに置いて設定。つながりの見た目は未確認' },
   },
+  'V23': {
+    edit: { status: 'device', checkedWith: 'After Effects 2026 (26.5)・Premiere Pro 2026 / 日本語UI', date: '2026-11-07', note: 'After Effects の「ブラー(方向）」（表示はこのかっこの組み合わせ）に「方向」「ブラーの長さ」がある。Premiere Pro では「ブラー (方向) (FX)」（ブラー＆シャープ）' },
+    powerpoint: { status: 'device', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-07', note: '画面切り替え「プッシュ」の効果のオプションは 下から／左から／右から／上から。「右から」・期間 0.3 秒に設定できた' },
+  },
+  'V24': {
+    edit: { status: 'device', checkedWith: 'After Effects 2026 (26.5)・Premiere Pro 2026 / 日本語UI', date: '2026-11-07', note: 'Premiere Pro の「アイリス (円形)」はレガシーのビデオトランジション（ほかに アイリス (クロス)／(ダイヤモンド)／(正方形)）。中心を動かせるかは未確認。After Effects のマスクのプロパティは「マスクの拡張」' },
+    powerpoint: { status: 'device', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-07', note: '画面切り替え「図形」の効果のオプションに「円」がある（ほかに ひし形／プラス／イン／アウト）' },
+  },
+  'V25': {
+    edit: { status: 'device', checkedWith: 'After Effects 2026 (26.5)・Premiere Pro 2026 / 日本語UI', date: '2026-11-07', note: 'Premiere Pro の「ホワイトアウト」はビデオトランジションの「ディゾルブ」にある（レガシー版もある）。After Effects の「露光量」（カラー補正）に「露出」がある' },
+    powerpoint: { status: 'device', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-07', note: '画面切り替え「フラッシュ」がある（効果のオプションはない）。白く光る見た目は未確認' },
+  },
+  'V26': {
+    edit: { status: 'device', checkedWith: 'After Effects 2026 (26.5)・Premiere Pro 2026 / 日本語UI', date: '2026-11-07', note: 'Premiere Pro の「クロップ」はレガシーのビデオエフェクトとして残っている（エフェクトコントロール「モーション」の切り抜きでも同じことができる。第2弾で確認）' },
+    powerpoint: { status: 'device', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-07', note: '開始効果「ワイプ」の方向は 下から／左から／右から／上から（第1弾で確認）。開始のタイミング「直前の動作の後」がある' },
+  },
+  'V27': {
+    edit: { status: 'device', checkedWith: 'After Effects 2026 (26.5)・Premiere Pro 2026 / 日本語UI', date: '2026-11-07', note: 'After Effects の 3D カメラの「カメラオプション」に「ズーム」がある。カメラの位置（Z）とズームに同じ時間でキーを2つずつ打てた（ドリーズームの見た目は未確認）' },
+    powerpoint: { status: 'device', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-07', note: '強調「拡大/収縮」のサイズはユーザー設定で％を入れられる（第1弾で確認）。重ねた画像は動かさなければそのまま' },
+  },
+  'V28': {
+    edit: { status: 'device', checkedWith: 'After Effects 2026 (26.5)・Premiere Pro 2026 / 日本語UI', date: '2026-11-07', note: 'After Effects の「ブラー (ガウス)」（ブラー＆シャープ）' },
+    powerpoint: { status: 'device', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-07', note: '終了効果「スライドアウト」がある。効果のオプションは 下へ／左下へ／左へ／左上へ／上へ／右上へ／右へ／右下へ（「左へ」で設定）。強調「拡大/収縮」と「直前の動作と同時」で組める' },
+  },
+  'V29': {
+    edit: { status: 'device', checkedWith: 'After Effects 2026 (26.5)・Premiere Pro 2026 / 日本語UI', date: '2026-11-07', note: 'After Effects の 3D レイヤーのトランスフォームに「X 回転」がある。「クロスディゾルブ」は Premiere Pro のビデオトランジション「ディゾルブ」' },
+    powerpoint: { status: 'device', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-07', note: '画面切り替え「ズーム」（はなやか）があり、効果のオプションは イン／アウト／ズーム回転。「変形」もある' },
+  },
+  'V30': {
+    edit: { status: 'device', checkedWith: 'After Effects 2026 (26.5)・Premiere Pro 2026 / 日本語UI', date: '2026-11-07', note: 'Premiere Pro のクリップメニュー「速度・デュレーション」（Ctrl+R）、エフェクト「ワープスタビライザー」（ビデオエフェクトの「ゆがみ」）。After Effects にも「ワープスタビライザー」（ディストーション）がある' },
+    powerpoint: { status: 'device', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-07', note: '画面切り替え「なし」で「自動」に 0.2 秒（00:00.20）を設定できた' },
+  },
+  'V31': {
+    edit: { status: 'device', checkedWith: 'After Effects 2026 (26.5)・Premiere Pro 2026 / 日本語UI', date: '2026-11-07', note: 'Premiere Pro のビデオトランジション「ディゾルブ」に「クロスディゾルブ」がある' },
+    powerpoint: { status: 'device', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-07', note: '開始効果「フェード」と「直前の動作の後」、画面切り替え「フェード」がある' },
+  },
+  'V32': {
+    edit: { status: 'device', checkedWith: 'After Effects 2026 (26.5)・Premiere Pro 2026 / 日本語UI', date: '2026-11-07', note: 'After Effects の「リニアワイプ」（トランジション）に「変換終了」「ワイプ角度」「境界のぼかし」がある' },
+    powerpoint: { status: 'device', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-07', note: '開始効果「ワイプ」（左から）と「直前の動作の後」がある' },
+  },
+  'V33': {
+    edit: { status: 'device', checkedWith: 'After Effects 2026 (26.5)・Premiere Pro 2026 / 日本語UI', date: '2026-11-07', note: 'After Effects のシェイプの「線」の「破線」に「線分」「間隔」「オフセット」、「パスのトリミング」に「開始点」「終了点」「オフセット」がある' },
+    powerpoint: { status: 'device', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-07', note: '開始効果「ワイプ」の方向は 下から／左から／右から／上から の4つだけで、曲線に沿っては伸びない（矢印の大まかな向きに近い方向を選ぶ）' },
+  },
+
 }
