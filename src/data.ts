@@ -73,6 +73,19 @@ export const videoSamples: Sample[] = [
   { id: 'tiltshift', number: 'V20', name: 'ミニチュア（ティルトシフト）', english: 'Tilt-shift', description: '画面の上下をぼかし、街区を模型のように見せる。', categoryLabel: 'カメラ', hint: '街区・配置計画・敷地全体', avoid: '実物の大きさを伝えたい場面', feel: ['かわいい', '俯瞰', '模型'] },
   // v1.0-4 建築CGの残り
   { id: 'layers', number: 'V21', name: '構造・設備・仕上げを重ねる', english: 'Layered build-up', description: '柱と梁の構造、ダクトや配管の設備、外装の仕上げが、順に重なっていく。', categoryLabel: '建築CG', hint: 'BIMモデルの説明・設備の納まり・施工順序', avoid: '完成した外観の印象だけを伝えたい場面', feel: ['構成', '組み上がる', '分かりやすい'] },
+  // v1.2-1 つなぎ・カメラ・建築CG を追加（100種類へ）
+  { id: 'matchcut', number: 'V22', name: 'マッチカット', english: 'Match cut', description: '丸い窓から丸い天窓へ。形と位置が同じものをそろえて、別の場面へつなぐ。', categoryLabel: 'つなぎ', hint: '外から内へ・昼から夜へ・模型から完成へ', avoid: '形のそろうものがない場面', feel: ['気持ちよく', '意外性', 'つながる'] },
+  { id: 'whip', number: 'V23', name: 'ホイップパン', english: 'Whip pan', description: 'カメラを素早く振ってぶれさせ、その勢いのまま次の場面へ移る。', categoryLabel: 'つなぎ', hint: 'テンポを上げたい切り替え・場所の移動', avoid: '落ち着いた説明', feel: ['勢い', 'スピード', 'テンポ'] },
+  { id: 'iris', number: 'V24', name: '形のワイプ（アイリス）', english: 'Iris / shape wipe', description: '画面の中央から丸く広がって、次の場面が現れる。', categoryLabel: 'つなぎ', hint: '注目点から次の場面へ・章の区切り', avoid: '落ち着いた竣工映像', feel: ['かわいい', '区切り', 'はっきり'] },
+  { id: 'washout', number: 'V25', name: '白く飛ばしてつなぐ', english: 'Washout', description: '画面が白くまぶしく飛び、その光の中から次の場面が現れる。', categoryLabel: 'つなぎ', hint: '回想・時間の飛躍・朝の光へ', avoid: '暗い場面どうし', feel: ['まぶしい', '時間の飛躍', '明るい'] },
+  { id: 'split', number: 'V26', name: '画面分割', english: 'Split screen', description: '1つの画面が2つ、3つに分かれ、別の場面を同時に見せる。', categoryLabel: 'つなぎ', hint: '案の比較・同じ時刻の別の場所・季節の比較', avoid: '細部を大きく見せたい場面', feel: ['比べる', '同時に', '整理'] },
+  { id: 'dollyzoom', number: 'V27', name: 'ドリーズーム', english: 'Dolly zoom', description: '手前の建物の大きさは変えずに、背景だけがぐっと迫ってくる。', categoryLabel: 'カメラ', hint: '印象的な一瞬・空間の奥行きを強調', avoid: '自然に見せたい説明の映像', feel: ['ドラマチック', '緊張感', '印象的'] },
+  { id: 'foreground', number: 'V28', name: '前景から抜ける', english: 'Foreground reveal', description: '手前の柱や木の陰から抜けて、奥の建物が見えてくる。', categoryLabel: 'カメラ', hint: '外観の見せ場・アプローチの導入', avoid: '手前に何もない場面', feel: ['期待', '奥行き', '映画的'] },
+  { id: 'topdown', number: 'V29', name: '俯瞰から目線へ', english: 'Top-down to eye level', description: '真上から見下ろした配置から、人の目線の高さまでカメラが降りてくる。', categoryLabel: 'カメラ', hint: '配置計画から外観へ・導入', avoid: '室内だけの映像', feel: ['全体から', '降りていく', '分かりやすい'] },
+  { id: 'hyperlapse', number: 'V30', name: 'ハイパーラプス', english: 'Hyperlapse', description: '歩きながら早回しにして、長い道のりや時間の流れを短く見せる。', categoryLabel: 'カメラ', hint: 'アプローチ・街並み・1日の流れ', avoid: 'ゆっくり見せたい空間', feel: ['スピード', '時間の流れ', '躍動'] },
+  { id: 'lightscene', number: 'V31', name: '照明シーンの切り替え', english: 'Lighting scenes', description: '同じ室内で、全般照明 → 作業 → くつろぎ → 常夜灯と、明かりの場面が切り替わる。', categoryLabel: '建築CG', hint: '照明計画の説明・調光の考え方', avoid: '明るさの違いが伝わりにくい小さな画面', feel: ['雰囲気', '比べる', '時間'] },
+  { id: 'material', number: 'V32', name: '仕上げ材の切り替え', english: 'Material swap', description: '同じ外壁の仕上げが、コンクリート → 木 → 金属 → タイルと順に入れ替わる。', categoryLabel: '建築CG', hint: '仕上げの比較・色や素材の検討', avoid: '1案に決まった場面', feel: ['比べる', '素材', '検討'] },
+  { id: 'airflow', number: 'V33', name: '気流・動線の見える化', english: 'Flow visualization', description: '断面の中を、吹き出す空気の流れと、人の動く線が矢印で流れていく。', categoryLabel: '建築CG', hint: '空調・換気の考え方・人の動線計画', avoid: '印象だけを伝える竣工映像', feel: ['分かりやすい', '流れ', '仕組み'] },
 ]
 
 export const textSamples: Sample[] = [
@@ -111,8 +124,8 @@ export const allSamples: Sample[] = [...samples, ...videoSamples, ...textSamples
 export const finderWords = ['ふわっと', '一瞬で', '高級感', '勢いがある', '上品', '奥行き', '注目させる', 'リズム']
 
 /* v0.4-3 再生の調整：速度はすべての見本、強さ・向きは意味のある見本だけに効く */
-export const strengthSamples = new Set(['01', '02', '04', '05', '06', '13', '14', 'V04', 'V07', 'V17', 'V20', 'T01', 'T03', 'T04', 'T06', 'E01', 'E02', 'E09'])
-export const directionSamples = new Set(['07', '08', '09', '12', '17', '19', 'V03', 'V05', 'V06', 'V08', 'V09', 'V12', 'V13', 'V16', 'V21', 'T05', 'E03', 'E04', 'E08'])
+export const strengthSamples = new Set(['01', '02', '04', '05', '06', '13', '14', 'V04', 'V07', 'V17', 'V20', 'V27', 'T01', 'T03', 'T04', 'T06', 'E01', 'E02', 'E09'])
+export const directionSamples = new Set(['07', '08', '09', '12', '17', '19', 'V03', 'V05', 'V06', 'V08', 'V09', 'V12', 'V13', 'V16', 'V21', 'V23', 'V28', 'T05', 'E03', 'E04', 'E08'])
 
 export type Setting = 'speed' | 'strength' | 'direction'
 export const settingOptions: Record<Setting, { label: string, options: [string, string][] }> = {
