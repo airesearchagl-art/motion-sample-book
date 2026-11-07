@@ -41,8 +41,11 @@ const checkView = (number: string, key: keyof Recipe): CheckView => {
     // 実機で確かめた道具（SketchUp は checkedWith にあるときだけ）と、欄に書かれているが未確認の道具
     const sketchup = /SketchUp/.test(check.checkedWith) && (check.status === 'device' || check.status === 'mismatch')
     const tools = [sketchup ? 'SketchUp' : '', check.d5 ? 'D5 Render' : ''].filter(Boolean)
-    const others = ['Lumion', 'Twinmotion', 'Enscape', 'Navisworks'].filter((name) => recipes[number]?.cg?.includes(name))
-    const rest = others.length ? `（${others.join('／')}は未確認）` : ''
+    // D5 で動きまで見られなかったもの（note が「見た目は未確認」）と、欄にあるが確かめていない道具
+    const d5Motion = check.d5 && check.note?.includes('見た目は未確認') ? 'D5での動き' : ''
+    const others = ['Lumion', 'Twinmotion', 'Enscape', 'Navisworks'].filter((name) => recipes[number]?.cg?.includes(name)).join('／')
+    const pending = [d5Motion, others].filter(Boolean).join('、')
+    const rest = pending ? `（${pending}は未確認）` : ''
     return tools.length ? { level: 'device', text: `${tools.join('・')}は実機で確認${rest}` } : { level: 'unverified', text: '未確認' }
   }
   if (check.status === 'device') return { level: 'device', text: `実機で確認（${tool}）` }

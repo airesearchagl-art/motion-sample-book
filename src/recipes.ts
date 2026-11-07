@@ -351,7 +351,7 @@ items.forEach((el) => { const a = before.get(el), b = el.getBoundingClientRect()
 @keyframes rise { from { transform: scaleY(0); } } @keyframes grow { from { transform: scaleX(0); } } @keyframes slide { from { transform: translateX(105%); } }`,
     edit: 'After Effects：構造・設備・仕上げを別々に書き出した画像（または線画）を3つのレイヤーに分け、構造は「リニアワイプ」で下から、設備は線ごとに「パスのトリミング」、仕上げは位置または「リニアワイプ」で順に重ねる。段階名のラベルを添える',
     powerpoint: '構造・設備・仕上げの3枚の画像（同じ位置・同じ大きさで書き出し）を重ね、構造に開始効果「ワイプ（下から）」、設備に「フェード」、仕上げに「ワイプ（右から）」を「直前の動作の後」で順に',
-    cg: 'SketchUp：構造・設備・仕上げをタグで分け、表示するタグを1つずつ増やしたシーンを並べる（タグの切り替えは瞬時。滑らかにしたいときは書き出した画像を動画編集でつなぐ）／Navisworks：TimeLiner で施工順序（4D）を再生／D5 Render：構造・設備・仕上げを別ファイルで読み込み、表示を切り替えた画像・動画を書き出して編集ソフトで重ねる',
+    cg: 'SketchUp：構造・設備・仕上げをタグで分け、表示するタグを1つずつ増やしたシーンを並べる（タグの切り替えは瞬時。滑らかにしたいときは書き出した画像を動画編集でつなぐ）／Navisworks：TimeLiner で施工順序（4D）を再生／D5 Render：構造・設備・仕上げを別々の .skp で書き出して順に読み込むと、Object リストに別のモデルとして入る。D5 では各モデルの基準点が箱の下の中央になるので、Inspector の Location に SketchUp 上の位置の差を入れて重ねる。Object リストの目のアイコンで表示を切り替え、段階ごとに画像（または動画）を書き出して編集ソフトで重ねる',
     prompt: 'Architectural BIM build-up animation on a clean grid background: first the steel columns and beams appear, then colored ducts, pipes and cable trays are added floor by floor, and finally the facade panels and glazing slide in, leaving a cutaway that shows the layers inside',
   },
 
@@ -440,7 +440,7 @@ const run = (el, to, ms) => { const t0 = performance.now(); const step = (t) => 
 @keyframes sway { 30% { transform: rotate(3.5deg); } 70% { transform: rotate(-2.5deg); } }`,
     edit: 'After Effects：木だけを切り抜いたレイヤー（またはマスク）に「タービュレントディスプレイス」をかけ、「展開」にエクスプレッション time*40 などで揺らす。幹の根元はピンで固定するか、パペットツールで揺らす',
     powerpoint: '木の画像（背景を削除して切り抜く）に強調「シーソー」をかけ、効果のオプション画面で「繰り返し：スライドの最後まで」。木ごとに継続時間を変えると自然に見える',
-    cg: 'D5 Render：Environment > Weather の「Wind」をオンにし、Strength（強さ）と Direction（向き）を設定。動画モードでカメラを動かさずに書き出す／Lumion・Twinmotion：植栽の風（Wind）の強さを設定',
+    cg: 'D5 Render：Environment > Weather の「Wind」をオンにし、Strength（強さ）と Direction（向き）を設定してから、動画モードでカメラのキーフレームを置いて書き出す（キーを置いたあとで変えた環境は、そのキーに入らない）／Lumion・Twinmotion：植栽の風（Wind）の強さを設定',
     prompt: 'Keep the camera locked and the building completely unchanged. Only the trees in the foreground sway gently in a light breeze, leaves rustling, natural and subtle motion, photorealistic architectural visualization',
   },
   E02: {
@@ -479,7 +479,7 @@ const run = (el, to, ms) => { const t0 = performance.now(); const step = (t) => 
 @keyframes flicker { 40% { opacity: .35; transform: translate(6%, -4%) scale(.9); } }`,
     edit: 'After Effects：床と壁に、葉の形の明るい模様（フラクタルノイズにしきい値やレベル補正をかけたもの）を「スクリーン」または「加算」で重ね、「展開」をゆっくり動かして明滅させる',
     powerpoint: 'ぼかした楕円（光の色、透過50%程度）をいくつか重ね、強調「パルス」を「繰り返し：スライドの最後まで」で。継続時間を楕円ごとに変える',
-    cg: 'D5 Render：窓の外に木（Assets > Model > Nature）を置き、Geo Sky の時刻で日差しを入れて、Environment > Weather > Wind の Strength を上げる／Lumion・Twinmotion：太陽光と植栽の風',
+    cg: 'D5 Render：窓の外に木（Assets > Model > Nature）を置き、Geo Sky の時刻と North Offset で影が室内に落ちる向きにして、Environment > Weather > Wind の Strength を上げてから、動画モードでキーフレームを置いて書き出す／Lumion・Twinmotion：太陽光と植栽の風',
     prompt: 'Keep the camera locked and the interior unchanged. Dappled sunlight filtering through trees outside flickers softly across the floor and wall as the leaves move in the breeze, warm and peaceful',
   },
   E06: {
@@ -497,7 +497,7 @@ const run = (el, to, ms) => { const t0 = performance.now(); const step = (t) => 
 @keyframes snow { 50% { background-position: 5px 24px; } 100% { background-position: 0 48px; } }`,
     edit: 'After Effects：エフェクト「CC Snowfall」（雪の量・大きさ・速さ・揺れ）を、大きい雪と小さい雪の2つ重ねて奥行きを出す。地面と屋根は白く補正',
     powerpoint: '雪のストック動画を挿入し、再生タブで「停止するまで繰り返す」（背景を透過できないので、パースと合成済みの動画を使う）。図形で作るなら、白い小さな円に軌跡「直線（下へ）」を、円ごとに継続時間と開始を変える',
-    cg: 'D5 Render：環境の「天気」（Weather）の「Precipitation」を雪（Snow）側にして降らせる（積雪の項目はないので、地面を白く見せるのは別に作る）／Lumion・Twinmotion：天気の雪と積雪',
+    cg: 'D5 Render：環境の「天気」（Weather）の「Precipitation」を雪（Snow）側にして降らせる（積雪の調整項目はないが、地形は白っぽくなる。建物の屋根や舗装を白く見せるのは別に作る）／Lumion・Twinmotion：天気の雪と積雪',
     prompt: 'Keep the camera locked and the building unchanged. Soft snow falls slowly in flakes of different sizes, swaying gently, a thin layer of snow on the ground, quiet winter atmosphere',
   },
   E08: {
@@ -507,7 +507,7 @@ const run = (el, to, ms) => { const t0 = performance.now(); const step = (t) => 
 @keyframes right { from { transform: translateX(-160%); } to { transform: translateX(260%); } }`,
     edit: 'After Effects：車の動画（または光の点）に「エコー」をかけて光の尾を伸ばし、「グロー」でにじませる。ストック素材の光跡を「スクリーン」で道路に重ねてもよい',
     powerpoint: '道路の上に細い光の線（グラデーション）を置き、開始効果「ワイプ」（効果のオプション：左から）と終了効果「ワイプ」を「直前の動作の後」で続ける。赤い線は逆向き。繰り返し流すなら、スライドの切り替えを自動にし、スライドショーの設定で「Esc キーが押されるまで繰り返す」',
-    cg: 'D5 Render：Geo Sky の時刻を夜にし、Path > Vehicle で道路に沿って線を引き、Content の＋から車を追加（Speed で速さ）。光跡は書き出した動画に編集ソフトで「エコー」などを足す／Lumion・Twinmotion：車の経路（パス）',
+    cg: 'D5 Render：Geo Sky の時刻を夜にし、Path > Vehicle で道路に沿って線を引き、Content の＋から車を追加（Speed で速さ、Specified の Light でライト）。光跡は書き出した動画に編集ソフトで「エコー」などを足す／Lumion・Twinmotion：車の経路（パス）',
     prompt: 'Keep the camera locked and the building unchanged. At night, cars pass along the road leaving long streaks of white headlights and red taillights, long exposure light trails, lit windows on the facade',
   },
   E09: {
@@ -516,7 +516,7 @@ const run = (el, to, ms) => { const t0 = performance.now(); const step = (t) => 
 @keyframes mist { to { transform: translateX(-12%); } }`,
     edit: 'After Effects：「フラクタルノイズ」で作った雲模様を地面近くの帯にマスクし、「スクリーン」で重ねて「展開」と位置Xをゆっくり動かす。奥ほど濃くすると奥行きが出る',
     powerpoint: 'ぼかした白い楕円（透過40〜60%）を地面近くに重ね、軌跡「直線（左へ）」を数十pxだけ、「オートリバース」と「繰り返し：スライドの最後まで」で',
-    cg: 'D5 Render：Environment > Weather > Fog をオンにし、Density（濃さ）・Height（高さ）・Base Height・Start Distance を設定。動画モードでキーフレームを2つ置き、それぞれで Density を変える／Lumion・Twinmotion：霧（Fog）の設定',
+    cg: 'D5 Render：Environment > Weather > Fog をオンにし Density を低くして1つ目のキーフレームを置く。次に Density を上げてから2つ目のキーフレームを置く（環境はキーを置いた時点の値が入る）。Height・Base Height・Start Distance で霧の高さを調整／Lumion・Twinmotion：霧（Fog）の設定',
     prompt: 'Keep the camera locked and the building unchanged. Low mist drifts slowly near the ground among the trees, the background softly appears and disappears, quiet early morning atmosphere',
   },
   E10: {
@@ -525,7 +525,7 @@ const run = (el, to, ms) => { const t0 = performance.now(); const step = (t) => 
 @keyframes season { 0% { background-color: #9cc96e; } 25% { background-color: #4f7f45; } 50% { background-color: #d0773a; } 75% { background-color: rgb(138 122 104 / .3); } }`,
     edit: 'After Effects：季節ごとの4枚のパース（または木の部分だけを「色相/彩度」で色替えしたもの）を不透明度のクロスフェードでつなぐ／Premiere Pro：4枚を「クロスディゾルブ」でつなぐ',
     powerpoint: '季節ごとの4枚のスライドを画面切り替え「フェード」でつなぐ（同じ位置の木の画像を使い、「変形」にしても可）',
-    cg: 'D5 Render：環境の「Seasonal Vegetation」をオンにし、State を変えた視点を並べる（季節の変化に対応した植栽素材だけが変わる）／Lumion・Twinmotion：季節や葉の色の設定を変えた画像を並べる',
+    cg: 'D5 Render：環境の「Seasonal Vegetation」をオンにし、State を変えた視点を並べるか、動画のキーフレームで State を変えて葉の色を少しずつ変える（季節の変化に対応した植栽素材だけが変わる）／Lumion・Twinmotion：季節や葉の色の設定を変えた画像を並べる',
     prompt: 'Keep the camera locked and the building unchanged. Time-lapse of the trees around the building changing through the four seasons: fresh spring green, deep summer green, autumn orange, bare winter branches',
   },
 }
