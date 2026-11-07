@@ -202,3 +202,44 @@ export const parseStoryFile = (source: string, exists: (number: string) => boole
   if (!templates.length) throw new Error(['取り込める型がありませんでした。', ...warnings].join(''))
   return { templates, warnings }
 }
+
+/* ---------- v1.1-1 構成をURLで共有する ---------- */
+
+/**
+ * 構成のJSON（toStoryFile の形）を、URLの # の後ろに入れられる短い文字列にする。
+ * 先頭1文字で形を示す：z = deflate-raw で圧縮して base64url、j = 圧縮せず base64url（CompressionStream がない環境）。
+ * # の後ろはサーバーへ送られないので、構成の中身は見本帳のサーバーにも Vercel にも残らない。
+ */
+const toBase64Url = (bytes: Uint8Array) => {
+  let binary = ''
+  bytes.forEach((byte) => { binary += String.fromCharCode(byte) })
+  return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
+}
+const fromBase64Url = (text: string) => {
+  const base64 = text.replace(/-/g, '+').replace(/_/g, '/')
+  const binary = atob(base64 + '='.repeat((4 - (base64.length % 4)) % 4))
+  return Uint8Array.from(binary, (char) => char.charCodeAt(0))
+}
+const pipe = async (bytes: Uint8Array, stream: CompressionStream | DecompressionStream) =>
+  new Uint8Array(await new Response(new Blob([bytes as BlobPart]).stream().pipeThrough(stream)).arrayBuffer())
+
+export const storyShareKey = 'story'
+
+export const encodeStoryShare = async (json: string) => {
+  const bytes = new TextEncoder().encode(json)
+  if (typeof CompressionStream === 'function') {
+    try { return `z${toBase64Url(await pipe(bytes, new CompressionStream('deflate-raw')))}` } catch { /* 下の圧縮しない形へ */ }
+  }
+  return `j${toBase64Url(bytes)}`
+}
+
+export const decodeStoryShare = async (code: string) => {
+  const kind = code[0]
+  const bytes = fromBase64Url(code.slice(1))
+  if (kind === 'j') return new TextDecoder().decode(bytes)
+  if (kind === 'z') {
+    if (typeof DecompressionStream !== 'function') throw new Error('このブラウザでは共有リンクを開けません。ブラウザを新しくしてください。')
+    return new TextDecoder().decode(await pipe(bytes, new DecompressionStream('deflate-raw')))
+  }
+  throw new Error('共有リンクの形が正しくありません。')
+}

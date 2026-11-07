@@ -8,7 +8,7 @@ import { recipeChecks } from './recipe-checks'
 import { purposes, purposeById, purposesOf, shotScale, shotScaleNote } from './purposes'
 import {
   type CustomTemplate, type StoryFileTemplate, storyTemplates, storyTemplateById, storyLimits,
-  newStoryId, clampSeconds, toStoryFile, parseStoryFile,
+  newStoryId, clampSeconds, toStoryFile, parseStoryFile, encodeStoryShare, decodeStoryShare, storyShareKey,
 } from './storyboard'
 import { buildStoryPrompt, storyRequestTools, storyRequestLengths, lengthLabel } from './story-prompt'
 
@@ -314,6 +314,7 @@ app.innerHTML = `
       </div>
       <div class="story-templates" role="tablist" aria-label="構成の型"></div>
       <div class="story-tools"></div>
+      <p class="story-notice" aria-live="polite"></p>
       <details class="story-ai">
         <summary>AIに構成を頼む</summary>
         <div class="story-ai-body">
@@ -1503,9 +1504,11 @@ const renderStory = () => {
     ? `<button type="button" data-story-action="edit" class="${storyEditing ? 'is-on' : ''}">${storyEditing ? '編集を終える' : '編集する'}</button>
        <button type="button" data-story-action="duplicate">複製</button>
        <button type="button" data-story-action="delete">この型を削除</button>
-       <button type="button" data-story-action="new">＋ 新しい型</button>`
+       <button type="button" data-story-action="new">＋ 新しい型</button>
+       <button type="button" data-story-action="share" class="story-share">共有リンクをコピー</button>`
     : `<button type="button" data-story-action="duplicate">複製して自分の型にする</button>
        <button type="button" data-story-action="new">＋ 新しい型</button>
+       <button type="button" data-story-action="share" class="story-share">共有リンクをコピー</button>
        <span class="story-tools-note">最初からある型は、複製すると名前やカットを変えられます。</span>`
 
   storyMetaEl.innerHTML = storyEditing
@@ -1560,6 +1563,7 @@ const renderStory = () => {
   document.querySelector('.story-total')!.textContent = `${view.slots.length}カット・合計 約${total}秒`
   document.querySelector<HTMLButtonElement>('[data-json="download-all"]')!.disabled = !customTemplates.length
   renderStoryEntry()
+  refreshShareLink()
 }
 
 /** 見本・秒数の変更。最初からある型は選択として、自分の型は型そのものに保存する */
@@ -1603,6 +1607,7 @@ storyDialog.addEventListener('input', (event) => {
   } else if (target.matches('.story-desc')) custom.description = target.value
   else return
   saveCustom()
+  refreshShareLink()
 })
 /** 名前を空のまま終えたときは、元の形に戻す */
 storyDialog.addEventListener('focusout', (event) => {
@@ -1661,10 +1666,21 @@ const addCustom = (template: Omit<CustomTemplate, 'id'>) => {
 }
 
 let deleteArmed = 0
-storyToolsEl.addEventListener('click', (event) => {
+storyToolsEl.addEventListener('click', async (event) => {
   const button = (event.target as HTMLElement).closest<HTMLButtonElement>('[data-story-action]')
   if (!button) return
   const view = storyView(storyTemplateId)
+  if (button.dataset.storyAction === 'share') {
+    // 今の型（最初からある型は選んだ見本と秒数で）を、開くとそのまま再生できるリンクにする
+    // Safari などは、押してから時間がたつとコピーを許さないので、作っておいたリンクを使う
+    const link = shareCache.json === shareJson(view) ? shareCache.link : await storyShareLink(view)
+    const ok = await copyText(link)
+    flashCopied(button, ok)
+    setStoryNotice(ok
+      ? `「${view.name}」の共有リンクをコピーしました。メールやチャットに貼って送れます（リンクを開いた人の「自分の型」に追加されます）。`
+      : 'コピーできませんでした。ブラウザのクリップボードの許可を確認してください。', !ok)
+    return
+  }
   switch (button.dataset.storyAction) {
     case 'edit':
       storyEditing = !storyEditing
@@ -1713,6 +1729,7 @@ storyToolsEl.addEventListener('click', (event) => {
 const openStory = (id: string, editing = false) => {
   storyTemplateId = id
   storyEditing = editing
+  setStoryNotice('')
   storyJsonStatus.textContent = ''
   storyAiStatus.textContent = ''
   renderStory()
@@ -1912,4 +1929,58 @@ document.querySelector('.story-open-ai')!.addEventListener('click', () => {
   storyAi.open = true
   aiSituation.focus()
 })
+
+/* ---------- v1.1-1 構成をURLで共有する：リンクを開くと「自分の型」に追加して開く ---------- */
+const storyNotice = document.querySelector<HTMLParagraphElement>('.story-notice')!
+function setStoryNotice(message: string, error = false) {
+  storyNotice.textContent = message
+  storyNotice.classList.toggle('is-error', error)
+}
+
+// exportedAt を含めると毎回変わるので、共有リンクには入れない
+function shareJson(view: StoryView) {
+  const { exportedAt: _, ...file } = toStoryFile([fileTemplate(view)])
+  return JSON.stringify(file)
+}
+async function storyShareLink(view: StoryView) {
+  const code = await encodeStoryShare(shareJson(view))
+  return `${window.location.origin}${window.location.pathname}#${storyShareKey}=${code}`
+}
+/** 描き直しや入力のたびに、共有リンクを先に作っておく */
+const shareCache = { json: '', link: '' }
+function refreshShareLink() {
+  if (!storyDialog.open && !storyTemplateId) return
+  const view = storyView(storyTemplateId)
+  const json = shareJson(view)
+  if (json === shareCache.json) return
+  storyShareLink(view).then((link) => { if (shareJson(storyView(storyTemplateId)) === json) Object.assign(shareCache, { json, link }) })
+}
+
+/** 同じ中身の自分の型があれば、それを使う（同じリンクを何度開いても増えない） */
+const sameTemplate = (a: Omit<CustomTemplate, 'id'>, b: CustomTemplate) =>
+  // 取り込むときに名前の後ろへ番号が付くことがあるので、名前は前方一致で見る
+  (b.name === a.name || b.name.startsWith(`${a.name} `)) && a.description === b.description && a.slots.length === b.slots.length
+  && a.slots.every((slot, index) => slot.role === b.slots[index].role && slot.sample === b.slots[index].sample && slot.seconds === b.slots[index].seconds && slot.note === b.slots[index].note)
+
+const openSharedStory = async () => {
+  const match = window.location.hash.match(new RegExp(`^#${storyShareKey}=(.+)$`))
+  if (!match) return
+  // 読み込んだら # 以下を消す（再読み込みで二重に取り込まないように）
+  window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}`)
+  try {
+    const json = await decodeStoryShare(match[1]).catch(() => { throw new Error('リンクが途中で切れているか、形が正しくありません。リンクを最後までコピーできているか確かめてください。') })
+    const result = parseStoryFile(json, (number) => sampleByNumber.has(number))
+    const shared = result.templates[0]
+    const existing = customTemplates.find((template) => sameTemplate(shared, template))
+    if (!existing && customTemplates.length >= storyLimits.templates) throw new Error(`自分の型が${storyLimits.templates}件に達しているため、共有された構成を追加できません。不要な型を削除してから、もう一度リンクを開いてください。`)
+    const target = existing ?? addCustom(shared)
+    openStory(target.id)
+    setStoryNotice([existing ? `共有された構成「${target.name}」は、すでに「自分の型」にあります。` : `共有された構成「${target.name}」を「自分の型」に追加しました。「順に再生」で流れを確かめられます。`, ...result.warnings].join(' '))
+  } catch (error) {
+    openStory(storyTemplateId)
+    setStoryNotice(`共有リンクを開けませんでした。${(error as Error).message}`, true)
+  }
+}
+openSharedStory()
+window.addEventListener('hashchange', openSharedStory)
 

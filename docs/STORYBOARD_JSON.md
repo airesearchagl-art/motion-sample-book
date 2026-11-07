@@ -52,3 +52,7 @@
 ## AIへの依頼文
 
 構成の画面の「AIに構成を頼む」でコピーする依頼文は `src/story-prompt.ts` の `buildStoryPrompt` で作ります。場面・全体の長さ・主に使う道具・提案の数に加え、見本の一覧（番号・名前・説明・向く／避ける場面・カットの大きさ・目的）と、この形の例を入れています。見本を足すと依頼文にも自動で入ります。
+
+## 共有リンク
+
+構成の画面の「共有リンクをコピー」は、この形のJSON（`exportedAt` を除く、型1つ）を `deflate-raw` で圧縮して base64url にし、`https://motion-sample-book.vercel.app/#story=z…` の形にします（圧縮できないブラウザでは `j…` で圧縮せずに入れる）。作るのと読むのは `src/storyboard.ts` の `encodeStoryShare`／`decodeStoryShare`。開いたときの確認は、JSONの読み込みと同じ `parseStoryFile` を通します。
