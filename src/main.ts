@@ -452,6 +452,52 @@ const uiScenes: Record<string, string> = {
   pindrop: `
       <span class="pd-map" aria-hidden="true"><i class="pd-road h"></i><i class="pd-road v"></i><i class="pd-park"></i><i class="pd-river"></i></span>
       ${[[22, 38], [58, 30], [74, 62]].map(([x, y], index) => `<span class="pd-pin" style="--x:${x}%;--y:${y}%;--i:${index}" aria-hidden="true"><i class="pd-head"></i><i class="pd-shadow"></i></span>`).join('')}`,
+  // v1.2-2 入る・切り替える・建築の図面を操作する（21〜30）
+  slidein: `
+      <span class="si-page" aria-hidden="true"><i class="si-bar"></i><i class="si-line l1"></i><i class="si-line l2"></i><i class="si-line l3"></i></span>
+      <span class="si-panel" aria-hidden="true">${uiPhoto()}<b class="si-title">NEW PROJECT</b></span>`,
+  stagger: `
+      <span class="sg-grid" aria-hidden="true">${Array.from({ length: 6 }, (_, index) => `<i class="sg-tile" style="--i:${index}"></i>`).join('')}</span>`,
+  scrollreveal: `
+      <span class="sr-track" aria-hidden="true">
+        <span class="sr-block b1"><b>CONCEPT</b><i class="sr-text"></i><i class="sr-text short"></i></span>
+        <span class="sr-block b2">${uiPhoto()}</span>
+        <span class="sr-block b3"><b>PLAN</b><i class="sr-text"></i><i class="sr-text short"></i></span>
+      </span>
+      <span class="sr-scrollbar" aria-hidden="true"><i></i></span>`,
+  accordion: `
+      <span class="ac-list" aria-hidden="true">
+        <span class="ac-row r1"><b>延床面積</b><i class="ac-chev"></i></span>
+        <span class="ac-row r2"><b>各階の用途</b><i class="ac-chev"></i><span class="ac-body"><i></i><i></i><i></i></span></span>
+        <span class="ac-row r3"><b>仕上げ</b><i class="ac-chev"></i></span>
+      </span>`,
+  sheet: `
+      <span class="sh-phone" aria-hidden="true">
+        <span class="sh-screen">${uiPhoto()}</span>
+        <span class="sh-dim"></span>
+        <span class="sh-sheet"><i class="sh-handle"></i><b>3F 会議室</b><i class="sh-row r1"></i><i class="sh-row r2"></i><i class="sh-btn"></i></span>
+      </span>`,
+  fadethrough: `
+      <span class="ft-tabs" aria-hidden="true"><i>外観</i><i>平面</i><i>断面</i><b class="ft-ink"></b></span>
+      <span class="ft-view a" aria-hidden="true">${uiPhoto()}</span>
+      <span class="ft-view b" aria-hidden="true"><i class="ft-room r1"></i><i class="ft-room r2"></i><i class="ft-room r3"></i><i class="ft-room r4"></i></span>`,
+  sharedaxis: `
+      <span class="sa-steps" aria-hidden="true"><i></i><i></i><i></i><b class="sa-bar"></b></span>
+      <span class="sa-page a" aria-hidden="true"><b>STEP 1</b><i class="sa-fig"></i><i class="sa-text"></i></span>
+      <span class="sa-page b" aria-hidden="true"><b>STEP 2</b><i class="sa-fig"></i><i class="sa-text"></i></span>`,
+  hotspot: `
+      ${uiPhoto()}
+      ${[[38, 36], [64, 52], [24, 70]].map(([x, y], index) => `<span class="hp-spot" style="--x:${x}%;--y:${y}%;--i:${index}" aria-hidden="true"><i class="hp-ring"></i><i class="hp-ring r2"></i><i class="hp-dot"></i></span>`).join('')}
+      <small class="ui-caption left">3 POINTS</small>`,
+  floorswitch: `
+      <span class="fs-stack" aria-hidden="true">${[1, 2, 3].map((floor) => `<span class="fs-floor f${floor}"><i class="fs-room a"></i><i class="fs-room b"></i><i class="fs-room c"></i></span>`).join('')}</span>
+      <span class="fs-picker" aria-hidden="true"><i>3F</i><i>2F</i><i>1F</i></span>`,
+  roomhighlight: `
+      <span class="rh-plan" aria-hidden="true">
+        <i class="rh-room r1"></i><i class="rh-room r2"></i><i class="rh-room r3"></i><i class="rh-room r4"></i><i class="rh-room r5"></i>
+        <b class="rh-label">会議室 42㎡</b>
+      </span>
+      <i class="rh-cursor" aria-hidden="true"></i>`,
 }
 
 grid.innerHTML = samples.map((sample) => `
