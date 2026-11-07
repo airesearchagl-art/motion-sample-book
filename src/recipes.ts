@@ -449,7 +449,7 @@ const run = (el, to, ms) => { const t0 = performance.now(); const step = (t) => 
 @keyframes shimmer { 25% { transform: scaleY(-1) skewX(4deg); } 75% { transform: scaleY(-1) skewX(-4deg); } }`,
     edit: 'After Effects：水面の部分だけにマスクをかけ、「波形ワープ」（波形の高さを小さく、波形の速度を遅く）またはディスプレイスメントマップにフラクタルノイズを使って揺らす。きらめきは「コースティック」',
     powerpoint: '映り込みの画像（上下反転）に軌跡「直線（右へ）」を数pxだけ付け、「オートリバース」と「繰り返し：スライドの最後まで」。水面に細い白線の図形を重ね、強調「パルス」を「繰り返し：スライドの最後まで」で明滅',
-    cg: 'D5 Render：水盤の面に Assets > Material > Water の水マテリアル（例：Blue pool water）を貼り、Normal で波の大きさ、Flow Velocity で速さを調整／Lumion・Twinmotion：水のマテリアル（または水面オブジェクト）の波の設定',
+    cg: 'D5 Render：水盤の面に Assets > Material > Water の水マテリアル（例：Blue pool water）を貼り、Normal で波の大きさ（最大5）、Flow Velocity で速さ（最大1）を調整。水盤に深さを付けて底を暗くし、水面を低い角度から見ると、映り込みの揺れで波が分かりやすい／Lumion・Twinmotion：水のマテリアル（または水面オブジェクト）の波の設定',
     prompt: 'Keep the camera locked and the building unchanged. The reflecting pool in front gently ripples, the mirrored facade wavers softly with small glints of light on the water, calm and elegant',
   },
   E03: {
@@ -479,7 +479,7 @@ const run = (el, to, ms) => { const t0 = performance.now(); const step = (t) => 
 @keyframes flicker { 40% { opacity: .35; transform: translate(6%, -4%) scale(.9); } }`,
     edit: 'After Effects：床と壁に、葉の形の明るい模様（フラクタルノイズにしきい値やレベル補正をかけたもの）を「スクリーン」または「加算」で重ね、「展開」をゆっくり動かして明滅させる',
     powerpoint: 'ぼかした楕円（光の色、透過50%程度）をいくつか重ね、強調「パルス」を「繰り返し：スライドの最後まで」で。継続時間を楕円ごとに変える',
-    cg: 'D5 Render：窓の外に木（Assets > Model > Nature）を置き、Geo Sky の時刻と North Offset で影が室内に落ちる向きにして、Environment > Weather > Wind の Strength を上げてから、動画モードでキーフレームを置いて書き出す／Lumion・Twinmotion：太陽光と植栽の風',
+    cg: 'D5 Render：窓の外に揺れる木（Assets > Model > Nature、Filter で Dynamic）を置き、Geo Sky の時刻と North Offset（0〜180°）で日差しが窓から室内に入る向きにする（ビューポートで分かりにくいときは静止画を書き出して確かめる）。動画モード側でも時刻・North Offset を合わせ、Environment > Weather > Wind をオンにしてからキーフレームを置いて書き出す／Lumion・Twinmotion：太陽光と植栽の風',
     prompt: 'Keep the camera locked and the interior unchanged. Dappled sunlight filtering through trees outside flickers softly across the floor and wall as the leaves move in the breeze, warm and peaceful',
   },
   E06: {
@@ -507,7 +507,7 @@ const run = (el, to, ms) => { const t0 = performance.now(); const step = (t) => 
 @keyframes right { from { transform: translateX(-160%); } to { transform: translateX(260%); } }`,
     edit: 'After Effects：車の動画（または光の点）に「エコー」をかけて光の尾を伸ばし、「グロー」でにじませる。ストック素材の光跡を「スクリーン」で道路に重ねてもよい',
     powerpoint: '道路の上に細い光の線（グラデーション）を置き、開始効果「ワイプ」（効果のオプション：左から）と終了効果「ワイプ」を「直前の動作の後」で続ける。赤い線は逆向き。繰り返し流すなら、スライドの切り替えを自動にし、スライドショーの設定で「Esc キーが押されるまで繰り返す」',
-    cg: 'D5 Render：Geo Sky の時刻を夜にし、Path > Vehicle で道路に沿って線を引き、Content の＋から車を追加（Speed で速さ、Specified の Light でライト）。光跡は書き出した動画に編集ソフトで「エコー」などを足す／Lumion・Twinmotion：車の経路（パス）',
+    cg: 'D5 Render：Path > Vehicle で道路に沿って十分な長さの線を引き（短い線では車が現れない）、Content の＋から車を追加（Speed で速さ、Specified の Light でライト）。動画モード側で時刻を夜にしてからキーフレームを置いて書き出す。光跡は書き出した動画に編集ソフトで「エコー」などを足す／Lumion・Twinmotion：車の経路（パス）',
     prompt: 'Keep the camera locked and the building unchanged. At night, cars pass along the road leaving long streaks of white headlights and red taillights, long exposure light trails, lit windows on the facade',
   },
   E09: {
