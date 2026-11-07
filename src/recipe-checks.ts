@@ -5,6 +5,7 @@
  * - mismatch の fix は、そのまま recipes.ts の該当欄に入れられる文。
  * - cg の d5 は D5 Render で実際に作った手順（recipes.ts の cg 欄へ「D5 Render：…」として追記する想定）。
  * - 第3弾（E01〜E10・V21）は 2026-11-07 に確認。note に「名称の確認」か「動きを確認」かを書いた。
+ * - 第5弾（V22〜V33・UI 21〜30）は 2026-11-07 に確認。PowerPoint・編集ソフトは名称と設定、D5 は一部を動画で確認（note に記載）。
  * 詳細は docs/RECIPE_VERIFICATION.md を参照。
  */
 
@@ -141,6 +142,7 @@ export const recipeChecks: Record<string, Partial<Record<'edit' | 'powerpoint' |
   '29': {
     edit: { status: 'device', checkedWith: 'After Effects 2026 (26.5)・Premiere Pro 2026 / 日本語UI', date: '2026-11-07', note: 'After Effects の 3D レイヤーの位置（Z 位置）と不透明度のキー' },
     powerpoint: { status: 'device', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-07', note: '軌跡「直線」（直線(上へ)）と強調「透過性」がある。透過性の効果のオプションは 25%／50%／75%／100%（50% で設定）' },
+    cg: { status: 'mismatch', checkedWith: 'SketchUp Pro 2026 (26.2) / 日本語UI + MCP 9876', date: '2026-11-07', note: 'SketchUp ではグループの位置はシーンに保存されない（階を上へ動かしたシーンを作っても、ほかのシーンに戻ると動いた位置のまま。第1弾 V15 と同じ）。タグの表示・非表示はシーンに保存される。「X 線」は面スタイルの設定で、シーンに残すにはスタイルとして保存する必要がある（Ruby でオプションを変えただけではシーンに残らなかった）。', fix: 'SketchUp：階ごとにタグを分け、選んだ階を上へずらした複製を別のタグで用意して、表示するタグを切り替えたシーンを作る（グループの位置はシーンに保存されない。切り替えは瞬時）。ほかの階は非表示にするか、面スタイル「X 線」のスタイルを保存してシーンに割り当てる' },
   },
   '30': {
     edit: { status: 'device', checkedWith: 'After Effects 2026 (26.5)・Premiere Pro 2026 / 日本語UI', date: '2026-11-07', note: 'After Effects のシェイプの塗り（不透明度）のキー' },
@@ -342,53 +344,65 @@ export const recipeChecks: Record<string, Partial<Record<'edit' | 'powerpoint' |
     edit: { status: 'device', checkedWith: 'After Effects 2026 (26.5) / 日本語UI', date: '2026-11-07', note: '「リニアワイプ」、シェイプの「パスのトリミング」（第2弾で確認済み）' },
     powerpoint: { status: 'device', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-07', note: '開始効果「ワイプ」の方向は 下から／左から／右から／上から。「フェード」と「直前の動作の後」も確認' },
     cg: { status: 'device', checkedWith: 'SketchUp Pro 2026 (26.2) / 日本語UI + MCP 9876 / D5 Render 3.1.1 / 英語UI', date: '2026-11-07', note: 'SketchUp：構造・設備・仕上げをタグで分けたモデル（mm）で、表示タグを1つずつ増やしたシーンを3つ作り、遷移（5秒）の途中でもタグの表示が瞬時に切り替わる（補間されない）ことを確認。Navisworks は閲覧用の Freedom 2027 だけが入っていて、ホームタブに「TimeLiner プレイバック」がある（TimeLiner を作るには Manage／Simulate が必要。未導入）。D5 は見た目も画像で確認（2026-11-07）：3つの .skp を読み込んで重ね、Object リストの目のアイコンで表示を切り替えて、構造／構造＋設備／全体の3枚を書き出せた。D5 では読み込んだモデルの基準点が箱の下の中央になるため、同じ Location では重ならず、SketchUp 上の位置の差を Location に入れて揃えた。仕上げの半透明ガラスは D5 では暗いガラスになった。Lumion・Twinmotionは未確認', d5: '構造・設備・仕上げを別々の .skp で書き出して順に読み込むと、Object リストに別のモデルとして入る。D5 では各モデルの基準点が箱の下の中央になるので、Inspector の Location に SketchUp 上の位置の差を入れて重ねる。Object リストの目のアイコンで表示を切り替え、段階ごとに画像（または動画）を書き出して編集ソフトで重ねる' },
-  },  'V22': {
+  },
+  'V22': {
     edit: { status: 'device', checkedWith: 'After Effects 2026 (26.5)・Premiere Pro 2026 / 日本語UI', date: '2026-11-07', note: 'Premiere Pro のエフェクトコントロール「モーション」の「位置」「スケール」（第2弾で確認）。合わせた見た目は未確認' },
     powerpoint: { status: 'device', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-07', note: '画面切り替え「フェード」の期間を 0.3 秒にできることを確認（「なし」も既定で選べる）。2枚の丸い形を同じ位置・大きさに置いて設定。つながりの見た目は未確認' },
+    cg: { status: 'device', checkedWith: 'SketchUp Pro 2026 (26.2) / 日本語UI + MCP 9876 / D5 Render 3.1.1 / 英語UI', date: '2026-11-07', note: 'SketchUp・D5 とも、視点（シーン／キーフレーム）を2つ作って別々に書き出せる（第1〜3弾で確認した機能）。丸い形を合わせたつなぎの見た目は未確認。', d5: '外観の丸窓と室内の天窓を、丸が画面の同じ位置・大きさに来るように視点を合わせ、画像モード（または動画モードのクリップ2本）で別々に書き出す。つなぎは編集ソフトでカット' },
   },
   'V23': {
     edit: { status: 'device', checkedWith: 'After Effects 2026 (26.5)・Premiere Pro 2026 / 日本語UI', date: '2026-11-07', note: 'After Effects の「ブラー(方向）」（表示はこのかっこの組み合わせ）に「方向」「ブラーの長さ」がある。Premiere Pro では「ブラー (方向) (FX)」（ブラー＆シャープ）' },
     powerpoint: { status: 'device', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-07', note: '画面切り替え「プッシュ」の効果のオプションは 下から／左から／右から／上から。「右から」・期間 0.3 秒に設定できた' },
+    cg: { status: 'device', checkedWith: 'D5 Render 3.1.1 / 英語UI', date: '2026-11-07', note: 'D5 は動画モードでクリップを分けて書き出す（第3〜4弾で確認）。クリップ同士をつなぐ機能はなく、つなぎは編集ソフトで作る。Lumion・Twinmotionは未確認。', d5: '動画モードでクリップを2本作り、前のクリップの最後と次のクリップの最初にカメラを横へ速く振るキーフレームを足して書き出す。つなぎと方向ブラーは編集ソフトで足す' },
   },
   'V24': {
     edit: { status: 'device', checkedWith: 'After Effects 2026 (26.5)・Premiere Pro 2026 / 日本語UI', date: '2026-11-07', note: 'Premiere Pro の「アイリス (円形)」はレガシーのビデオトランジション（ほかに アイリス (クロス)／(ダイヤモンド)／(正方形)）。中心を動かせるかは未確認。After Effects のマスクのプロパティは「マスクの拡張」' },
     powerpoint: { status: 'device', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-07', note: '画面切り替え「図形」の効果のオプションに「円」がある（ほかに ひし形／プラス／イン／アウト）' },
+    cg: { status: 'device', checkedWith: 'SketchUp Pro 2026 (26.2) / 日本語UI + MCP 9876 / D5 Render 3.1.1 / 英語UI', date: '2026-11-07', note: 'D5 の動画モードにはクリップ同士の切り替え効果（形のワイプなど）がなく、SketchUp のシーンの切り替えもカメラの補間だけ。記載どおり、書き出した画像・動画を編集ソフトか PowerPoint でつなぐ。', d5: 'D5では不可：動画モードにクリップ間のトランジションがない。前後の視点を書き出し、編集ソフトの「アイリス (円形)」や PowerPoint の画面切り替え「図形」（円）でつなぐ' },
   },
   'V25': {
     edit: { status: 'device', checkedWith: 'After Effects 2026 (26.5)・Premiere Pro 2026 / 日本語UI', date: '2026-11-07', note: 'Premiere Pro の「ホワイトアウト」はビデオトランジションの「ディゾルブ」にある（レガシー版もある）。After Effects の「露光量」（カラー補正）に「露出」がある' },
     powerpoint: { status: 'device', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-07', note: '画面切り替え「フラッシュ」がある（効果のオプションはない）。白く光る見た目は未確認' },
+    cg: { status: 'device', checkedWith: 'D5 Render 3.1.1 / 英語UI', date: '2026-11-07', note: '見た目も動画で確認（2026-11-07）：動画モードのキーフレーム（View）の Inspector に「Exposure Compensation」があり、キーごとに値を持てる。0 と 5 のキー2つで書き出すと、3秒で画面が白く飛んでいく（平均の明るさ 152→242）。Lumion・Twinmotionは未確認。', d5: '動画モードで同じ視点のキーフレームを2つ置き、2つ目のキーを選んで Inspector の Property「Exposure Compensation」を上げる（例 5）。白く飛んだところで次のクリップへ、つなぎは編集ソフトで' },
   },
   'V26': {
     edit: { status: 'device', checkedWith: 'After Effects 2026 (26.5)・Premiere Pro 2026 / 日本語UI', date: '2026-11-07', note: 'Premiere Pro の「クロップ」はレガシーのビデオエフェクトとして残っている（エフェクトコントロール「モーション」の切り抜きでも同じことができる。第2弾で確認）' },
     powerpoint: { status: 'device', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-07', note: '開始効果「ワイプ」の方向は 下から／左から／右から／上から（第1弾で確認）。開始のタイミング「直前の動作の後」がある' },
+    cg: { status: 'device', checkedWith: 'SketchUp Pro 2026 (26.2) / 日本語UI + MCP 9876 / D5 Render 3.1.1 / 英語UI', date: '2026-11-07', note: 'D5 の書き出しは1つの視点ごとで、画面を分割して並べる機能はない。SketchUp も同じ。記載どおり、案ごとに書き出して並べる。', d5: 'D5では不可：1つの画面に複数の視点を並べられない。案ごとに同じ視点の画像・動画を書き出し、編集ソフトの「クロップ」や PowerPoint で並べる' },
   },
   'V27': {
     edit: { status: 'device', checkedWith: 'After Effects 2026 (26.5)・Premiere Pro 2026 / 日本語UI', date: '2026-11-07', note: 'After Effects の 3D カメラの「カメラオプション」に「ズーム」がある。カメラの位置（Z）とズームに同じ時間でキーを2つずつ打てた（ドリーズームの見た目は未確認）' },
     powerpoint: { status: 'device', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-07', note: '強調「拡大/収縮」のサイズはユーザー設定で％を入れられる（第1弾で確認）。重ねた画像は動かさなければそのまま' },
+    cg: { status: 'device', checkedWith: 'SketchUp Pro 2026 (26.2) / 日本語UI + MCP 9876 / D5 Render 3.1.1 / 英語UI', date: '2026-11-07', note: 'SketchUp：「カメラ」メニューに「視野」がある。視野 35° と 90° のシーンを切り替えると、遷移の間に視野も少しずつ変わる（補間される）。D5 は見た目も動画で確認（2026-11-07）：動画モードのキーフレーム（View）の Inspector に「FOV (Horizontal)」「Focal Length」があり、キーごとに値を持てる。近い位置で FOV 90°、後ろへ引いた位置で FOV 40° のキー2つで書き出すと、建物の大きさがほぼ保たれたまま背景が大きくなるドリーズームになった（途中は建物が少し小さくなる）。Lumion・Twinmotionは未確認。', d5: '動画モードで、被写体に近い位置のキーフレーム（FOV 90° など）を置く。カメラを後ろへ引いて2つ目のキーを置き、そのキーを選んで Inspector の「FOV (Horizontal)」を、被写体が同じ大きさに見えるまで狭める（例 40°）' },
   },
   'V28': {
     edit: { status: 'device', checkedWith: 'After Effects 2026 (26.5)・Premiere Pro 2026 / 日本語UI', date: '2026-11-07', note: 'After Effects の「ブラー (ガウス)」（ブラー＆シャープ）' },
     powerpoint: { status: 'device', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-07', note: '終了効果「スライドアウト」がある。効果のオプションは 下へ／左下へ／左へ／左上へ／上へ／右上へ／右へ／右下へ（「左へ」で設定）。強調「拡大/収縮」と「直前の動作と同時」で組める' },
+    cg: { status: 'device', checkedWith: 'SketchUp Pro 2026 (26.2) / 日本語UI + MCP 9876 / D5 Render 3.1.1 / 英語UI', date: '2026-11-07', note: 'SketchUp：視点を変えたシーン2つで、カメラが滑らかに移動する（第1弾で確認）。見た目は未確認：D5 の被写界深度（Depth of Field）の項目は、Effect タブ・キーフレーム（View）の Inspector・画像モードの下のバーには見当たらなかった（公式マニュアルではカメラ設定の Options にあり、Set Focus・Follow Focus・Blur の項目）。横に動くカメラのキーは置けるが、前景をぼかした動画は書き出していない。Lumion・Twinmotionは未確認。', d5: '手前に柱や木がある位置にキーフレームを置き、カメラを横へ動かして2つ目のキーを置く（前景が大きく、奥が少しだけ動く）。被写界深度はカメラ設定の Depth of Field（Set Focus・Blur）で手前をぼかす（この版では項目の場所を確認できなかった）' },
   },
   'V29': {
     edit: { status: 'device', checkedWith: 'After Effects 2026 (26.5)・Premiere Pro 2026 / 日本語UI', date: '2026-11-07', note: 'After Effects の 3D レイヤーのトランスフォームに「X 回転」がある。「クロスディゾルブ」は Premiere Pro のビデオトランジション「ディゾルブ」' },
     powerpoint: { status: 'device', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-07', note: '画面切り替え「ズーム」（はなやか）があり、効果のオプションは イン／アウト／ズーム回転。「変形」もある' },
+    cg: { status: 'mismatch', checkedWith: 'SketchUp Pro 2026 (26.2) / 日本語UI + MCP 9876 / D5 Render 3.1.1 / 英語UI', date: '2026-11-07', note: 'SketchUp の真上の視点は標準ビュー「平面」（英語版の Top）で、「上」という名前ではない。遷移の時間は、モデル情報の「アニメーション」の「シーンの切り替え」（秒）。D5 は見た目も動画で確認（2026-11-07）：真上から見下ろすキーと、目線の高さのキーの2つで書き出すと、3秒で見下ろしから目線へ自然につながった。Lumion・Twinmotionは未確認。', fix: 'D5 Render：真上から見下ろすキーフレームと、人の目線の高さのキーフレームを置く（間は自動でつながる）／SketchUp：標準ビュー「平面」と目線のシーンを作り、モデル情報の「アニメーション」で「シーンの切り替え」の秒数を長めに', d5: '動画モードで、見下ろす視点（上から真下を向けた視点）にキーフレームを置き、目線の高さまで下げて正面を向けた視点に2つ目のキーを置く。キーの間は自動で滑らかにつながる' },
   },
   'V30': {
     edit: { status: 'device', checkedWith: 'After Effects 2026 (26.5)・Premiere Pro 2026 / 日本語UI', date: '2026-11-07', note: 'Premiere Pro のクリップメニュー「速度・デュレーション」（Ctrl+R）、エフェクト「ワープスタビライザー」（ビデオエフェクトの「ゆがみ」）。After Effects にも「ワープスタビライザー」（ディストーション）がある' },
     powerpoint: { status: 'device', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-07', note: '画面切り替え「なし」で「自動」に 0.2 秒（00:00.20）を設定できた' },
+    cg: { status: 'device', checkedWith: 'D5 Render 3.1.1 / 英語UI', date: '2026-11-07', note: 'D5 は見た目も動画で確認（2026-11-07）：環境の時刻はキーフレームごとに記録され、9時台と17時台のキー2つで書き出すと、影の向きと長さが再生中に変わる（時間の経過を早送りにできる）。雲の流れる速さは Environment > Weather > Cloud の Global Settings「Speed」。長いカメラパス（多数のキー、Edit Path）での書き出しは試していない。Lumion・Twinmotionは未確認。', d5: '動画モードでアプローチに沿ってキーフレームを並べ（Edit Path で経路を調整）、1つ目のキーの前に朝、最後のキーの前に夕方の時刻を設定してから置く（時刻はキーごとに記録され補間される）。雲は Cloud の Global Settings「Speed」を上げる。書き出した動画を編集ソフトで速める' },
   },
   'V31': {
     edit: { status: 'device', checkedWith: 'After Effects 2026 (26.5)・Premiere Pro 2026 / 日本語UI', date: '2026-11-07', note: 'Premiere Pro のビデオトランジション「ディゾルブ」に「クロスディゾルブ」がある' },
     powerpoint: { status: 'device', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-07', note: '開始効果「フェード」と「直前の動作の後」、画面切り替え「フェード」がある' },
+    cg: { status: 'mismatch', checkedWith: 'D5 Render 3.1.1 / 英語UI', date: '2026-11-07', note: 'D5 のライト（Point Light など）の Inspector に「Intensity」（cd／lm）と色温度「Temperature」（初期値 6500）があるのは通常の画面だけ。動画モードでライトを選ぶと Location・Rotation と「Light Switch」（オン／オフ）しか出ず、強さ・色温度をキーごとに変えることはできなかった（Light Switch をオブジェクトのキー〈Add Keyframe〉で切り替えた動画でも、ライトは点いたままだった）。照明シーンごとに画像を書き出す方法なら作れる。SketchUp は照明の計算ができない（記載どおり）。Lumion・Twinmotionは未確認。', fix: 'D5 Render：ライトの強さ（Intensity）と色温度（Temperature）を変えるごとに、同じ視点の画像を書き出す（動画モードではライトの強さ・色温度を変えられないので、画像を編集ソフトでつなぐ）／SketchUp：照明の計算はできないため、レンダリングソフトで作る', d5: '通常の画面でライトを選び、Inspector の Intensity と Temperature（または Color）を照明シーンごとに変え、同じ視点（画像モード）で1枚ずつ書き出す。切り替えは編集ソフトや PowerPoint で' },
   },
   'V32': {
     edit: { status: 'device', checkedWith: 'After Effects 2026 (26.5)・Premiere Pro 2026 / 日本語UI', date: '2026-11-07', note: 'After Effects の「リニアワイプ」（トランジション）に「変換終了」「ワイプ角度」「境界のぼかし」がある' },
     powerpoint: { status: 'device', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-07', note: '開始効果「ワイプ」（左から）と「直前の動作の後」がある' },
+    cg: { status: 'device', checkedWith: 'SketchUp Pro 2026 (26.2) / 日本語UI + MCP 9876 / D5 Render 3.1.1 / 英語UI', date: '2026-11-07', note: 'SketchUp：シーンにはマテリアルが保存されない（面の色を変えてから2つのシーンを作っても、どちらのシーンでも後の色のまま）。タグの表示・非表示はシーンに保存されるので、仕上げごとの面をタグで分けて切り替える方法が使える（切り替えは瞬時）。D5：動画モードではモデルを選んでもマテリアルを編集できず、マテリアルはキーごとに変えられない。記載どおり、仕上げごとに画像を書き出す。Lumion・Twinmotionは未確認。', d5: '通常の画面でマテリアルピッカー（I キー）で外壁を選び、仕上げのマテリアルを差し替えるたびに、同じ視点（画像モード）で1枚ずつ書き出す（動画モードではマテリアルを変えられない）' },
   },
   'V33': {
     edit: { status: 'device', checkedWith: 'After Effects 2026 (26.5)・Premiere Pro 2026 / 日本語UI', date: '2026-11-07', note: 'After Effects のシェイプの「線」の「破線」に「線分」「間隔」「オフセット」、「パスのトリミング」に「開始点」「終了点」「オフセット」がある' },
     powerpoint: { status: 'device', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-07', note: '開始効果「ワイプ」の方向は 下から／左から／右から／上から の4つだけで、曲線に沿っては伸びない（矢印の大まかな向きに近い方向を選ぶ）' },
+    cg: { status: 'device', checkedWith: 'SketchUp Pro 2026 (26.2) / 日本語UI + MCP 9876 / D5 Render 3.1.1 / 英語UI', date: '2026-11-07', note: 'SketchUp：タグの表示・非表示はシーンに保存され、流れの曲線をタグで分けて順に表示できる（切り替えは瞬時）。D5 には気流を計算・表示する機能はない（記載どおり不可）。', d5: 'D5では不可：気流の計算はできない。CFD ソフトの流線を画像・動画で書き出して重ねるか、流線を線のモデルとして読み込んで表示を切り替える' },
   },
-
 }
