@@ -7,10 +7,14 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "guide:capture": "node scripts/capture-guide-map.cjs"
+    "guide:capture": "node scripts/capture-guide-map.cjs",
+    "thumbs:capture": "node scripts/capture-thumbs.cjs"
   },
   "devDependencies": {
     "typescript": "^5.9.3",
     "vite": "^7.1.12"
+  },
+  "dependencies": {
+    "pptxgenjs": "^3.12.0"
   }
 }

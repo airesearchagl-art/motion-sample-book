@@ -247,6 +247,9 @@ body.has-compare-tray footer { padding-bottom: 110px; }
 .story-total { font-size: .84rem; color: #5b574e; margin-right: auto; padding-bottom: 8px; }
 .story-copy { border: 1px solid var(--ink); background: var(--ink); color: var(--cream); border-radius: 999px; padding: 10px 20px; font-weight: 600; cursor: pointer; }
 .story-copy.is-copied { background: var(--blue); border-color: var(--blue); }
+.story-pptx { border: 1px solid var(--coral); background: var(--coral); color: #fff; border-radius: 999px; padding: 10px 20px; font-weight: 600; cursor: pointer; }
+.story-pptx:disabled { opacity: .6; cursor: progress; }
+.story-pptx:focus-visible, .story-copy:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
 .story-open-custom { border: 1px dashed var(--ink); background: transparent; color: var(--ink); border-radius: 999px; padding: 8px 16px; font-size: .84rem; cursor: pointer; }
 .story-open-custom:hover, .story-open-custom:focus-visible { background: rgba(37,35,31,.06); }
 .story-template.is-custom { border-style: dashed; }

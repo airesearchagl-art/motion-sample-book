@@ -379,6 +379,7 @@ app.innerHTML = `
         </label>
         <span class="story-total"></span>
         <button class="story-copy" type="button">カット割り表をコピー</button>
+        <button class="story-pptx" type="button">PowerPointで書き出す</button>
       </div>
     </div>
   </dialog>
@@ -1796,6 +1797,39 @@ const storyTable = () => {
     '出典：モーション見本帳 https://motion-sample-book.vercel.app/',
   ].join('\n')
 }
+
+/* v1.1-2 カット割り表を PowerPoint（.pptx）の絵コンテで書き出す。選んだ道具の再現情報を各カットに入れる */
+document.querySelector('.story-pptx')!.addEventListener('click', async (event) => {
+  const button = event.currentTarget as HTMLButtonElement
+  const label = button.textContent
+  const view = storyView(storyTemplateId)
+  const tool = storyTool.value as keyof Recipe | ''
+  button.disabled = true
+  button.textContent = '書き出し中…'
+  try {
+    const { exportStoryPptx } = await import('./story-pptx')
+    await exportStoryPptx({
+      name: view.name,
+      description: view.description,
+      toolName: tool ? toolNames[tool] : undefined,
+      cuts: view.slots.map((slot) => ({
+        role: slot.role,
+        note: slot.note,
+        sample: sampleByNumber.get(slot.number)!,
+        scale: shotScale[slot.number],
+        seconds: slot.seconds,
+        recipe: tool ? recipes[slot.number]?.[tool] : undefined,
+        prompt: recipes[slot.number]?.prompt,
+      })),
+    }, `${import.meta.env.BASE_URL}thumbs/`)
+    setStoryNotice(`「${view.name}」を PowerPoint で書き出しました（${view.slots.length + 2}枚：表紙・各カット・一覧表）。`)
+  } catch (error) {
+    setStoryNotice(`PowerPoint を書き出せませんでした。${(error as Error).message}`, true)
+  } finally {
+    button.disabled = false
+    button.textContent = label
+  }
+})
 
 document.querySelector('.story-copy')!.addEventListener('click', async (event) => {
   flashCopied(event.currentTarget as HTMLButtonElement, await copyText(storyTable()))
