@@ -1,0 +1,29 @@
+/* コマ並べ（/frames.html）：1920×1080 の 1 画面に、見出しとコマ（2〜4 枚）を収める */
+.frames-page { margin: 0; min-height: 100vh; background: #f5f1e8; color: #25231f; }
+.frames-page #frames { box-sizing: border-box; min-height: 100vh; padding: clamp(24px, 3.4vw, 64px) clamp(16px, 3.4vw, 64px) clamp(20px, 2.4vw, 40px); display: grid; grid-template-rows: auto 1fr auto; gap: clamp(18px, 2.4vw, 44px); }
+.frames-head h1 { margin: 0; display: flex; align-items: baseline; flex-wrap: wrap; gap: .2em .55em; font-size: clamp(1.6rem, 2.9vw, 3.4rem); line-height: 1.2; letter-spacing: .01em; }
+.frames-number { color: #ea6b4d; font-variant-numeric: tabular-nums; }
+.frames-head h1 small { font-size: .42em; font-weight: 500; color: #827c70; letter-spacing: .08em; text-transform: uppercase; }
+.frames-library { margin: 0 0 .5em; color: #ea6b4d; font-size: clamp(.8rem, .95vw, 1.1rem); font-weight: 700; letter-spacing: .14em; }
+.frames-description { margin: .7em 0 0; color: #635e54; font-size: clamp(.95rem, 1.25vw, 1.45rem); }
+
+.frames-row { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(var(--count), minmax(0, 1fr)); gap: clamp(12px, 1.6vw, 32px); align-items: start; align-content: center; }
+.frames-item { position: relative; min-width: 0; }
+.frames-item + .frames-item::before { content: '→'; position: absolute; left: calc(-1 * clamp(12px, 1.6vw, 32px)); width: clamp(12px, 1.6vw, 32px); top: 28%; text-align: center; color: #ea6b4d; font-size: clamp(.9rem, 1.4vw, 1.6rem); font-weight: 700; }
+.frames-stage { border: 1px solid rgba(37,35,31,.16); background: #e8e1d4; overflow: hidden; }
+.frames-stage > * { pointer-events: none; cursor: default; }
+/* UI 01〜10 の小さな見本（TRY ME）は、コマの中で大きく見せる */
+.frames-stage .motion-stage:not(.preview-stage) { height: auto; aspect-ratio: 16 / 10; }
+.frames-stage .motion-stage:not(.preview-stage) .demo-object { zoom: 2.2; }
+.frames-stage .text-stage { height: auto; aspect-ratio: 16 / 10; }
+.frames-label { margin: .9em 0 0; display: flex; align-items: baseline; gap: .55em; font-size: clamp(.95rem, 1.3vw, 1.5rem); font-weight: 600; line-height: 1.4; }
+.frames-label small { margin-left: auto; color: #827c70; font-weight: 500; font-size: .78em; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.frames-step { flex: none; display: inline-grid; place-items: center; width: 1.6em; height: 1.6em; border-radius: 50%; background: #25231f; color: white; font-size: .78em; }
+.frames-foot { display: flex; justify-content: space-between; gap: 24px; color: #827c70; font-size: clamp(.8rem, 1vw, 1.15rem); }
+.frames-foot p { margin: 0; }
+.frames-empty { max-width: 40rem; }
+.frames-empty a { color: #315c70; }
+@media (max-width: 720px) {
+  .frames-row { grid-template-columns: 1fr; }
+  .frames-item + .frames-item::before { content: '↓'; position: static; display: block; width: auto; margin: -.2em 0 .4em; }
+}
