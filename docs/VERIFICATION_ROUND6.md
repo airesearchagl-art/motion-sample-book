@@ -116,7 +116,7 @@ Lumion／Twinmotion は実機確認しない（`note` に未確認）。
 ## 進み具合
 
 - [x] 開始（第5弾の反映済みの main から作業ブランチ、PCと道具の確認、作業計画の報告）— 2026-11-08：main e474089 から作成。PC は s-k-desktop（Windows）、PowerPoint・After Effects 2026・Premiere Pro 2026・D5 Render・SketchUp 2026（MCP 9876）を確認
-- [ ] PowerPoint 17件
-- [ ] 編集ソフト 17件
-- [ ] D5 Render 10件（動画で確認）
-- [ ] 報告書・`npm run build`
+- [x] PowerPoint 17件
+- [x] 編集ソフト 17件
+- [x] D5 Render 10件（動画で確認）
+- [x] 報告書・`npm run build`

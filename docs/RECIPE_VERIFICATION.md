@@ -14,6 +14,7 @@
 - **第3弾の続き（D5 の見た目、2026-11-07）**：8件のうち、動画で動きを確かめたのは E01・E05・E07・E09・E10・V21 の6件（E07 は地形が白っぽくなる点を `fix` に反映。E10 は第3弾の名称の修正に「キーで補間される」を追加）。E02（波）と E08（車）は動きを確かめられなかった（理由は下の節）。**要修正**：E07, E10（`fix` を更新）。`d5` は8件とも実際の手順に更新
 - **第4弾（D5 の見た目・残り3件、2026-11-07）**：3件とも動画で動きを確認。E02（水面）と E05（室内の木漏れ日）は記載どおりの手順で動いた（device、`d5` にコツを追記）。E08（車）は前回映らなかった原因がパスの短さと分かり、長いパスで昼・夜（ライト点灯）とも走った（**要修正**：E08、`fix` あり）
 - **第5弾（v1.2 前半：V22〜V33・UI 21〜30、2026-11-07）**：powerpoint device 22、edit device 22、cg device 10／mismatch 3（**要修正**：V29, V31, 29）。V22〜V33 の cg 12件すべてに `d5`。D5 で露出・FOV・時刻はキーごとに補間されることを動画で確認（V25・V27・V29・V30）
+- **第6弾（v1.2 後半：T11〜T17・E11〜E20、2026-11-08）**：powerpoint device 15／mismatch 2（**要修正**：E17, E19）、edit device 15／mismatch 2（**要修正**：T14, E12）、cg device 3／mismatch 4／unverified 3（**要修正**：E12, E14, E16, E18。unverified：E15, E17, E20）。E11〜E20 の cg 10件すべてに `d5`（unverified の3件は「未確認：…」）。D5 で動画を見たのは E11・E12・E14・E18・E19
 - **反映のお願い**
   1. mismatch 31件（PowerPoint 15、建築CG 3、編集ソフト 13）は、`recipe-checks.ts` の `fix` をそのまま `recipes.ts` の該当欄に置き換えてください
   2. cg 22件は、`d5` を `recipes.ts` の cg 欄へ「D5 Render：…」として追記してください（「D5では不可」の4件：V02, V20, T09, T10 は追記するか判断ください）
@@ -412,3 +413,62 @@
 
 - `G:\Claude_MCP\motion-sample-book\verification\round5\`：`verify_powerpoint_r5.pptx`、`ae_r5.jsx`／`ae_r5_out.tsv`、D5 の動画（`V25_exposure.mp4`、`V27_dollyzoom.mp4`、`V29_top_to_eye.mp4`、`V30_time_0900_1700b.mp4`、`V31_light_switch_key.mp4`）と切り出した画像
 - D5 プロジェクト：`G:\Claude_MCP\motion-sample-book\verification\round3-d5\verify_d5_visual\`（Clip 15〜21 と Point Light を追加）
+
+## 第6弾（v1.2 後半：T11〜T17・E11〜E20）
+
+> 確認日：2026-11-08／対象：main `e474089` の T11〜T17・E11〜E20（17見本・44件）／記録データ：`src/recipe-checks.ts`
+
+### 件数
+
+| 欄 | device | docs | unverified | mismatch |
+|---|---|---|---|---|
+| powerpoint（17件） | 15 | 0 | 0 | 2 |
+| edit（17件） | 15 | 0 | 0 | 2 |
+| cg（10件：E11〜E20） | 3 | 0 | 3 | 4 |
+
+**要修正**：powerpoint の E17, E19、edit の T14, E12、cg の E12, E14, E16, E18（`fix` あり）。E11〜E20 の cg 10件すべてに `d5`。
+
+### 確認した環境（前回から変わったもの）
+
+- PowerPoint：Microsoft 365（2610）日本語UI。確認用ファイル `verify_powerpoint_r6.pptx`（17枚）に効果を画面で付け、プレビューの途中の画面で動きを確かめた
+- After Effects 2026（26.5）：名称はスクリプト（`ae_r6.jsx`／`ae_r6_out.tsv`）で書き出して照合。T14 は同じスクリプトで 1/30 秒ごとの画面を PNG に書き出して再生の変化を確かめた。「波形ワープ」の「固定」の選択肢は画面で確認
+- Premiere Pro 2026：エフェクトパネルの「キーイング」で確認
+- D5 Render 3.1.1：専用の検証モデル（`round6_d5_scene.skp`、mm）を読み込み、720p・約3秒の動画を書き出して ffmpeg で切り出した
+
+### mismatch の一覧と修正案
+
+| 番号・欄 | 違い | 修正案 |
+|---|---|---|
+| E17 powerpoint | 強調効果に「点滅」はない。近いのは「ブリンク」 | 明かりの小さな画像に強調「ブリンク」（または「透過性」をオートリバース）をかけ、開始をずらして「繰り返し：スライドの最後まで」にする |
+| E19 powerpoint | トリミングした画像は形ごと動くので、ガラス面の外へはみ出す。窓枠を上に重ねても、はみ出した分は隠れない | 空と雲の画像をガラス面の形にトリミングして建物の画像の上に置き、透明度を上げる。軌跡「直線（左／右）」でゆっくり動かすと、トリミングした形ごと動いてガラス面の外へはみ出すので、動かす距離を小さくするか、ガラスの部分を透明にした建物の画像を一番上に重ねる |
+| T14 edit | 「文字の値」はなく「文字コード」。文字のオフセット＋範囲セレクターだけでは、未確定の文字はランダムに変わらない（再生で確認） | After Effects：テキストアニメーターの「文字のオフセット」を追加し、範囲セレクターの開始を 0→100% に動かすと、左から順に正しい文字に決まる。決まっていない文字をランダムに変え続けるには、同じアニメーターに「ウィグリーセレクター」を追加する |
+| E12 edit | 波形ワープに「ピン留め」はなく「固定」（なし／すべてのエッジ／中央／左エッジ／上エッジ／右エッジ／下エッジ／水平エッジ／垂直エッジ） | After Effects：旗やのぼり、日よけ布のレイヤーに「波形ワープ」（波形の高さ・波形の速度、固定：左エッジ）をかける。布の付け根を固定し、先ほど大きく揺らす／Premiere Pro：布の部分を切り抜いて「波形ワープ」をかける |
+| E12 cg | D5 の旗の素材は、素材自体のアニメーション（Inspector の Animation の Speed）で揺れる。風の強さで揺れが変わるかは確かめていない | D5 Render：Assets で「flag」を検索し、Dynamic Flag with Flagpole などの揺れる旗の素材を置く（揺れは素材自体のアニメーションで、Inspector の Animation の Speed で速さを変えられる）／Lumion・Twinmotion：風で動く旗の素材を置き、風の強さを設定する |
+| E14 cg | 噴水は Model の Dynamic ではなく Particle > Fluid にある | D5 Render：Assets > Particle > Fluid の噴水（Fountain 05 など。Inspector の Height・Stream で高さと量）を水盤に置く。水盤には Water マテリアルを貼り、深さと暗い底を付ける（波が見えやすい）／Lumion・Twinmotion：噴水のエフェクトを置き、高さ・量を設定する |
+| E16 cg | 鳥の群れは Particle > Animal Clusters にある | D5 Render：Assets > Particle > Animal Clusters の鳥の群れ（Birds 01 など）を空に置き、動画で羽ばたくかを確かめる／Lumion・Twinmotion：鳥の群れのエフェクトを置く |
+| E18 cg | 「Wet」の項目はない。水たまりは Precipitation の Puddle | D5 Render：Environment > Weather > Precipitation をオンにし、Puddle（水たまり。詳細で Scale・Offset）を上げ、Strength を小さくして弱い雨にする（Wet の項目はない）。濡れた地面に空と建物が映り、水たまりに雨の波紋が出る／Lumion・Twinmotion：濡れた地面（Wetness・Puddles）の設定を使う |
+
+### 名称の注意（device のまま、`note` に記録）
+
+- PowerPoint：スライドイン／スライドアウトはスライドの端の外から入り外まで出る（T12）。ホイールはグラフ全体を表示する（T17）。「直線」の効果のオプション画面に 滑らかに開始・滑らかに終了・急に終了（秒）がある（E15）。GIF アニメは編集画面でも動く（E16）
+- After Effects：テキストアニメーターの項目は「ブラー」「文字のオフセット」「文字コード」「文字の配置」。2026 にも「ウィグラー」がある（E17）。CC Particle World・CC Particle Systems II・CC Drizzle の項目は英語表記のまま
+- Premiere Pro：「トラックマットキー」はビデオエフェクトの「キーイング」
+
+### D5 で分かったこと
+
+- **Assets に Particle のタブがある**：Environment・Fire・Fluid（噴水・シャワー・滝）・Smoke（PlaneFog・Smoke）・Falling Leaves（落ち葉・花びら）・Animal Clusters（鳥・ホタル）・Firework・Futuristic Decor。一部は PRO
+- パーティクルを選ぶと、素材ごとの項目が Inspector に出る（落ち葉：Life time・Range・Particle size・Quantity・Velocity、噴水：Stop・Stream・Height・WaterSize・SplashSize・Transparency、煙：Size・Velocity・Concentration・Brightness）
+- 雲の流れ（Cloud > Global Settings の Speed）はガラスの映り込みにも出る（E19）
+- 動画モードの環境は、通常の画面の環境とは別にクリップごとに設定する（通常の画面で Wind をオンにしていても、動画モードのクリップではオフになっていた）
+
+### 確認できなかったこと
+
+- PowerPoint：軌跡の終点を画面の外までドラッグする操作（E16）
+- Premiere Pro：描画モード（乗算・スクリーン）の表示名
+- D5：煙（E13）と鳥（E16）の見た目、Path の人物の止まり方と立つ・話す人物（E15）、夜の発光（E17）、かごのアニメーションとエスカレーター（E20）、HDRI の回転（E19）、雨を止めた後の水たまり（E18）
+- Lumion・Twinmotion：これまでどおり確認していない
+
+### 確認に使ったファイル（リポジトリ外、PCのGドライブ）
+
+- `G:\Claude_MCP\motion-sample-book\verification\round6\`：`verify_powerpoint_r6.pptx`、`ae_r6.jsx`／`ae_r6_out.tsv`、T14 の書き出し画像（`ae_T14_*.png`）、D5 プロジェクト `verify_d5_r6`、D5 の動画（`d5_clip1.mp4`〜`d5_clip3.mp4`、`d5_clip4_flag.mp4`）と切り出した画像
+- SketchUp：`G:\Claude_MCP\SketchUp\motion-sample-book\round6\round6_d5_scene.skp`（mm）
