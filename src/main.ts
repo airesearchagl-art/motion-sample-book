@@ -40,8 +40,9 @@ const checkView = (number: string, key: keyof Recipe): CheckView => {
   if (key === 'cg') {
     // 実機で確かめた道具（SketchUp は checkedWith にあるときだけ）と、欄に書かれているが未確認の道具
     const sketchup = /SketchUp/.test(check.checkedWith) && (check.status === 'device' || check.status === 'mismatch')
-    // status が unverified のときは、d5 に「未確認：…」と理由だけが書かれている
-    const d5 = check.d5 && check.status !== 'unverified'
+    // d5 が「未確認：…」で始まるときは、D5 で作っていない（理由だけが書かれている）。
+    // status が unverified でも、d5 に手順があれば D5 は実機で確かめている（第1弾の V07 など。status は Lumion 等が未確認という意味）
+    const d5 = check.d5 && !check.d5.startsWith('未確認')
     const tools = [sketchup ? 'SketchUp' : '', d5 ? 'D5 Render' : ''].filter(Boolean)
     // D5 で動きまで見られなかったもの（note が「見た目は未確認」）と、欄にあるが確かめていない道具
     const d5Motion = d5 && check.note?.includes('見た目は未確認') ? 'D5での動き' : ''
