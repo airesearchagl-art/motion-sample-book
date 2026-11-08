@@ -6,6 +6,7 @@
  * - cg の d5 は D5 Render で実際に作った手順（recipes.ts の cg 欄へ「D5 Render：…」として追記する想定）。
  * - 第3弾（E01〜E10・V21）は 2026-11-07 に確認。note に「名称の確認」か「動きを確認」かを書いた。
  * - 第5弾（V22〜V33・UI 21〜30）は 2026-11-07 に確認。PowerPoint・編集ソフトは名称と設定、D5 は一部を動画で確認（note に記載）。
+ * - 第6弾（T11〜T17・E11〜E20）は 2026-11-08 に確認。T14 の After Effects は画面を書き出して再生を確認。D5 は note に動画で見たかを記載。
  * 詳細は docs/RECIPE_VERIFICATION.md を参照。
  */
 
@@ -404,5 +405,83 @@ export const recipeChecks: Record<string, Partial<Record<'edit' | 'powerpoint' |
     edit: { status: 'device', checkedWith: 'After Effects 2026 (26.5)・Premiere Pro 2026 / 日本語UI', date: '2026-11-07', note: 'After Effects のシェイプの「線」の「破線」に「線分」「間隔」「オフセット」、「パスのトリミング」に「開始点」「終了点」「オフセット」がある' },
     powerpoint: { status: 'device', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-07', note: '開始効果「ワイプ」の方向は 下から／左から／右から／上から の4つだけで、曲線に沿っては伸びない（矢印の大まかな向きに近い方向を選ぶ）' },
     cg: { status: 'device', checkedWith: 'SketchUp Pro 2026 (26.2) / 日本語UI + MCP 9876 / D5 Render 3.1.1 / 英語UI', date: '2026-11-07', note: 'SketchUp：タグの表示・非表示はシーンに保存され、流れの曲線をタグで分けて順に表示できる（切り替えは瞬時）。D5 には気流を計算・表示する機能はない（記載どおり不可）。', d5: 'D5では不可：気流の計算はできない。CFD ソフトの流線を画像・動画で書き出して重ねるか、流線を線のモデルとして読み込んで表示を切り替える' },
+  },
+  'T11': {
+    edit: { status: 'device', checkedWith: 'After Effects 2026 (26.5)・Premiere Pro 2026 / 日本語UI', date: '2026-11-08', note: '「ブラー (ガウス)」（ブラー／ブラーの方向）、テキストアニメーターの「ブラー」、「範囲セレクター」（開始／終了／オフセット、高度に「順序をランダム化」）。名称はスクリプトで書き出して確認' },
+    powerpoint: { status: 'device', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-08', note: '強調効果の一覧（その他の強調効果）にぼかしの効果はない（記載どおり）。ぼかした文字の画像に終了「フェード」、はっきりした文字に開始「フェード」を「直前の動作と同時」で重ね、プレビューの途中で入れ替わることを確認' },
+  },
+  'T12': {
+    edit: { status: 'device', checkedWith: 'After Effects 2026 (26.5)・Premiere Pro 2026 / 日本語UI', date: '2026-11-08', note: 'マスクと位置（Y 位置）、イージーイーズは第1弾・第5弾で確認済み。名称の確認で、再生での見た目は未確認' },
+    powerpoint: { status: 'device', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-08', note: '終了効果「スライドアウト」の方向は 下へ／左下へ／左へ／左上へ／上へ／右上へ／右へ／右下へ、開始効果「スライドイン」は 下から〜右下から の8方向。「直前の動作と同時」で組めた。注意：スライドイン／アウトはスライドの端の外から入り、外まで出ていく（1行分だけ送る動きではなく、枠の外を隠すマスクもない）' },
+  },
+  'T13': {
+    edit: { status: 'device', checkedWith: 'After Effects 2026 (26.5)・Premiere Pro 2026 / 日本語UI', date: '2026-11-08', note: 'シェイプの「パスのトリミング」（開始点／終了点）とアンカーポイントは第5弾までに確認済み' },
+    powerpoint: { status: 'device', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-08', note: '四角形に開始効果「ワイプ」（左から）を付け、プレビューで左から伸びることを確認（半透明の塗りは書式の透明度で、今回は設定していない）' },
+  },
+  'T14': {
+    edit: { status: 'mismatch', checkedWith: 'After Effects 2026 (26.5)・Premiere Pro 2026 / 日本語UI', date: '2026-11-08', note: 'テキストアニメーターの項目は「文字のオフセット」「文字コード」「文字の配置」で、「文字の値」はない。再生で確認（saveFrameToPng で 1/30 秒ごとの画面を書き出し）：文字のオフセット 5 と範囲セレクターの開始 0→100%（2 秒）では、未確定の文字は「ずれた文字」のまま変わらず、境目の 1 文字だけが変わって左から確定する（ランダムには変わらない）。同じアニメーターに「ウィグリーセレクター」を足すと、フレームごとに文字が変わった', fix: 'After Effects：テキストアニメーターの「文字のオフセット」を追加し、範囲セレクターの開始を 0→100% に動かすと、左から順に正しい文字に決まる。決まっていない文字をランダムに変え続けるには、同じアニメーターに「ウィグリーセレクター」を追加する' },
+    powerpoint: { status: 'device', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-08', note: '開始・強調・終了の一覧（第1弾と今回のその他の強調効果）に、文字がランダムに入れ替わる効果はない（記載どおり）。画面切り替え「なし」で自動 0.2 秒は第5弾（V30）で確認' },
+  },
+  'T15': {
+    edit: { status: 'device', checkedWith: 'After Effects 2026 (26.5)・Premiere Pro 2026 / 日本語UI', date: '2026-11-08', note: 'Premiere Pro 2026 のウィンドウメニューの「テキスト」「グラフィックテンプレート」は第2弾、「クロップ」（レガシー）は第5弾で確認済み' },
+    powerpoint: { status: 'device', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-08', note: '帯に開始「ワイプ」（左から）、名前と場所に開始「フェード」を「直前の動作の後」で付け、プレビューで帯→名前→場所の順に出ることを確認' },
+  },
+  'T16': {
+    edit: { status: 'device', checkedWith: 'After Effects 2026 (26.5)・Premiere Pro 2026 / 日本語UI', date: '2026-11-08', note: 'エフェクト「番号」はエフェクトメニューの「テキスト」の中（形式／種類／乱数値／値/オフセット/最大… など）' },
+    powerpoint: { status: 'device', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-08', note: 'グラフに開始「ワイプ」。効果のオプションは 方向（下から／左から／右から／上から）と 連続（1 つのオブジェクトとして／系列別／項目別／系列の要素別／項目の要素別）。「項目別」では背景と項目ごとの5ステップになった' },
+  },
+  'T17': {
+    edit: { status: 'device', checkedWith: 'After Effects 2026 (26.5)・Premiere Pro 2026 / 日本語UI', date: '2026-11-08', note: '「パスのトリミング」の「終了点」、エフェクト「番号」' },
+    powerpoint: { status: 'device', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-08', note: 'ドーナツグラフとブロック円弧に開始効果「ホイール」を付けられた（効果のオプション：スポーク 1／2／3／4／8、既定 2 秒）。ホイールはグラフ全体（残りの系列も）を時計回りに表示するので、32% だけが伸びる見た目にするには残りの系列を塗りなしにする' },
+  },
+  'E11': {
+    edit: { status: 'device', checkedWith: 'After Effects 2026 (26.5)・Premiere Pro 2026 / 日本語UI', date: '2026-11-08', note: '「CC Particle World」（シミュレーション）の Physics に Gravity・Extra・Extra Angle・Velocity、Particle に Particle Type・Texture（Texture Layer）がある（英語表記のまま）。Premiere Pro の描画モードの表示名は画面で見ていない' },
+    powerpoint: { status: 'device', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-08', note: '「アニメーションの軌跡」の「ユーザー設定パス」でジグザグの線を描き、「アニメーションの追加」で強調「スピン」を「直前の動作と同時」に重ねた。タイミングの「繰り返し」に「スライドの最後まで」がある（なし／2／3／4／5／10／次のクリックまで／スライドの最後まで）。プレビューで回りながら線に沿って落ちることを確認' },
+    cg: { status: 'device', checkedWith: 'D5 Render 3.1.1 / 英語UI', date: '2026-11-08', note: '見た目も動画で確認（2026-11-08）：Assets に Particle のタブがあり、Falling Leaves（8件）に Leaves04・Leaves05（無料）と Petals・Sakura・Leaves01 など（PRO）がある。Leaves05 を置き、Range・Particle size・Quantity を上げると、書き出した 3 秒の動画で落ち葉が舞い落ちた（フレーム間で位置が変わる）。花びら（Petals・Sakura）は PRO で試していない。Lumion・Twinmotionは未確認。', d5: 'Assets > Particle > Falling Leaves の素材（Leaves04・Leaves05 など。花びらの Petals・Sakura は PRO）を置き、Inspector の Range（範囲）・Particle size・Quantity・Velocity・Life time を調整して、動画モードでキーを置いて書き出す' },
+  },
+  'E12': {
+    edit: { status: 'mismatch', checkedWith: 'After Effects 2026 (26.5)・Premiere Pro 2026 / 日本語UI', date: '2026-11-08', note: '「波形ワープ」の項目は 波形の種類／波形の高さ／波形の幅／方向／波形の速度／固定／フェーズ／アンチエイリアス。「ピン留め」はなく「固定」で、選択肢は なし／すべてのエッジ／中央／左エッジ／上エッジ／右エッジ／下エッジ／水平エッジ／垂直エッジ', fix: 'After Effects：旗やのぼり、日よけ布のレイヤーに「波形ワープ」（波形の高さ・波形の速度、固定：左エッジ）をかける。布の付け根を固定し、先ほど大きく揺らす／Premiere Pro：布の部分を切り抜いて「波形ワープ」をかける' },
+    powerpoint: { status: 'device', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-08', note: '強調「シーソー」。左端に透明な余白を足してポールが画像の中央に来るようにした旗と、余白なしの旗を5秒で比べると、余白ありはポールのあたりを軸に旗の先が上下し、余白なしは旗の中央が軸でポール側も動いた（回転の中心は画像の中央で、上下方向も中央）' },
+    cg: { status: 'mismatch', checkedWith: 'D5 Render 3.1.1 / 英語UI', date: '2026-11-08', note: 'Assets で「flag」を検索すると Dynamic Flag with Flagpole（数種類、無料）と Dynamic Flag がある。置いて選ぶと Inspector に Animation（Play mode・Offset・Speed・Range）が出て、素材自体のアニメーションで揺れる。書き出した動画で、のぼり状の旗がわずかに揺れることを確認（その動画のクリップで Wind がオンだったかは記録していない）。風の強さで揺れが変わるかは確かめていない。Lumion・Twinmotionは未確認。', fix: 'D5 Render：Assets で「flag」を検索し、Dynamic Flag with Flagpole などの揺れる旗の素材を置く（揺れは素材自体のアニメーションで、Inspector の Animation の Speed で速さを変えられる）／Lumion・Twinmotion：風で動く旗の素材を置き、風の強さを設定する', d5: 'Assets > Model で「flag」を検索して Dynamic Flag with Flagpole を置く。Inspector の Animation（Play mode・Offset・Speed・Range）で揺れの速さを調整し、動画モードでキーを置いて書き出す' },
+  },
+  'E13': {
+    edit: { status: 'device', checkedWith: 'After Effects 2026 (26.5)・Premiere Pro 2026 / 日本語UI', date: '2026-11-08', note: '「CC Particle World」の Gravity（負の値で上向き）、「フラクタルノイズ」は第3弾で確認。描画モード「スクリーン」は After Effects のメニューにある（Premiere Pro は画面で見ていない）' },
+    powerpoint: { status: 'device', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-08', note: '「直線」の効果のオプションは 直線（下へ）／（左へ）／（右へ）／（上へ）。直線（上へ）＋強調「拡大/収縮」＋終了「フェード」を「アニメーションの追加」で同時に付けられた。終了フェードは既定 0.5 秒で先に消えるので、継続時間をそろえる' },
+    cg: { status: 'device', checkedWith: 'D5 Render 3.1.1 / 英語UI', date: '2026-11-08', note: '見た目は未確認：Assets > Particle に Smoke（17件。PlaneFog 01・04・05、Smoke03・09 などは無料）がある。Smoke09 を置くと Inspector に Size・Velocity・Concentration・Brightness が出るが、白い壁の前ではビューポートで煙を見分けられず、動画では確かめていない。Lumion・Twinmotionは未確認。', d5: 'Assets > Particle > Smoke の素材（Smoke09 など）を排気口の位置に置き、Inspector の Size・Velocity・Concentration・Brightness で大きさと濃さを調整する' },
+  },
+  'E14': {
+    edit: { status: 'device', checkedWith: 'After Effects 2026 (26.5)・Premiere Pro 2026 / 日本語UI', date: '2026-11-08', note: '「CC Particle Systems II」（Physics に Gravity・Direction・Extra・Velocity）、「CC Drizzle」（Drip Rate・Rippling・Displacement・Ripple Height など）' },
+    powerpoint: { status: 'device', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-08', note: '強調「パルス」、開始「ズーム」と終了「フェード」（アニメーションの追加）を付けられた。繰り返しは E11 と同じ' },
+    cg: { status: 'mismatch', checkedWith: 'D5 Render 3.1.1 / 英語UI', date: '2026-11-08', note: '見た目も動画で確認（2026-11-08）：噴水は Assets > Particle > Fluid（39件）にあり、Fountain 05 などは無料。置くと Inspector に Stop・Stream・Height・WaterSize・SplashSize・Transparency が出る。書き出した動画で水が噴き上がることを確認。水盤の Water マテリアルは E02（第4弾）で確認済みで、今回は貼っていない。Lumion・Twinmotionは未確認。', fix: 'D5 Render：Assets > Particle > Fluid の噴水（Fountain 05 など。Inspector の Height・Stream で高さと量）を水盤に置く。水盤には Water マテリアルを貼り、深さと暗い底を付ける（波が見えやすい）／Lumion・Twinmotion：噴水のエフェクトを置き、高さ・量を設定する', d5: 'Assets > Particle > Fluid の Fountain（Fountain 05 など）を水盤の中に置き、Inspector の Height・Stream・WaterSize・SplashSize で調整して、動画モードでキーを置いて書き出す' },
+  },
+  'E15': {
+    edit: { status: 'device', checkedWith: 'After Effects 2026 (26.5)・Premiere Pro 2026 / 日本語UI', date: '2026-11-08', note: '位置のキーフレームとイージーイーズは第1弾で確認済み' },
+    powerpoint: { status: 'device', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-08', note: '直線（右へ）の効果のオプション画面に パス・滑らかに開始・滑らかに終了・急に終了（秒）・オートリバース がある。滑らかに終了 2 秒で減速して止まり、そのあと強調「シーソー」（直前の動作の後）が動いた' },
+    cg: { status: 'unverified', checkedWith: 'D5 Render 3.1.1 / 英語UI', date: '2026-11-08', note: '今回は作っていない：Path の人物が終点で止まるか、その場で立つ・話す人物（Dynamic）の素材があるかは確かめていない。Lumion・Twinmotionは未確認。', d5: '未確認：今回は作っていない（Path > Character で歩く人物を置く方法は第3弾 E03 で確認済み）' },
+  },
+  'E16': {
+    edit: { status: 'device', checkedWith: 'After Effects 2026 (26.5)・Premiere Pro 2026 / 日本語UI', date: '2026-11-08', note: 'After Effects のレイヤーメニューに描画モード「乗算」がある（メニューの名称で確認）。Premiere Pro の描画モードの表示名は画面で見ていない' },
+    powerpoint: { status: 'device', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-08', note: 'GIF アニメは編集画面でも動き、画像に再生／一時停止のボタンが出る。直線（右へ）は付けられた。軌跡の終点を画面の外までドラッグする操作は今回うまくいかず未確認（終点のドラッグで移動量を変えられることは第1弾で確認）' },
+    cg: { status: 'mismatch', checkedWith: 'D5 Render 3.1.1 / 英語UI', date: '2026-11-08', note: '鳥の群れは Assets > Particle > Animal Clusters（Birds 01・Fireflies は無料、Birds 02 は PRO）にある。Birds 01 を置いて動画を書き出したが、画角に入っておらず、羽ばたきは見た目で確かめていない。Lumion・Twinmotionは未確認。', fix: 'D5 Render：Assets > Particle > Animal Clusters の鳥の群れ（Birds 01 など）を空に置き、動画で羽ばたくかを確かめる／Lumion・Twinmotion：鳥の群れのエフェクトを置く', d5: 'Assets > Particle > Animal Clusters の Birds 01 を置き、動画モードでキーを置いて書き出す（羽ばたきの見た目は未確認）' },
+  },
+  'E17': {
+    edit: { status: 'device', checkedWith: 'After Effects 2026 (26.5)・Premiere Pro 2026 / 日本語UI', date: '2026-11-08', note: 'After Effects 2026 のウィンドウメニューに「ウィグラー」がある（wiggle() で代える必要はない）。「グロー」（スタイライズ：グローしきい値／グロー半径／グロー強度 など）' },
+    powerpoint: { status: 'mismatch', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-08', note: '強調効果に「点滅」はない（その他の強調効果：基本 スピン／フォントの色／拡大/収縮／線の色／塗りつぶしの色／透過性、弱 オブジェクトカラー／カラーコントラスト／パルス／ブラシの色／ボールドフラッシュ／暗く／下線／薄く／補色／補色 2／明るく、中 カラーパルス／カラーで拡大／シーソー／シマー、はなやか ウェーブ／ブリンク／太字表示）。近いのは「ブリンク」で、適用できた', fix: '明かりの小さな画像に強調「ブリンク」（または「透過性」をオートリバース）をかけ、開始をずらして「繰り返し：スライドの最後まで」にする' },
+    cg: { status: 'unverified', checkedWith: 'D5 Render 3.1.1 / 英語UI', date: '2026-11-08', note: '今回は作っていない。第5弾（V32）で、動画モードではマテリアルを変えられない（モデルは Location・Rotation・Size・Visibility だけ）ことを確認しているので、発光の強さをキーで変えてまたたかせることはできない見込み（記載の「またたきは編集ソフトで足す」と同じ）。Lumion・Twinmotionは未確認。', d5: '未確認：今回は作っていない（動画モードではマテリアルを変えられないため、発光の強さはキーごとに変えられない見込み。第5弾 V32）' },
+  },
+  'E18': {
+    edit: { status: 'device', checkedWith: 'After Effects 2026 (26.5)・Premiere Pro 2026 / 日本語UI', date: '2026-11-08', note: '「CC Drizzle」「波形ワープ」、マスク。上下反転（スケール -100%）は第1弾までの確認に含まれる' },
+    powerpoint: { status: 'device', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-08', note: '図の形式の「回転」に 右へ 90 度回転／左へ 90 度回転／上下反転／左右反転、「トリミング」に トリミング／図形に合わせてトリミング／縦横比／塗りつぶし／枠に合わせる がある。円に開始「ズーム」＋終了「フェード」（直前の動作と同時）を付けられた' },
+    cg: { status: 'mismatch', checkedWith: 'D5 Render 3.1.1 / 英語UI', date: '2026-11-08', note: '見た目も動画で確認（2026-11-08）：Environment > Weather > Precipitation の項目は Rain／Snow のスライダー・Strength・Puddle（詳細に Scale・Offset）・Raindrop Transparency・Snow Flake Size・Water Mist（Density）で、「Wet」の項目はない。Strength 0.1・Puddle 0.7 の動画で、濡れた地面に空と建物が映り、雨の筋が降る。ビューポートでは水たまりに雨の波紋の輪が出た（動画の画角では波紋は見分けられなかった）。雨を止めて水たまりだけを残せるかは試していない。Lumion・Twinmotionは未確認。', fix: 'D5 Render：Environment > Weather > Precipitation をオンにし、Puddle（水たまり。詳細で Scale・Offset）を上げ、Strength を小さくして弱い雨にする（Wet の項目はない）。濡れた地面に空と建物が映り、水たまりに雨の波紋が出る／Lumion・Twinmotion：濡れた地面（Wetness・Puddles）の設定を使う', d5: '動画モードで Environment > Weather > Precipitation をオンにし、Strength を 0.1 程度、Puddle を 0.7 程度にしてからキーを置いて書き出す（環境はキーを置いた時点の値が入る）' },
+  },
+  'E19': {
+    edit: { status: 'device', checkedWith: 'After Effects 2026 (26.5)・Premiere Pro 2026 / 日本語UI', date: '2026-11-08', note: 'After Effects に「トラックマット」（レイヤーメニュー）、Premiere Pro 2026 のビデオエフェクト「キーイング」に「トラックマットキー」がある' },
+    powerpoint: { status: 'mismatch', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-08', note: '「図形に合わせてトリミング」はある。トリミングした空の画像に直線（右へ）を付けると、トリミングした形ごと動くので、空がガラス面の外（建物の壁の上）へはみ出した。窓枠の画像を上に重ねても、ガラス面の外へはみ出した分は隠れない', fix: '空と雲の画像をガラス面の形にトリミングして建物の画像の上に置き、透明度を上げる。軌跡「直線（左／右）」でゆっくり動かすと、トリミングした形ごと動いてガラス面の外へはみ出すので、動かす距離を小さくするか、ガラスの部分を透明にした建物の画像を一番上に重ねる' },
+    cg: { status: 'device', checkedWith: 'D5 Render 3.1.1 / 英語UI', date: '2026-11-08', note: '見た目も動画で確認（2026-11-08）：Environment > Weather > Cloud の Global Settings（Height・Speed・Direction・Rotate・Offset・Cast Shadow）で Speed を 1 にした動画では、ガラスのカーテンウォールに映る雲が 3 秒で流れた。Speed 0.01 の動画ではほぼ動かない。HDRI の回転は試していない。Lumion・Twinmotionは未確認。', d5: 'ガラスの外装を置き、動画モードで Environment > Weather > Cloud の Global Settings の Speed を上げてから（例 1）キーを置いて書き出す。ガラスに映る雲も一緒に流れる' },
+  },
+  'E20': {
+    edit: { status: 'device', checkedWith: 'After Effects 2026 (26.5)・Premiere Pro 2026 / 日本語UI', date: '2026-11-08', note: '位置のキーフレーム・イージーイーズ・マスクは第1弾で確認済み' },
+    powerpoint: { status: 'device', checkedWith: 'PowerPoint (Microsoft 365) 2610 / 日本語UI', date: '2026-11-08', note: '直線（上へ）は E13、滑らかに開始／終了は E15、ユーザー設定パスは E11 と同じ機能で確認' },
+    cg: { status: 'unverified', checkedWith: 'D5 Render 3.1.1 / 英語UI', date: '2026-11-08', note: '今回は作っていない。.skp は1つのモデルとして読み込まれ、かごだけを動かすには別のファイルとして読み込む必要がある（第1弾で、Template > Animation の Rise などがモデル全体に適用されることを確認）。エスカレーターの素材、Path の人物を斜面に沿わせることは確かめていない。Lumion・Twinmotionは未確認。', d5: '未確認：今回は作っていない（かごを別のモデルとして読み込み、動画モードの Template > Animation〈Rise・Descend など〉を付ける方法が考えられる）' },
   },
 }
