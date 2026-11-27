@@ -931,6 +931,110 @@ const step = (p) => el.textContent = [...target].map((c, i) => i < p * target.le
     cg: 'SketchUp：段階ごとにタグを分け（基礎・躯体・外装…）、表示するタグを 1 つずつ増やしたシーンを並べる（切り替えは瞬時）。D5 Render・Lumion・Twinmotion：段階ごとに表示を変えた画像を書き出し、編集ソフトでつなぐ',
     prompt: 'A step-by-step construction diagram in a fixed frame: foundation, then structural frame, then walls and windows, then the roof appear in four stages, each new part briefly highlighted in orange, with a step indicator 1 to 4 at the top, clean diagram style',
   },
+  // v1.5 図と表を増やす（120種類へ）
+  D05: {
+    css: `/* 折れ線は pathLength="1" と stroke-dasharray:1 で描き、点は線が通る時刻に出す（--i は点の番号） */
+.trend { stroke-dasharray: 1; animation: draw 1.4s .2s cubic-bezier(.45,0,.4,1) both; }
+@keyframes draw { from { stroke-dashoffset: 1; } }
+.dot { animation: pop .25s calc(.2s + var(--i) * .27s) both; }`,
+    edit: 'After Effects：折れ線のシェイプに「パスのトリミング」の終了を 0→100%、点は線が届く時刻に不透明度とスケール。最後の値（−24% など）は吹き出しでポップ。Excel のグラフを使うなら、Illustrator 経由でシェイプにすると線を描ける。Premiere Pro は、グラフの画像にマスクを左から広げる',
+    powerpoint: 'グラフ（折れ線）に開始効果「ワイプ」（左から）。効果のオプション「連続」の「系列別」で系列ごとに。最後の値の吹き出しは開始効果「ズーム」を「直前の動作の後」で',
+    prompt: 'An animated line chart of annual energy cost from 2021 to 2026; the line draws from left to right, data points pop in one by one, and a "-24%" label appears at the end, clean infographic style',
+  },
+  D06: {
+    css: `/* 円は circle に pathLength="100"、stroke-dasharray を「割合 100」、stroke-dashoffset で開始位置をずらす */
+.seg { stroke-dasharray: var(--v) 100; stroke-dashoffset: calc(var(--o) * -1); animation: seg .45s calc(.15s + var(--i) * .38s) both; }
+@keyframes seg { from { stroke-dasharray: 0 100; } }
+.seg.focus { transform: translate(-7px, -1px); } /* 見せたい扇形を外へ */`,
+    edit: 'After Effects：ドーナツは楕円の線を扇形ごとに重ね、「パスのトリミング」の開始・終了で割合を作り、終了を順に伸ばす。見せたい扇形は位置を中心から外へ数ピクセル。Premiere Pro は、扇形ごとの画像を「時計回りワイプ」で順に出す',
+    powerpoint: 'グラフ（ドーナツ）に開始効果「ホイール」、効果のオプション「連続」の「項目別」。見せたい扇形だけ「データ要素の書式設定」の「要素の切り出し」で外へ（アニメーションは強調「拡大/収縮」で代用）',
+    prompt: 'A donut chart of floor area by use (office 40%, common 25%, plant 20%, other 15%); segments grow one after another around the circle and the common-area segment slides slightly outward, clean infographic style',
+  },
+  D07: {
+    css: `/* 行の位置（順位）と棒の長さを同時に補間する（--y0→--y1 は順位、--w0→--w1 は長さ） */
+.row { animation: rank 2.4s cubic-bezier(.65,0,.35,1) both; }
+@keyframes rank { 0%, 18% { transform: translateY(calc(var(--y0) * 118%)); } 82%, 100% { transform: translateY(calc(var(--y1) * 118%)); } }
+.bar { animation: len 2.4s cubic-bezier(.65,0,.35,1) both; }
+@keyframes len { 0%, 18% { width: var(--w0); } 82%, 100% { width: var(--w1); } }`,
+    edit: 'After Effects：棒ごとのレイヤーで、位置Y（順位）とスケールX（長さ）に同じ時刻のキーを置き、イージーイーズ。年ごとに変わるなら、キーを年の数だけ並べる（バーレースのテンプレートや Flourish の Bar Chart Race で作って書き出す方法もある）',
+    powerpoint: '前後 2 枚のスライドに、順位を入れ替えた棒グラフ（図形の長方形）を同じ名前で置き、画面切り替え「変形」でつなぐ（棒が移動しながら長さが変わる）',
+    prompt: 'A horizontal bar chart race of design options A to D; bars change length and smoothly swap their ranking order, the top bar highlighted in orange, clean infographic style',
+  },
+  D08: {
+    css: `/* 棒の left・bottom・width を補間して、横並びから 1 本の積み上げへ（--s は下に積む棒の合計） */
+.bar { animation: morph 2.4s cubic-bezier(.65,0,.35,1) both; }
+@keyframes morph { 0%, 22% { left: calc(4% + var(--i) * 24%); bottom: 0; width: 16%; } 78%, 100% { left: 40%; bottom: var(--s); width: 20%; } }`,
+    edit: 'After Effects：棒ごとのレイヤーの位置（X は中央へ、Y は下の棒の高さの合計だけ上へ）とスケールXにキーを置く。終わってから項目名と合計を出す。Premiere Pro は、前後の 2 つのグラフ画像を「クロスディゾルブ」でつなぐ（動きは出ない）',
+    powerpoint: '横並びの棒（図形）のスライドと、同じ図形を積み上げたスライドを作り、画面切り替え「変形」でつなぐ（図形の名前をそろえる）',
+    prompt: 'Four side-by-side bars glide to the center and stack into one cumulative column, labels appear beside each segment, clean infographic style',
+  },
+  D09: {
+    css: `/* 時間の線を描き、印を同じ時間で右へ進め、節目は印が通る時刻に出す（--i は節目の番号） */
+.line { stroke-dasharray: 1; animation: draw 1.9s .1s linear both; }
+.dot { animation: travel 1.9s .1s linear both; }
+@keyframes travel { from { transform: none; } to { transform: translateX(172px); } }
+.mile { animation: fade .3s calc(.2s + var(--i) * .5s) both; }`,
+    edit: 'After Effects：線に「パスのトリミング」、印は線と同じ時間で位置Xにキー（リニア）。節目のテキストとマーカーは、印が通る時刻に不透明度とスケールで出す。年が多いときは、カメラを横へパンして年表を流す',
+    powerpoint: '線に開始効果「ワイプ」（左から）、節目ごとに開始効果「ズーム」を「直前の動作の後」で順に。印は軌跡「直線（右へ）」を線と同じ長さで',
+    prompt: 'A horizontal project timeline; a line draws from left to right while a dot travels along it, revealing milestones 2019 concept, 2021 design, 2023 construction start, 2026 completion, clean infographic style',
+  },
+  D10: {
+    css: `/* 工程のバーを順に左から伸ばし（scaleX、原点は左）、今日の線を右へ進める */
+.task { transform-origin: left center; animation: grow .45s calc(.15s + var(--i) * .3s) cubic-bezier(.2,.8,.2,1) both; }
+@keyframes grow { from { transform: scaleX(0); } }
+.today { animation: today 2.2s .1s cubic-bezier(.45,0,.4,1) both; }
+@keyframes today { from { left: 16%; } }`,
+    edit: 'After Effects：工程ごとの長方形のスケールX（アンカーは左端）を 0→100% に、工程の順に少しずつずらす。今日の線は位置Xにキー。工程表が Excel なら、表を画像で背景にして、上にバーだけを作る。Premiere Pro は、バーごとにマスクを左から広げる',
+    powerpoint: '工程表（表）の上にバーの図形を置き、開始効果「ワイプ」（左から）を工程の順に「直前の動作の後」で。今日の線は軌跡「直線（右へ）」',
+    prompt: 'An animated construction schedule (Gantt chart) with rows foundation, structure, exterior, interior, landscape; bars grow from left in sequence and a red "today" line moves to the right, clean infographic style',
+  },
+  D11: {
+    css: `/* 経路は SVG の path に pathLength="1"、stroke-dasharray:1 で描き、着いてから敷地の印と所要時間を出す */
+.route { stroke-dasharray: 1; animation: draw 1.3s .3s cubic-bezier(.45,0,.4,1) both; }
+.site { animation: pop .3s 1.55s both; } .badge { animation: pop .3s 1.8s both; }`,
+    edit: 'After Effects：地図の画像の上に経路のシェイプ（ペンで描く）を置き、「パスのトリミング」の終了を 0→100%。歩く印を付けるなら、経路のパスをコピーして印の位置に貼り付ける（パスに沿って動く）。所要時間はポップ。Premiere Pro は、経路の線に沿ってマスクを広げる',
+    powerpoint: '地図の画像の上に、フリーフォームで経路の線を描き、開始効果「ワイプ」（線の向き）。曲がる経路は、区間ごとの線に分けて「直前の動作の後」で順に。敷地の印と所要時間は開始効果「ズーム」',
+    cg: 'SketchUp：配置図のシーンで、経路をタグ付きの線（または細い面）で描き、表示を切り替える。地図は「位置情報を追加」で取り込んだ航空写真を下絵に使える（利用条件を確認）',
+    prompt: 'A simple street map; an orange route line draws from the train station to the building site, the site pin pops and a label "8 min walk" appears, clean map infographic style',
+  },
+  D12: {
+    css: `/* 区画を用途の順に塗り（opacity）、凡例を同じ時刻に出す（--i は区画の番号） */
+.zone { animation: zone .4s calc(.2s + var(--i) * .42s) both; }
+@keyframes zone { from { opacity: 0; } 50% { opacity: .95; } to { opacity: .78; } }
+.legend li { animation: fade .3s calc(.25s + var(--i) * .42s) both; }`,
+    edit: 'After Effects：平面図の上に用途ごとの色の面（シェイプ、または図面から作ったマット）を置き、用途の順に不透明度を上げる。凡例は同じ時刻に出す。Premiere Pro は、用途ごとの色の画像を順に重ねる',
+    powerpoint: '平面図の上に用途ごとの半透明の図形を置き、開始効果「フェード」を用途の順に「直前の動作の後」で。凡例の行も同じ順に（「直前の動作と同時」）',
+    cg: 'SketchUp：用途ごとの床の面に色のマテリアルを付けてタグを分け、表示するタグを 1 つずつ増やしたシーンを並べる（上から見た平行投影）。Revit なら色分けの平面図（カラー スキーム）',
+    prompt: 'A floor plan zoning diagram; rooms fill with colors one use at a time (office, meeting, lounge, storage) while a matching legend appears, clean architectural diagram style',
+  },
+  D13: {
+    css: `/* 人形（::before が頭、::after が胴）を数の分だけ順に色付け、最後に合計を出す */
+.person.on::before, .person.on::after { animation: on .2s calc(.2s + var(--i) * .1s) both; }
+@keyframes on { from { background: #d9cfbf; } }
+.total { animation: pop .3s 1.5s both; }`,
+    edit: 'After Effects：人形のアイコンを並べ（リピーターで格子に）、塗りの色を順に切り替える（リピーターのオフセットか、アイコンごとに時刻をずらしたキー）。最後に合計の数字（「番号」エフェクト）。Premiere Pro は、色付きの人形の画像に左上からマスクを広げる',
+    powerpoint: '灰色の人形と、色付きの人形を重ねて並べ、色付きのほうに開始効果「フェード」を「直前の動作の後」で順に（遅延 0.1 秒）。合計は開始効果「ズーム」',
+    prompt: 'An isotype pictogram chart: a grid of 20 person icons, 12 of them fill with blue one by one, then the total "120 people (1 icon = 10 people)" appears, clean infographic style',
+  },
+  D14: {
+    css: `/* 前・後の棒を下から伸ばし（scaleY、原点は下）、矢印を描いて差のバッジを出す */
+.bar { transform-origin: bottom; animation: grow .5s cubic-bezier(.2,.8,.2,1) both; } .bar.after { animation-delay: .45s; }
+@keyframes grow { from { transform: scaleY(0); } }
+.arrow { stroke-dasharray: 1; animation: draw .4s 1.1s both; } .badge { animation: pop .3s 1.55s both; }`,
+    edit: 'After Effects：前・後の棒のスケールY（アンカーは下端）を順に 0→100%、数値は「番号」エフェクト。矢印は「パスのトリミング」で前の棒から後の棒へ描き、差（−30%）をポップ。Premiere Pro は、棒にマスクを下から広げ、差の文字を後から出す',
+    powerpoint: '棒（図形）に開始効果「ワイプ」（下から）を前・後の順に、矢印（曲線）に「ワイプ」、差のバッジに開始効果「ズーム」を「直前の動作の後」で',
+    prompt: 'Two bars "before" (100) and "after" (70) grow up one after another, a curved orange arrow draws from the first to the second and a "-30%" badge pops, clean infographic style',
+  },
+  D15: {
+    css: `/* 軸を描き、案の点を原点からそれぞれの位置へ動かし（--x・--y）、選びたい案に輪を付ける */
+.axis { stroke-dasharray: 1; animation: draw .4s .1s both; }
+.point { transform: translate(var(--x), var(--y)); animation: place .6s calc(.55s + var(--i) * .18s) cubic-bezier(.2,.8,.2,1) both; }
+@keyframes place { from { transform: none; opacity: 0; } 20% { opacity: 1; } }
+.pick { animation: pop .35s 1.7s both; }`,
+    edit: 'After Effects：軸は「パスのトリミング」、案の点は原点から位置にキーを置いて順に動かす（イージーアウト）。選びたい案の輪は、線の円をスケール 0→100%。Premiere Pro は、点ごとのグラフィックの位置にキー',
+    powerpoint: '軸（線）に開始効果「ワイプ」、案の点に開始効果「スライドイン」や軌跡「ユーザー設定パス」で原点から各位置へ、輪に開始効果「ズーム」を「直前の動作の後」で',
+    prompt: 'A two-axis evaluation matrix (cost vs performance); the axes draw in, four option dots move from the origin to their positions, and the best option B gets an orange circle, clean infographic style',
+  },
 }
 
 /** 再現情報が欠けている見本の番号を返す（開発時の確認用） */

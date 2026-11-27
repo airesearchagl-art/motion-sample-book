@@ -939,6 +939,57 @@ const diagramScenes: Record<string, string> = {
       <g class="dg-part p3"><rect x="26" y="20" width="68" height="36" /><rect class="dg-win" x="34" y="25" width="10" height="8" /><rect class="dg-win" x="55" y="25" width="10" height="8" /><rect class="dg-win" x="76" y="25" width="10" height="8" /><rect class="dg-win" x="34" y="42" width="10" height="8" /><rect class="dg-win" x="76" y="42" width="10" height="8" /></g>
       <g class="dg-part p4"><path d="M18 20 L60 6 L102 20 Z" /><rect class="dg-door" x="54" y="44" width="12" height="12" /></g>
     </svg>`,
+  linechart: `<svg class="dg-chart dg-line-chart" viewBox="0 0 200 112" aria-hidden="true">
+      <path class="dg-axis" d="M24 12 V92 H190" />${[32, 52, 72].map((y) => `<path class="dg-grid" d="M24 ${y} H190" />`).join('')}
+      <path class="dg-trend" pathLength="1" d="M34 40 L64 34 L94 48 L124 58 L154 66 L184 76" />
+      ${[[34, 40], [64, 34], [94, 48], [124, 58], [154, 66], [184, 76]].map(([x, y], index) => `<circle class="dg-dot" cx="${x}" cy="${y}" r="2.6" style="--i:${index}" />`).join('')}
+      ${['2021', '22', '23', '24', '25', '2026'].map((year, index) => `<text class="dg-tick" x="${34 + index * 30}" y="103">${year}</text>`).join('')}
+      <g class="dg-callout"><rect x="150" y="44" width="40" height="13" rx="3" /><text x="170" y="53.5">−24%</text></g>
+      <text class="dg-caption" x="26" y="9">年間の光熱費</text>
+    </svg>`,
+  piechart: `<svg class="dg-chart dg-pie" viewBox="0 0 200 112" aria-hidden="true">
+      <g class="dg-donut" transform="rotate(-90 64 56)">${[[40, 0, '#315c70'], [25, 40, '#cf795f'], [20, 65, '#b9ad99'], [15, 85, '#8fa98a']].map(([value, start, color], index) => `<circle class="dg-seg s${index}" cx="64" cy="56" r="34" pathLength="100" style="--v:${value};--o:${start};--i:${index};stroke:${color}" />`).join('')}</g>
+      <text class="dg-pie-total" x="64" y="54">延床</text><text class="dg-pie-total big" x="64" y="66">12,480㎡</text>
+      ${[['事務', '40%', '#315c70'], ['共用', '25%', '#cf795f'], ['機械', '20%', '#b9ad99'], ['その他', '15%', '#8fa98a']].map(([name, value, color], index) => `<g class="dg-legend" style="--i:${index}"><rect x="122" y="${24 + index * 18}" width="8" height="8" rx="1.5" fill="${color}" /><text x="134" y="${31 + index * 18}">${name}</text><text class="num" x="190" y="${31 + index * 18}">${value}</text></g>`).join('')}
+    </svg>`,
+  barrace: `<span class="dg-race">${[['A案', 0, 2, 62, 48], ['B案', 1, 0, 56, 86], ['C案', 2, 3, 48, 34], ['D案', 3, 1, 40, 70]].map(([name, from, to, w0, w1]) => `<span class="dg-race-row" style="--y0:${from};--y1:${to};--w0:${w0}%;--w1:${w1}%"><b>${name}</b><i></i></span>`).join('')}<small>評価点</small></span>`,
+  chartmorph: `<span class="dg-morph">${[[0, 34, '#315c70', '事務'], [1, 22, '#cf795f', '共用'], [2, 16, '#b9ad99', '機械'], [3, 12, '#8fa98a', 'その他']].map(([index, height, color, name], _, list) => `<i style="--i:${index};--h:${height}%;--s:${(list as (number | string)[][]).slice(0, Number(index)).reduce((sum, item) => sum + Number(item[1]), 0)}%;background:${color}"><b>${name}</b></i>`).join('')}<em class="dg-morph-base"></em><small class="dg-morph-total">4 項目を 1 本の合計に</small></span>`,
+  timeline: `<svg class="dg-chart dg-timeline" viewBox="0 0 200 112" aria-hidden="true">
+      <path class="dg-time-line" pathLength="1" d="M16 60 H188" />
+      ${[['2019', '構想'], ['2021', '設計'], ['2023', '着工'], ['2026', '竣工']].map(([year, label], index) => `<g class="dg-mile" style="--i:${index}"><circle cx="${32 + index * 50}" cy="60" r="4.5" /><text class="year" x="${32 + index * 50}" y="${index % 2 ? 84 : 44}">${year}</text><text class="label" x="${32 + index * 50}" y="${index % 2 ? 96 : 32}">${label}</text></g>`).join('')}
+      <circle class="dg-time-dot" cx="16" cy="60" r="3" />
+    </svg>`,
+  gantt: `<span class="dg-gantt"><span class="dg-gantt-head">${['4月', '5月', '6月', '7月', '8月', '9月'].map((month) => `<b>${month}</b>`).join('')}</span>${[['基礎', 0, 22], ['躯体', 14, 42], ['外装', 44, 34], ['内装', 56, 38], ['外構', 78, 22]].map(([name, start, width], index) => `<span class="dg-gantt-row"><b>${name}</b><span><i style="--x:${start}%;--w:${width}%;--i:${index}"></i></span></span>`).join('')}<em class="dg-today"><small>今日</small></em></span>`,
+  route: `<svg class="dg-chart dg-route" viewBox="0 0 200 112" aria-hidden="true">
+      <rect class="dg-map" x="0" y="0" width="200" height="112" />
+      ${['M0 30 H200', 'M0 76 H200', 'M46 0 V112', 'M112 0 V112', 'M160 0 V112', 'M0 100 L80 0'].map((d) => `<path class="dg-road" d="${d}" />`).join('')}
+      <path class="dg-rail" d="M0 18 H200" /><rect class="dg-block" x="122" y="40" width="30" height="28" rx="2" />
+      <path class="dg-path" pathLength="1" d="M46 22 V76 H112 V54 H122" />
+      <g class="dg-station"><rect x="34" y="12" width="24" height="12" rx="3" /><text x="46" y="20.5">駅</text></g>
+      <g class="dg-site"><circle cx="137" cy="54" r="5" /><text x="137" y="76">敷地</text></g>
+      <g class="dg-time-badge"><rect x="62" y="82" width="38" height="14" rx="7" /><text x="81" y="92">徒歩 8 分</text></g>
+    </svg>`,
+  zoning: `<svg class="dg-chart dg-zoning" viewBox="0 0 200 112" aria-hidden="true">
+      ${[[10, 12, 70, 50, '#315c70', 0], [80, 12, 50, 50, '#cf795f', 1], [10, 62, 50, 40, '#8fa98a', 2], [60, 62, 70, 40, '#b9ad99', 3]].map(([x, y, w, h, color, index]) => `<rect class="dg-zone" x="${x}" y="${y}" width="${w}" height="${h}" style="--i:${index};fill:${color}" />`).join('')}
+      <rect class="dg-plan-outline" x="10" y="12" width="120" height="90" /><path class="dg-plan-wall" d="M80 12 V62 M10 62 H130 M60 62 V102" />
+      ${[['執務', '#315c70'], ['会議', '#cf795f'], ['休憩', '#8fa98a'], ['倉庫・機械', '#b9ad99']].map(([name, color], index) => `<g class="dg-legend" style="--i:${index}"><rect x="142" y="${22 + index * 18}" width="9" height="9" rx="1.5" fill="${color}" /><text x="155" y="${30 + index * 18}">${name}</text></g>`).join('')}
+    </svg>`,
+  pictogram: `<span class="dg-picto"><span class="dg-picto-grid">${Array.from({ length: 20 }, (_, index) => `<i style="--i:${index}" class="${index < 12 ? 'on' : ''}"></i>`).join('')}</span><span class="dg-picto-total"><b>120</b><small>人（1 人形＝10 人）</small></span></span>`,
+  delta: `<svg class="dg-chart dg-delta" viewBox="0 0 200 112" aria-hidden="true">
+      <path class="dg-axis" d="M28 94 H176" />
+      <rect class="dg-dbar before" x="46" y="22" width="34" height="72" /><rect class="dg-dbar after" x="122" y="44" width="34" height="50" />
+      <text class="dg-tick" x="63" y="105">改修前</text><text class="dg-tick" x="139" y="105">改修後</text>
+      <text class="dg-dval" x="63" y="17">100</text><text class="dg-dval" x="139" y="39">70</text>
+      <path class="dg-darrow" pathLength="1" d="M84 26 C104 26 112 34 118 42" /><path class="dg-darrow-head" d="M112 40 L119 44 L118 36" />
+      <g class="dg-dbadge"><rect x="84" y="50" width="34" height="16" rx="8" /><text x="101" y="61.5">−30%</text></g>
+    </svg>`,
+  matrix: `<svg class="dg-chart dg-matrix" viewBox="0 0 200 112" aria-hidden="true">
+      <path class="dg-max x" pathLength="1" d="M40 96 H188" /><path class="dg-max y" pathLength="1" d="M40 96 V8" />
+      <path class="dg-quad" d="M114 12 V96 M40 52 H188" />
+      <text class="dg-axis-label" x="186" y="107">コスト（低い →）</text><text class="dg-axis-label v" x="34" y="12">性能</text>
+      ${[['A', 70, 70, 0], ['B', 150, 28, 1], ['C', 98, 34, 2], ['D', 160, 80, 3]].map(([name, x, y, index]) => `<g class="dg-pt" style="--x:${Number(x) - 40}px;--y:${Number(y) - 96}px;--i:${index}"><circle cx="40" cy="96" r="5.5" /><text x="40" y="98.4">${name}</text></g>`).join('')}
+      <circle class="dg-pick" cx="150" cy="28" r="10" />
+    </svg>`,
 }
 
 const diagramGrid = document.querySelector<HTMLDivElement>('#diagram-grid')!
