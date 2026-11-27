@@ -158,6 +158,18 @@ export const diagramSamples: Sample[] = [
   { id: 'flowchart', number: 'D02', name: '流れ図が伸びる（分岐・合流）', english: 'Branching flow', description: '線が伸びながら箱をつなぎ、二手に分かれて、また一つに合流する。行き来する矢印も往復する。', categoryLabel: '流れ', hint: '工程・手順・判断の分かれ目・やり取り', avoid: '分岐の多い複雑な流れ', feel: ['順を追う', '分かりやすい', 'つながり'] },
   { id: 'detailinset', number: 'D03', name: '詳細の小窓（部分拡大）', english: 'Detail inset', description: '図の一部を枠で囲み、そこから拡大した詳細が小窓で開く。', categoryLabel: '詳細', hint: '図面の詳細・納まり・全体と部分の対応', avoid: '細部を読ませる必要のない場面', feel: ['注目させる', '正確', 'ディテール'] },
   { id: 'stepswap', number: 'D04', name: '段階で図を切り替える', english: 'Step swap', description: '同じ枠の中で、変わる部分だけが段階ごとに入れ替わり、今の段階が上に示される。', categoryLabel: '段階', hint: '工程の段階・状態の移り変わり・同じ図での比較', avoid: '段階ごとに図全体が変わる説明', feel: ['順を追う', '変化', '分かりやすい'] },
+  // v1.5 図と表を増やす（120種類へ）
+  { id: 'linechart', number: 'D05', name: '折れ線グラフが伸びる', english: 'Line chart reveal', description: '線が左から右へ描かれ、点が順に打たれて、最後の値が出る。', categoryLabel: 'グラフ', hint: '光熱費・CO₂・来場者数の推移', avoid: '項目どうしの比較が主な場面', feel: ['推移', '分かりやすい', '説得力'] },
+  { id: 'piechart', number: 'D06', name: '内訳の円グラフ', english: 'Donut breakdown', description: '円の扇形が順に伸びて内訳になり、見せたい1つが少し外へ引き出される。', categoryLabel: 'グラフ', hint: '用途別の面積・コストの内訳', avoid: '項目が多く細かい内訳', feel: ['内訳', 'すっきり', '注目させる'] },
+  { id: 'barrace', number: 'D07', name: '順位が入れ替わる', english: 'Bar race', description: '棒の長さが変わりながら、並び順が入れ替わっていく。', categoryLabel: 'グラフ', hint: '案の評価の順位・年ごとの変化', avoid: '順位を変えたくない比較', feel: ['勢いがある', '変化', '比べる'] },
+  { id: 'chartmorph', number: 'D08', name: 'グラフが形を変える', english: 'Chart morph', description: '横に並んだ棒が中央に集まり、1本の積み上げグラフに変わる。', categoryLabel: 'グラフ', hint: '同じ数字を「比べる」から「合計」へ見せ直す', avoid: '形を変えると読み違える数字', feel: ['変化', 'つながり', '分かりやすい'] },
+  { id: 'timeline', number: 'D09', name: '年表を進む', english: 'Timeline', description: '時間の線が伸び、印が進むにつれて節目の出来事が順に出る。', categoryLabel: '時間', hint: '沿革・計画の経緯・竣工までの歩み', avoid: '同時に起きた出来事が多い説明', feel: ['順を追う', '時間経過', '物語'] },
+  { id: 'gantt', number: 'D10', name: '工程表のバーが伸びる', english: 'Schedule bars', description: '工程ごとのバーが日程に沿って順に伸び、今日の線が右へ進む。', categoryLabel: '時間', hint: '施工工程・設計スケジュール・引越し計画', avoid: '細かい日付を読ませる場面', feel: ['順を追う', '確か', '分かりやすい'] },
+  { id: 'route', number: 'D11', name: '経路が描かれる（アクセス）', english: 'Route draw', description: '地図の上で、駅から敷地まで経路の線が伸び、所要時間が出る。', categoryLabel: '地図', hint: 'アクセス・搬入経路・避難経路の説明', avoid: '正確な道順の案内（地図サービスを使う）', feel: ['分かりやすい', 'つながり', '順を追う'] },
+  { id: 'zoning', number: 'D12', name: 'ゾーニングが色で塗られる', english: 'Zoning fill', description: '平面の区画が用途ごとに順に塗られ、凡例が対応して出る。', categoryLabel: '平面', hint: 'ゾーニング・用途構成・テナント配置', avoid: '色の区別が多すぎる平面', feel: ['すっきり', '分かりやすい', '構成'] },
+  { id: 'pictogram', number: 'D13', name: 'ピクトグラムで数を示す', english: 'Unit pictogram', description: '人のアイコンが数の分だけ順に色付き、合計の数字が出る。', categoryLabel: '数', hint: '収容人数・駐車台数・利用者数', avoid: '正確な小数や大きすぎる数', feel: ['親しみ', '分かりやすい', '規模'] },
+  { id: 'delta', number: 'D14', name: '差を示す（増減）', english: 'Before / after delta', description: '前と後の棒が伸び、その間に矢印が引かれて、差（−30% など）が出る。', categoryLabel: '比較', hint: '省エネ効果・改修前後・コスト削減', avoid: '差が小さく誤差に見える数字', feel: ['説得力', '比べる', '注目させる'] },
+  { id: 'matrix', number: 'D15', name: '2軸の評価図', english: 'Two-axis matrix', description: '縦横の軸が引かれ、案の点がそれぞれの位置へ動いて置かれ、選びたい案に輪が付く。', categoryLabel: '比較', hint: '案の比較（コスト×性能など）・優先度の整理', avoid: '軸の意味を説明できない比較', feel: ['比べる', '整理', '説得力'] },
 ]
 
 export const allSamples: Sample[] = [...samples, ...videoSamples, ...textSamples, ...environmentSamples, ...diagramSamples]
