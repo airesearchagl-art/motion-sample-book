@@ -1,6 +1,6 @@
 import './style.css'
 import {
-  type Sample, type Setting, samples, videoSamples, textSamples, environmentSamples, allSamples,
+  type Sample, type Setting, samples, videoSamples, textSamples, environmentSamples, diagramSamples, allSamples,
   finderWords, strengthSamples, directionSamples, settingOptions, defaultSettings, suggestedCollections,
 } from './data'
 import { type Recipe, recipes, recipeTools, missingRecipes } from './recipes'
@@ -196,6 +196,9 @@ app.innerHTML = `
       <button class="library-tab" type="button" role="tab" data-library="environment" aria-controls="environment-library" aria-selected="false">
         <span>環境</span><strong data-tab-count>${environmentSamples.length}</strong>
       </button>
+      <button class="library-tab" type="button" role="tab" data-library="diagram" aria-controls="diagram-library" aria-selected="false">
+        <span>図と表</span><strong data-tab-count>${diagramSamples.length}</strong>
+      </button>
       <button class="library-tab saved-tab" type="button" role="tab" data-library="saved" aria-controls="saved-library" aria-selected="false">
         <span>保存</span><strong data-saved-count>0</strong>
       </button>
@@ -255,6 +258,19 @@ app.innerHTML = `
       </div>
       <p class="result" aria-live="polite"><span data-result-count>${environmentSamples.length}</span>件を表示</p>
       <div class="grid" id="environment-grid"></div>
+      <p class="empty-note" hidden>このタブには該当する見本がありません。上の件数を見て、ほかのタブを開いてください。</p>
+    </section>
+
+    <section class="catalog library-panel" id="diagram-library" role="tabpanel" data-library-panel="diagram" aria-labelledby="diagram-catalog-title" hidden>
+      <div class="catalog-head diagram-head">
+        <div>
+          <p class="eyebrow">DIAGRAM & TABLE</p>
+          <h2 id="diagram-catalog-title">図と表の動きから選ぶ</h2>
+        </div>
+        <p class="catalog-note">説明資料や説明動画で、表・流れ図・詳細図・段階の図を、読む順に見せる動きです。</p>
+      </div>
+      <p class="result" aria-live="polite"><span data-result-count>${diagramSamples.length}</span>件を表示</p>
+      <div class="grid" id="diagram-grid"></div>
       <p class="empty-note" hidden>このタブには該当する見本がありません。上の件数を見て、ほかのタブを開いてください。</p>
     </section>
 
@@ -881,6 +897,71 @@ environmentGrid.innerHTML = environmentSamples.map((sample) => `
   </article>
 `).join('')
 
+/** v1.4 図と表。表・流れ図・詳細図・段階の図を、読む順に見せる（Issue #44） */
+const dgRows = [['コスト', '◎', '○', '△', .9], ['工期', '○', '◎', '○', .7], ['断熱', '△', '○', '◎', .55]] as const
+/** 詳細の小窓と元の図で共通の、簡単な断面図（屋根・壁・床と窓） */
+const dgDrawing = `<path d="M8 22 L60 8 L112 22" /><path d="M16 20 V70 H104 V20" /><path d="M16 45 H104" /><rect x="72" y="28" width="22" height="12" /><rect x="72" y="52" width="22" height="12" /><path class="dg-thin" d="M8 70 H112" /><path class="dg-thin" d="M94 28 l6 -2 M94 40 l6 -2 M100 26 V38" />`
+const diagramScenes: Record<string, string> = {
+  tablesweep: `<span class="dg-table">
+      <span class="dg-band"></span>
+      <span class="dg-row dg-head"><b>項目</b>${['A案', 'B案', 'C案'].map((name, column) => `<b style="--c:${column}">${name}</b>`).join('')}</span>
+      ${dgRows.map(([label, a, b, c, ratio]) => `<span class="dg-row"><b>${label}</b>${[a, b, c].map((mark, column) => `<i style="--c:${column}">${mark}</i>`).join('')}</span>`).join('')}
+      <span class="dg-row dg-meter-row"><b>達成率</b>${dgRows.map((row, column) => `<i style="--c:${column}"><em style="--v:${row[4]}"></em></i>`).join('')}</span>
+    </span>`,
+  flowchart: `<svg class="dg-flow" viewBox="0 0 200 112" aria-hidden="true">
+      <path class="dg-line l1" pathLength="1" d="M42 56 H64" /><path class="dg-line l2" pathLength="1" d="M64 56 V28 H86" /><path class="dg-line l3" pathLength="1" d="M64 56 V84 H86" />
+      <path class="dg-line l4" pathLength="1" d="M122 28 H140 V56 H156" /><path class="dg-line l5" pathLength="1" d="M122 84 H140 V56 H156" />
+      <path class="dg-line l6" pathLength="1" d="M174 70 V96" />
+      <g class="dg-box b1"><rect x="8" y="44" width="34" height="24" rx="3" /><text x="25" y="59">開始</text></g>
+      <g class="dg-box b2"><rect x="86" y="16" width="36" height="24" rx="3" /><text x="104" y="31">A工程</text></g>
+      <g class="dg-box b3"><rect x="86" y="72" width="36" height="24" rx="3" /><text x="104" y="87">B工程</text></g>
+      <g class="dg-box b4"><rect x="156" y="44" width="36" height="26" rx="3" /><text x="174" y="60">合流</text></g>
+      <circle class="dg-ping" cx="174" cy="70" r="2.6" />
+      <g class="dg-box b5"><rect x="156" y="96" width="36" height="14" rx="3" /><text x="174" y="106">確認</text></g>
+    </svg>`,
+  /* 図・囲み・引き出し線・小窓を 1 つの SVG（200×112）に置き、舞台の縦横比が変わってもずれないようにする */
+  /*
+   * 元の図は 0.8 倍で左に置き（96×64）、右の空きに小窓（88×44）を開く。
+   * 囲みは図の (70, 26)〜(102, 42) ＝ 画面上で 25.6×12.8 → 小窓は約 3.4 倍
+   */
+  detailinset: `<svg class="dg-detail" viewBox="0 0 200 112" aria-hidden="true">
+      <rect class="dg-paper" x="4" y="18" width="96" height="64" />
+      <g class="dg-draw" transform="translate(4 18) scale(.8)">${dgDrawing}</g>
+      <rect class="dg-region" pathLength="1" x="60" y="38.8" width="25.6" height="12.8" />
+      <path class="dg-leader" pathLength="1" d="M85.6 38.8 L108 26" /><path class="dg-leader" pathLength="1" d="M85.6 51.6 L108 70" />
+      <g class="dg-inset"><rect class="dg-inset-bg" x="108" y="26" width="88" height="44" /><svg class="dg-draw" x="108" y="26" width="88" height="44" viewBox="70 26 32 16">${dgDrawing}</svg><rect class="dg-inset-frame" x="108" y="26" width="88" height="44" /><text x="108" y="79">詳細 A（約 3.4 倍）</text></g>
+    </svg>`,
+  stepswap: `<span class="dg-steps">${[1, 2, 3, 4].map((step) => `<i style="--s:${step}">${step}</i>`).join('')}<b class="dg-step-name"><span>基礎</span><span>躯体</span><span>外装</span><span>完成</span></b></span>
+    <svg class="dg-build" viewBox="0 0 120 70" aria-hidden="true">
+      <path class="dg-ground" d="M6 62 H114" />
+      <g class="dg-part p1"><rect x="20" y="56" width="80" height="6" /></g>
+      <g class="dg-part p2"><path d="M26 56 V18 M60 56 V18 M94 56 V18 M24 37 H96 M24 18 H96" /></g>
+      <g class="dg-part p3"><rect x="26" y="20" width="68" height="36" /><rect class="dg-win" x="34" y="25" width="10" height="8" /><rect class="dg-win" x="55" y="25" width="10" height="8" /><rect class="dg-win" x="76" y="25" width="10" height="8" /><rect class="dg-win" x="34" y="42" width="10" height="8" /><rect class="dg-win" x="76" y="42" width="10" height="8" /></g>
+      <g class="dg-part p4"><path d="M18 20 L60 6 L102 20 Z" /><rect class="dg-door" x="54" y="44" width="12" height="12" /></g>
+    </svg>`,
+}
+
+const diagramGrid = document.querySelector<HTMLDivElement>('#diagram-grid')!
+
+diagramGrid.innerHTML = diagramSamples.map((sample) => `
+  <article class="sample-card video-card diagram-card" data-number="${sample.number}" data-search="${searchText(sample)}">
+    <div class="card-top">
+      ${cardId(sample)}
+      <span class="tag diagram-tag">${sample.categoryLabel}</span>
+    </div>
+    <button class="video-stage preview-stage dg-effect-${sample.id}" type="button" aria-label="${sample.name}のプレビューを再生">
+      <span class="video-viewport dg-scene" aria-hidden="true">${diagramScenes[sample.id]}</span>
+      <span class="interaction-label">HOVER / TAP</span>
+    </button>
+    <div class="card-copy">
+      <p class="english">${sample.english}</p>
+      <h3>${sample.name}</h3>
+      <p>${sample.description}</p>
+    </div>
+    ${usageRows(sample, '向いている場面')}
+  </article>
+`).join('')
+
 const libraryTabs = [...document.querySelectorAll<HTMLButtonElement>('.library-tab')]
 const libraryPanels = [...document.querySelectorAll<HTMLElement>('[data-library-panel]')]
 
@@ -899,7 +980,7 @@ libraryTabs.forEach((tab) => {
   tab.addEventListener('click', () => selectLibrary(tab.dataset.library))
 })
 
-const libraryNames: Record<string, string> = { ui: 'UI', video: '動画・カメラ', text: '文字', environment: '環境' }
+const libraryNames: Record<string, string> = { ui: 'UI', video: '動画・カメラ', text: '文字', environment: '環境', diagram: '図と表' }
 const filters = [...document.querySelectorAll<HTMLButtonElement>('.filter')]
 const finderInput = document.querySelector<HTMLInputElement>('#finder-input')!
 const finderClear = document.querySelector<HTMLButtonElement>('.finder-clear')!
@@ -912,7 +993,7 @@ const purposeStatus = document.querySelector<HTMLParagraphElement>('.purpose-sta
 
 const queryTerms = () => normalize(finderInput.value).split(/\s+/).filter(Boolean)
 
-/** 検索語（すべて含む）とUIの雰囲気フィルターを重ねて、4つの見本帳へ同時に反映する */
+/** 検索語（すべて含む）とUIの雰囲気フィルターを重ねて、5つの見本帳へ同時に反映する */
 const applyFilters = () => {
   const terms = queryTerms()
   const counts: Record<string, number> = {}
@@ -997,7 +1078,7 @@ purposeCards.forEach((card) => {
     // 目的を選んだときは、件数の多いタブ（ふつうは動画・カメラ）を開く
     if (activePurpose) {
       const purpose = purposeById.get(activePurpose)!
-      const firstVisible = ['video', 'ui', 'text', 'environment'].find((library) => document.querySelector(`[data-library-panel="${library}"] .sample-card[data-number="${purpose.samples[0]}"]`))
+      const firstVisible = ['video', 'ui', 'text', 'environment', 'diagram'].find((library) => document.querySelector(`[data-library-panel="${library}"] .sample-card[data-number="${purpose.samples[0]}"]`))
       if (firstVisible) selectLibrary(firstVisible)
     }
   })
@@ -1654,6 +1735,7 @@ const sampleOptions = (view: StoryView, slot: StoryView['slots'][number]) => {
     ['動画・カメラ', videoSamples.map((sample) => sample.number)],
     ['文字', textSamples.map((sample) => sample.number)],
     ['環境', environmentSamples.map((sample) => sample.number)],
+    ['図と表', diagramSamples.map((sample) => sample.number)],
   ]
   return groups.filter(([, numbers]) => numbers.length).map(([label, numbers]) => `<optgroup label="${label}">${numbers.map((number) => option(number, pick(number))).join('')}</optgroup>`).join('')
 }
@@ -2114,7 +2196,7 @@ document.querySelector('.story-ai-copy')!.addEventListener('click', async (event
   const button = event.currentTarget as HTMLButtonElement
   const prompt = buildStoryPrompt(
     { situation: aiSituation.value, totalSeconds: Number(aiLength.value), count: Number(aiCount.value), tool: aiTool.value },
-    [['UIモーション', samples], ['動画・カメラ', videoSamples], ['文字', textSamples], ['環境', environmentSamples]],
+    [['UIモーション', samples], ['動画・カメラ', videoSamples], ['文字', textSamples], ['環境', environmentSamples], ['図と表', diagramSamples]],
   )
   const ok = await copyText(prompt)
   flashCopied(button, ok)

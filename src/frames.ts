@@ -32,6 +32,10 @@ const presets: Record<string, Preset> = {
   V01: { times: [0.6, 1.3], labels: ['切り替え前（SCENE A）', '切り替え後（SCENE B）'], note: 'あいだに途中の画はなく、一瞬で切り替わります' },
   V22: { times: [0.95, 1.2, 2.3], labels: ['切り替え前（外観の丸窓に寄る）', '切り替え後（室内の丸い天窓）', '室内へ引く'], note: '1 と 2 は、丸の位置と大きさが同じ。形をそろえて、外から内へつなぎます' },
   V25: { times: [0.2, 0.75, 1.9], labels: ['白くなる前（SCENE A）', '白く飛ぶ途中', '次の画が現れた後（SCENE B）'] },
+  D01: { times: [0.55, 1.1, 1.65], labels: ['A案の列を示す', 'B案の列を示す', 'C案の列を示す'], note: '帯が通った列から、印とメーターが付きます' },
+  D02: { times: [0.5, 1.0, 1.5, 2.1], labels: ['線が伸びる', '二手に分かれる', '合流する', '確認との間を行き来する'] },
+  D03: { times: [0.5, 0.9, 1.6], labels: ['範囲を囲む', '引き出し線が伸びる', '拡大した小窓が開く'] },
+  D04: { times: [0.3, 0.8, 1.35, 2.0], labels: ['1 基礎', '2 躯体', '3 外装', '4 完成'], note: '加わる部分だけが朱色で入り、ほかは止まったまま' },
 }
 
 const params = new URLSearchParams(window.location.search)
@@ -39,7 +43,7 @@ const number = (params.get('n') ?? '').toUpperCase().replace(/^(\d)$/, '0$1')
 const sample = allSamples.find((item) => item.number === number)
 const root = document.querySelector<HTMLElement>('#frames')!
 
-const libraryName = (num: string) => (/^\d/.test(num) ? 'UIモーション' : num.startsWith('V') ? '動画・カメラ' : num.startsWith('T') ? '文字' : '環境')
+const libraryName = (num: string) => (/^\d/.test(num) ? 'UIモーション' : num.startsWith('V') ? '動画・カメラ' : num.startsWith('T') ? '文字' : num.startsWith('D') ? '図と表' : '環境')
 const formatTime = (time: number) => (time === 0 ? '再生前' : `${Number(time.toFixed(2))} 秒`)
 const escape = (text: string) => text.replace(/[&<>"]/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[char]!))
 
@@ -83,7 +87,7 @@ const freeze = (stage: HTMLElement, time: number) => {
 const render = () => {
   if (!sample) {
     root.innerHTML = `<section class="frames-empty"><h1>コマ並べ</h1><p>見本の番号を <code>?n=V01</code> のように指定してください。</p>
-      <p>例：<a href="?n=01">01 ふわっと浮く</a>・<a href="?n=V01">V01 カット</a>・<a href="?n=V22">V22 マッチカット</a>・<a href="?n=V25">V25 白く飛ばしてつなぐ</a></p></section>`
+      <p>例：<a href="?n=01">01 ふわっと浮く</a>・<a href="?n=V01">V01 カット</a>・<a href="?n=V22">V22 マッチカット</a>・<a href="?n=V25">V25 白く飛ばしてつなぐ</a>・<a href="?n=D02">D02 流れ図が伸びる</a></p></section>`
     document.body.dataset.ready = 'true'
     return
   }

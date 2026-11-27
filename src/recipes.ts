@@ -883,6 +883,54 @@ const step = (p) => el.textContent = [...target].map((c, i) => i < p * target.le
     prompt: 'Keep the camera locked and the building unchanged. Inside the glass atrium, an elevator car glides upward while people ride the escalator to the upper floor',
   },
 
+  // v1.4 図と表（Issue #44）
+  D01: {
+    css: `/* 列の帯を 0.55 秒ずつ横へ送り、その列のセルの印とメーターを同じ時刻に出す（--c は列の番号） */
+.band { animation: sweep 2.4s cubic-bezier(.65,0,.35,1) both; }
+@keyframes sweep { 8%, 28% { transform: translateX(0); } 36%, 51% { transform: translateX(100%); } 59%, 100% { transform: translateX(200%); } }
+.cell { animation: mark .3s calc(.3s + var(--c) * .55s) cubic-bezier(.34,1.56,.64,1) both; }
+.meter::after { width: calc(var(--v) * 100%); transform-origin: left; animation: fill .45s calc(.3s + var(--c) * .55s) both; }
+@keyframes fill { from { transform: scaleX(0); } }`,
+    edit: 'After Effects：表の上に列の幅の長方形（塗り 15% 程度＋左右の線）を置き、位置Xを列ごとに止めながらキー（停止キーフレームか、イージーイーズ）。セルの印は列ごとに不透明度とスケールを少しずつずらし、メーターは長方形のスケールX（アンカーは左端）を 0→100%。Premiere Pro は、表の画像の上に色の長方形（グラフィック）を置き、位置にキー',
+    powerpoint: '表の上に列の幅の半透明の長方形を置き、アニメーションの軌跡「直線（右へ）」を列の幅ずつ、「直前の動作の後」で順に付ける。セルの印は開始効果「ズーム」、メーターは開始効果「ワイプ」（左から）を列ごとに「直前の動作の後」で',
+    prompt: 'A comparison table of options A, B and C; a highlight band moves across the columns one by one, marks pop into each cell and small progress meters fill as the band passes, clean infographic style',
+  },
+  D02: {
+    css: `/* 線は pathLength="1" と stroke-dasharray:1 で、stroke-dashoffset を 1→0 にして伸ばす。箱は線が届いてから出す */
+.line { stroke-dasharray: 1; animation: draw .35s cubic-bezier(.4,0,.2,1) both; }
+.line.branch { animation-delay: .55s; } .line.merge { animation-delay: 1.05s; }
+@keyframes draw { from { stroke-dashoffset: 1; } }
+.box { animation: pop .3s cubic-bezier(.34,1.56,.64,1) both; }
+/* 行き来する矢印：印を往復させる */
+.ping { animation: shuttle .5s 1.85s ease-in-out both alternate 2; }`,
+    edit: 'After Effects：線はシェイプの「パスのトリミング」の終了を 0→100% にし、分岐の 2 本は同じ時刻、合流の 2 本はその後に。箱は線が届いた時刻に不透明度とスケール（95→100%）。往復は小さな円の位置を 2 点の間で行き来させる（ループは loopOut("pingpong")）。Premiere Pro では、Illustrator の線を「パスのトリミング」付きで After Effects から読み込むか、線の長さのマスクを広げる',
+    powerpoint: '線（コネクタ）に開始効果「ワイプ」（線の向き：右から／上から など）、箱に開始効果「ズーム」を、開始 → 分かれる 2 本（「直前の動作と同時」）→ 2 つの箱 → 合流する 2 本 → 合流の箱、の順に「直前の動作の後」で。往復は小さな円に軌跡「直線」を付け、「オートリバース」と繰り返し',
+    prompt: 'A flowchart animation: lines draw out from a start box, split into two process boxes, then merge into one box; a small dot shuttles back and forth to a confirmation box, clean diagram style',
+  },
+  D03: {
+    css: `/* 囲み → 引き出し線 → 小窓。小窓は元の図を viewBox で切り取った SVG（同じ図を約 3.4 倍で入れる） */
+.region, .leader { stroke-dasharray: 1; }
+.region { animation: draw .5s .15s both; } .leader { animation: draw .35s .7s both; }
+@keyframes draw { from { stroke-dashoffset: 1; } }
+.inset { transform-origin: 85.6px 45px; /* 拡大率は、元の図の 1.5 倍以上（ここでは約 3.4 倍）にすると詳細として読みやすい */ animation: open .5s .95s cubic-bezier(.2,.8,.2,1) both; }
+@keyframes open { from { opacity: 0; transform: scale(.3); } }`,
+    edit: 'After Effects：図のコンポジションを複製し、スケールを上げて範囲だけをマスクで切り抜いた小窓を作る（元の図と同じ素材なので、図を直すと小窓も変わる）。囲みと引き出し線は「パスのトリミング」で描き、小窓は囲みの位置を基準に、スケール 30→100% と不透明度で開く。Premiere Pro では、同じ画像を上のトラックに重ね、「クロップ」とスケールで小窓にする',
+    powerpoint: '図の画像を複製してトリミングし、拡大して小窓にする（枠線を付ける）。囲みの四角形に開始効果「ワイプ」、引き出し線に「ワイプ」、小窓に開始効果「ズーム」（オブジェクトの中心）を「直前の動作の後」で順に。ズームの拡大でよければ、画面切り替え「変形」で元の図から小窓のスライドへ',
+    cg: 'SketchUp：詳細を見せる範囲の「セクション平面」を入れたシーンと、全体のシーンを書き出し、編集ソフトや PowerPoint で小窓に重ねる。図面は LayOut のビューポートで、全体と詳細の 2 つのビューを並べる（縮尺を変える）',
+    prompt: 'An architectural section drawing; a rectangle outlines one window detail, two leader lines extend from it, and a magnified inset window pops open showing the enlarged detail, clean technical illustration style',
+  },
+  D04: {
+    css: `/* 段階ごとに、加わる部分だけを朱色で出してから元の色へ。段階の番号と名前も同じ時刻で切り替える（--k は段階） */
+.part { animation: part 2.4s both; animation-delay: calc(var(--k) * .55s); }
+@keyframes part { 0% { opacity: 0; transform: translateY(6px); stroke: #ea6b4d; } 6% { opacity: 1; transform: none; stroke: #ea6b4d; } 22%, 100% { opacity: 1; } }
+.step { animation: wait calc(var(--k) * .55s) linear, now .55s calc(var(--k) * .55s) forwards; }
+@keyframes wait { from, to { opacity: .3; } }
+@keyframes now { 0%, 99% { background: #ea6b4d; } }`,
+    edit: 'After Effects：段階ごとに加わる部分を別のレイヤーにし、段階の時刻で不透明度 0→100% と位置（少し下から）。入った直後は「塗り」で強調色にし、0.4 秒ほどで元の色へ戻す。段階の番号・名前は、テキストのソーステキストか、段階ごとのレイヤーを切り替える。Premiere Pro では、段階ごとの画像を同じ位置に重ね、短い「クロスディゾルブ」でつなぐ（変わる部分だけが動いて見える）',
+    powerpoint: '段階ごとの図を同じ位置のスライドに作り、画面切り替え「変形」でつなぐ（変わらない部分は動かず、加わる部分だけが現れる）。1 枚のスライドで作るなら、加わる部分に開始効果「フェード」と強調「塗りつぶしの色」を、段階の順に「直前の動作の後」で',
+    cg: 'SketchUp：段階ごとにタグを分け（基礎・躯体・外装…）、表示するタグを 1 つずつ増やしたシーンを並べる（切り替えは瞬時）。D5 Render・Lumion・Twinmotion：段階ごとに表示を変えた画像を書き出し、編集ソフトでつなぐ',
+    prompt: 'A step-by-step construction diagram in a fixed frame: foundation, then structural frame, then walls and windows, then the roof appear in four stages, each new part briefly highlighted in orange, with a step indicator 1 to 4 at the top, clean diagram style',
+  },
 }
 
 /** 再現情報が欠けている見本の番号を返す（開発時の確認用） */

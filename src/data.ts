@@ -149,7 +149,18 @@ export const environmentSamples: Sample[] = [
   { id: 'vertical', number: 'E20', name: '縦の動線（エレベーター・エスカレーター）', english: 'Vertical circulation', description: 'ガラス越しにエレベーターが昇り、エスカレーターの人が上がっていく。', categoryLabel: '人・車', hint: '吹抜け・駅・商業施設・オフィスのロビー', avoid: '平屋の建物', feel: ['活気', 'つながり', '動き'] },
 ]
 
-export const allSamples: Sample[] = [...samples, ...videoSamples, ...textSamples, ...environmentSamples]
+/**
+ * v1.4 図と表。説明資料・説明動画で、表・流れ図・詳細図・段階の図を順に見せる動き。
+ * Explainer-Reel のコード描画で、既存の見本に当てはまらなかった見せ方（Issue #44）から作った。
+ */
+export const diagramSamples: Sample[] = [
+  { id: 'tablesweep', number: 'D01', name: '表の列を順に示す', english: 'Column sweep', description: '表の列に順に色の帯が移り、その列のセルに印や小さなメーターが付く。', categoryLabel: '表', hint: '比較表・仕様表・A案B案C案の比較', avoid: '列が多く文字が小さい表', feel: ['比べる', '分かりやすい', '順を追う'] },
+  { id: 'flowchart', number: 'D02', name: '流れ図が伸びる（分岐・合流）', english: 'Branching flow', description: '線が伸びながら箱をつなぎ、二手に分かれて、また一つに合流する。行き来する矢印も往復する。', categoryLabel: '流れ', hint: '工程・手順・判断の分かれ目・やり取り', avoid: '分岐の多い複雑な流れ', feel: ['順を追う', '分かりやすい', 'つながり'] },
+  { id: 'detailinset', number: 'D03', name: '詳細の小窓（部分拡大）', english: 'Detail inset', description: '図の一部を枠で囲み、そこから拡大した詳細が小窓で開く。', categoryLabel: '詳細', hint: '図面の詳細・納まり・全体と部分の対応', avoid: '細部を読ませる必要のない場面', feel: ['注目させる', '正確', 'ディテール'] },
+  { id: 'stepswap', number: 'D04', name: '段階で図を切り替える', english: 'Step swap', description: '同じ枠の中で、変わる部分だけが段階ごとに入れ替わり、今の段階が上に示される。', categoryLabel: '段階', hint: '工程の段階・状態の移り変わり・同じ図での比較', avoid: '段階ごとに図全体が変わる説明', feel: ['順を追う', '変化', '分かりやすい'] },
+]
+
+export const allSamples: Sample[] = [...samples, ...videoSamples, ...textSamples, ...environmentSamples, ...diagramSamples]
 
 export const finderWords = ['ふわっと', '一瞬で', '高級感', '勢いがある', '上品', '奥行き', '注目させる', 'リズム']
 
