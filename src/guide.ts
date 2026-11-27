@@ -1,7 +1,7 @@
 import './style.css'
 import './guide.css'
 import {
-  samples, videoSamples, textSamples, environmentSamples, allSamples,
+  samples, videoSamples, textSamples, environmentSamples, diagramSamples, allSamples,
   finderWords, strengthSamples, directionSamples, settingOptions, suggestedCollections,
 } from './data'
 import { purposes, shotScaleNote } from './purposes'
@@ -30,7 +30,7 @@ const optionLabels = (setting: keyof typeof settingOptions) => settingOptions[se
  */
 /** side：番号を部分の左右どちらに付けるか（重ならないように分ける） */
 const mapItems: { n: number, title: string, summary: string, section: string, side?: 'left' | 'right' }[] = [
-  { n: 1, title: '検索欄', summary: '思い浮かんだ言葉で4つの見本帳を探す', section: 'search' },
+  { n: 1, title: '検索欄', summary: '思い浮かんだ言葉で5つの見本帳を探す', section: 'search' },
   { n: 2, title: '感覚語のボタン', summary: '押すだけで検索語に追加・解除', section: 'search' },
   { n: 13, title: '目的から選ぶ', summary: '伝えたいことから見本をしぼり、使う順に並べる', section: 'purpose' },
   { n: 14, title: '構成を組む', summary: '型に見本を並べ、カット割り表をコピー。自分の型やAIの提案も', section: 'story' },
@@ -125,16 +125,17 @@ const sections: Section[] = [
   },
   {
     id: 'libraries',
-    title: '4つの見本帳',
+    title: '5つの見本帳',
     lead: `全${allSamples.length}種類を、種類ごとのタブに分けています。`,
     body: `
-      <div class="g-cards is-four">
+      <div class="g-cards is-five">
         <div><h4>UIモーション <small>${samples.length}</small></h4><p>ボタンやカードの反応、画面の切り替え、平面図や階の操作。雰囲気「静か／はっきり／装飾」で絞り込めます。</p></div>
         <div><h4>動画・カメラ <small>${videoSamples.length}</small></h4><p>カット・フェード・マッチカットなどのつなぎ、ズーム・パン・ドリーなどのカメラワーク、断面カットや照明シーン・仕上げ材の切り替えなどの建築CG。</p></div>
         <div><h4>文字 <small>${textSamples.length}</small></h4><p>見出しやテロップの出し方と、数値の見せ方。フェードイン、タイプ表示、寸法線や注記、棒グラフや割合のリングなど。</p></div>
         <div><h4>環境 <small>${environmentSamples.length}</small></h4><p>建物とカメラは止めたまま動かす、風・水・人・天気・光・季節。植栽の揺れ、水面、人の往来、雨・雪、噴水、夜景のまたたき、ガラスの映り込みなど。1枚のパースを生成AIで動画にするときにも。</p></div>
+        <div><h4>図と表 <small>${diagramSamples.length}</small></h4><p>説明資料や説明動画で、表・流れ図・詳細図・段階の図を読む順に見せる。表の列を順に示す、流れ図の分岐と合流、詳細の小窓、段階で図を切り替える。</p></div>
       </div>
-      <p>5つ目の「保存」タブには、自分で保存した見本が集まります（<a href="#save">保存とコレクション</a>）。</p>`,
+      <p>6つ目の「保存」タブには、自分で保存した見本が集まります（<a href="#save">保存とコレクション</a>）。</p>`,
   },
   {
     id: 'search',
@@ -142,7 +143,7 @@ const sections: Section[] = [
     lead: '名前が分からなくても、受ける印象や使う場所の言葉で探せます。',
     body: `
       <ul class="g-list">
-        <li>検索欄に言葉を入れると、4つの見本帳をまとめて絞り込みます。タブの数字が、それぞれの該当件数に変わります。</li>
+        <li>検索欄に言葉を入れると、5つの見本帳をまとめて絞り込みます。タブの数字が、それぞれの該当件数に変わります。</li>
         <li>よく使う言葉はボタンで用意しています：${finderWords.map((word) => `<kbd>${word}</kbd>`).join(' ')}。押すと検索に追加、もう一度押すと外れます。</li>
         <li>カードの下の <kbd>#ふわっと</kbd> のようなタグを押すと、その言葉で探し直します。</li>
         <li>「ボタン」「見出し」のような<strong>使う場所</strong>や、「Zoom」のような英語名でも探せます。</li>
@@ -156,7 +157,7 @@ const sections: Section[] = [
     title: '目的から選ぶ',
     lead: '建築プレゼンで何を伝えたいかから、使う見本を選べます。',
     body: `
-      <p>検索欄の下にある${purposes.length}つの入口のどれかを押すと、4つの見本帳をまとめて絞り込みます。見本は、その目的で<strong>使う順のおすすめ</strong>に並びます。もう一度押すか「目的の選択を解除」で元に戻ります。検索語と組み合わせることもできます。</p>
+      <p>検索欄の下にある${purposes.length}つの入口のどれかを押すと、5つの見本帳をまとめて絞り込みます。見本は、その目的で<strong>使う順のおすすめ</strong>に並びます。もう一度押すか「目的の選択を解除」で元に戻ります。検索語と組み合わせることもできます。</p>
       <table class="g-table">
         <thead><tr><th>目的</th><th>どんなときに使うか</th></tr></thead>
         <tbody>${purposes.map((purpose) => `<tr><td>${purpose.name}</td><td>${purpose.description}</td></tr>`).join('')}</tbody>
@@ -330,6 +331,8 @@ const sections: Section[] = [
 
 /** 更新履歴。新しいものを上に追加する */
 const changelog: [string, string][] = [
+  ['v1.4', '5つ目の見本帳「図と表」を追加（表の列を順に示す、流れ図が伸びる〈分岐・合流〉、詳細の小窓、段階で図を切り替える）。説明動画（Explainer-Reel）のコード描画で、既存の見本に当てはまらなかった見せ方から作った。コマ並べにもおすすめの時刻を用意'],
+  ['v1.3', 'コマ並べ（/frames.html）：見本の動きを時刻で止めたコマを横に並べる。紹介動画のスライドなど静止画の場面向け'],
   ['v1.2', '見本を100種類に（追加した39種類の再現情報は Windows の実機で確認。建築CGの一部は未確認と表示）。動画・カメラに12種類（マッチカット、ホイップパン、形のワイプ、白く飛ばす、画面分割、ドリーズーム、前景から抜ける、俯瞰から目線へ、ハイパーラプス、照明シーンの切り替え、仕上げ材の切り替え、気流・動線の見える化）。UIに10種類（スライドイン、順に現れる、スクロールで現れる、開閉、下から出るシート、タブの切り替え、前後へ進む、注目点の脈動、階の切り替え、平面図の部屋を強調）。文字に7種類（ぼかしから浮かぶ、単語の入れ替え、マーカー、ばらばらの文字から確定、テロップ、棒グラフ、割合のリング）。環境に10種類（桜吹雪・落ち葉、はためき、湯気・煙、噴水、人が集まる、鳥、夜景のまたたき、雨上がりの水たまり、ガラスに映る雲、縦の動線）で、合計100種類に'],
   ['v1.1', '「構成づくり 詳しい手順」のページ（写真つき、5つのコース）を追加。構成を共有リンクで送る（開くと相手の「自分の型」に追加され、そのまま再生できる）。構成を PowerPoint の絵コンテ（表紙・1カット1枚・一覧表）で書き出す'],
   ['v1.0.2', 'D5 Render の水面の波（E02）・車（E08）・室内の木漏れ日（E05）を動画で確認。E08 は「パスを十分な長さに引く」ように修正し、E02・E05 の手順にコツを追加。環境の見本の D5 の動きはすべて確認済みに'],
