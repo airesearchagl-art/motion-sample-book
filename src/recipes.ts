@@ -250,6 +250,36 @@ new IntersectionObserver((entries) => entries.forEach((e) => e.target.classList.
     powerpoint: '部屋の図形に強調「塗りつぶしの色」、ほかの部屋に強調「透過性」、部屋名のテキストに開始効果「フェード」を同時に',
     prompt: 'An architectural floor plan, a cursor moves over a meeting room which fills with a warm color and shows its name and area, while other rooms fade',
   },
+  // v1.5-2 待つ・知らせる
+  '31': {
+    css: `/* 中身と同じ形の灰色の枠を置き、光の帯を流す。読み込めたら枠を消して本物を出す */
+.skeleton { background: #e6e0d4; position: relative; overflow: hidden; }
+.skeleton::after { content: ''; position: absolute; inset: 0; background: linear-gradient(100deg, transparent 30%, rgb(255 255 255 / .8) 50%, transparent 70%); animation: shine .8s linear infinite; }
+@keyframes shine { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
+.card.is-loaded .skeleton { opacity: 0; transition: opacity .3s; }`,
+    edit: 'After Effects：角丸の長方形で写真と文字の位置に灰色の枠を作り、上に白いグラデーションの帯を横に動かす。枠の不透明度を下げながら、本物の画像と文字をフェードで出す（カードごとに少しずらす）',
+    powerpoint: '灰色の角丸の図形で枠を作り、光の帯（白→透明のグラデーション）に「スライドイン」を 2 回。枠に終了効果「フェード」、写真と文字に開始効果「フェード」を「直前の動作と同時」で、カードごとに 0.15 秒ずらす',
+    prompt: 'A clean web page with three project cards shown as gray skeleton placeholders with a soft light shimmer, then the real building photos and titles fade in one after another',
+  },
+  '32': {
+    css: `/* バーは scaleX、数字は @property で登録した整数を counter で表示する（JS なしで数字も進む） */
+@property --p { syntax: '<integer>'; inherits: true; initial-value: 0; }
+.panel { animation: count 1.6s linear both; } .panel .num::after { counter-reset: p var(--p); content: counter(p) '%'; }
+.bar { transform-origin: left; animation: grow 1.6s linear both; }
+@keyframes count { to { --p: 100; } } @keyframes grow { from { transform: scaleX(0); } }`,
+    edit: 'After Effects：長方形のバーの「スケール」の横だけにキー（途中で少し止まる段を入れると実際の処理らしくなる）。数字は「番号」エフェクト（またはソーステキストのエクスプレッション）で 0→100。終わりに完了の印をポップで出す',
+    powerpoint: 'バーの図形に開始効果「ワイプ」（効果のオプション：左から）。数字は 0%・50%・100% など数枚のテキストを重ね、「直前の動作の後」で入れ替える。最後に「完了」の図形に「ズーム」',
+    prompt: 'A minimal export dialog, a progress bar fills from left to right while the percentage counts up to 100, then turns green and a small "done" check badge pops in',
+  },
+  '33': {
+    css: `/* 通知は画面の隅に固定。出す → 残り時間の線を縮める → 消す */
+.toast { position: fixed; right: 24px; bottom: 24px; animation: toast 4s cubic-bezier(.2,.8,.2,1) both; }
+@keyframes toast { 0% { opacity: 0; transform: translateY(130%); } 10%, 85% { opacity: 1; transform: none; } 100% { opacity: 0; transform: translateX(30%); } }
+.toast .timer { transform-origin: left; animation: timer 3s .4s linear both; } @keyframes timer { to { transform: scaleX(0); } }`,
+    edit: 'After Effects：通知の帯をプリコンポーズし、「位置」で下からせり上げ（イーズアウト）、数秒止めてから横へ抜きつつ「不透明度」を下げる。下端の細い線の「スケール」の横を 100→0 に',
+    powerpoint: '通知の図形とテキストをグループ化し、開始効果「スライドイン」（下から）、数秒後に終了効果「フェード」。下端の線に終了効果「ワイプ」（右から）を同じ時間で',
+    prompt: 'A website screen of a building, the user clicks save and a small dark notification card slides up in the bottom right corner saying saved with a check mark, a thin timer line shrinks, then it fades away',
+  },
 
   /* ---------- 動画・カメラ ---------- */
   V01: {
@@ -551,6 +581,16 @@ new IntersectionObserver((entries) => entries.forEach((e) => e.target.classList.
     cg: 'D5 Render：不可（気流の計算はできない）。気流解析（CFD）ソフトの結果の流線を画像・動画で書き出して重ねるか、流線を線のモデルとして読み込んで表示を切り替える／SketchUp：流れの曲線をタグで分け、シーンで順に表示する',
     prompt: 'A clean architectural section diagram: blue supply air streams flow down from ceiling diffusers, red return air flows back to the return grille, and a dotted green line shows how people move through the space',
   },
+  V34: {
+    css: `/* 2つの形の頂点の数をそろえ、clip-path の polygon を補間する。前の形はうすく残して比べられるように */
+.mass { clip-path: polygon(0 100%, 0 44%, 34% 44%, 34% 44%, 72% 44%, 72% 44%, 100% 44%, 100% 100%); animation: morph 2.2s cubic-bezier(.65,0,.35,1) both; }
+@keyframes morph { 22% { clip-path: polygon(0 100%, 0 44%, 34% 44%, 34% 44%, 72% 44%, 72% 44%, 100% 44%, 100% 100%); }
+  78%, 100% { clip-path: polygon(0 100%, 0 62%, 34% 62%, 34% 0, 72% 0, 72% 62%, 100% 62%, 100% 100%); } }`,
+    edit: 'After Effects：2つの案のシルエットを同じシェイプレイヤーの「パス」に描き、パスにキーを2つ打つ（頂点の数と順番をそろえると素直に変形する）。前の案は薄い色で残す。CG の動画どうしなら、同じカメラで書き出した2本を「クロスディゾルブ」でつなぐ',
+    powerpoint: '2枚のスライドに、同じ名前（選択ウィンドウで先頭に「!!」を付ける）の図形で A案・B案の形を描き、画面切り替え「変形」（オブジェクト）でつなぐ',
+    cg: 'D5 Render：A案・B案のモデルを同じ位置に置き、同じカメラのまま、案ごとに表示を切り替えて書き出し、編集ソフトでつなぐ／SketchUp：案ごとにタグを分け、シーンで表示するタグを切り替えると、シーンの切り替えでつながる（形そのものの変形はしない）',
+    prompt: 'A fixed camera view of a building massing model, a low wide block smoothly morphs into a podium with a tall tower, the previous outline remains faintly, clean architectural diagram style',
+  },
 
   /* ---------- 文字 ---------- */
   T01: {
@@ -681,6 +721,15 @@ const step = (p) => el.textContent = [...target].map((c, i) => i < p * target.le
     edit: 'After Effects：楕円のシェイプの線に「パスのトリミング」を追加し、終了を 0→32% に。中央の数字は「番号」エフェクト（またはソーステキストのエクスプレッション）で 0→32',
     powerpoint: '円グラフ（ドーナツ）に開始効果「ホイール」、または円弧（ブロック円弧）に開始効果「ホイール」。中央の数字は別のテキストで「フェード」',
     prompt: 'A donut ring chart fills to 32 percent with a smooth stroke animation while the number in the center counts up, green ratio for planting rate',
+  },
+  T18: {
+    css: `/* 吹き出しの尾の位置を transform-origin にして、小さい状態から弾むように開く。中の文字は少し遅れて */
+.bubble { transform-origin: 78% 130%; animation: pop .6s cubic-bezier(.3,1.4,.5,1) both; }
+@keyframes pop { from { opacity: 0; transform: scale(.2); } }
+.bubble .line { animation: rise .3s .35s ease both; } @keyframes rise { from { opacity: 0; transform: translateY(6px); } }`,
+    edit: 'After Effects：吹き出しのシェイプのアンカーポイントを尾の先に移し、「スケール」を 20→105→100% に（オーバーシュート）。中の文字はテキストアニメーターで少し遅れてフェード',
+    powerpoint: '吹き出しの図形（「吹き出し：角を丸めた四角形」）に開始効果「ズーム」または「拡大」、中の文字に開始効果「フェード」を「直前の動作の後」で。指す点には「パルス」',
+    prompt: 'A photo of a building, a small coral point pulses on the ground floor, then a white speech bubble pops out from that point with a gentle bounce and short words from a cafe visitor appear inside',
   },
 
 

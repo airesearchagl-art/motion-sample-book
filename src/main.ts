@@ -517,6 +517,22 @@ const uiScenes: Record<string, string> = {
         <b class="rh-label">会議室 42㎡</b>
       </span>
       <i class="rh-cursor" aria-hidden="true"></i>`,
+  // v1.5-2 待つ・知らせる（31〜33）
+  skeleton: `
+      <span class="sk-grid" aria-hidden="true">${['RIVERSIDE', 'ATRIUM', 'COURT'].map((title, index) => `<span class="sk-card" style="--i:${index}">
+        <span class="sk-real"><span class="sk-img">${uiPhoto()}</span><b class="sk-title">${title}</b><small class="sk-sub">2026 ／ 事務所</small></span>
+        <span class="sk-ghost"><i class="sk-gimg"></i><i class="sk-gl l1"></i><i class="sk-gl l2"></i></span>
+      </span>`).join('')}</span>`,
+  progress: `
+      <span class="pg-panel" aria-hidden="true">
+        <b class="pg-title">動画を書き出し中</b><small class="pg-file">site_tour_v3.mp4</small>
+        <span class="pg-track"><i class="pg-bar"></i></span>
+        <b class="pg-num"></b><b class="pg-done">✓ 完了</b>
+      </span>`,
+  toast: `
+      <span class="to-app" aria-hidden="true">${uiPhoto()}<i class="to-bar"></i><b class="to-btn">保存</b></span>
+      <i class="to-cursor" aria-hidden="true"></i>
+      <span class="to-toast" aria-hidden="true"><i class="to-check">✓</i><b class="to-text">保存しました</b><small class="to-sub">図面セット A-101〜A-120</small><i class="to-timer"></i></span>`,
 }
 
 grid.innerHTML = samples.map((sample) => `
@@ -674,6 +690,12 @@ const cameraScenes: Record<string, string> = {
           <path class="af-people" d="M44 146 C 110 140, 150 120, 186 128 S 250 146, 276 140" />
         </svg>
         <small class="scene-caption af-legend"><b class="s">給気</b><b class="r">還気</b><b class="p">人の動線</b></small>`,
+  // v1.5-2 A案の形が、そのまま B案の形へ変わる（頂点の数をそろえた clip-path の補間）
+  morph: `
+        <span class="camera-layer mo-bg" aria-hidden="true"></span>
+        <span class="mo-ghost" aria-hidden="true"></span>
+        <span class="mo-mass" aria-hidden="true"></span>
+        <small class="scene-caption mo-label"><b class="a">A案</b><i>→</i><b class="b">B案</b></small>`,
   // v1.0-4 構造 → 設備 → 仕上げを段階的に重ねる（左側は仕上げを外した切り欠き）
   layers: `
         <span class="camera-layer lb-bg" aria-hidden="true"></span>
@@ -819,6 +841,11 @@ const textScenes: Record<string, string> = {
         <svg class="rr-svg" viewBox="0 0 120 120"><circle class="rr-track" cx="60" cy="60" r="48" /><circle class="rr-value" cx="60" cy="60" r="48" pathLength="100" /></svg>
         <span class="rr-number"><b><span data-count-to="32">32</span><em>%</em></b><small>緑化率</small></span>
       </span>`,
+  // v1.5-2
+  bubble: `
+      <span class="bu-photo" aria-hidden="true"><i class="ph-sky"></i><i class="ph-far"></i><i class="ph-building"></i><i class="ph-ground"></i></span>
+      <span class="bu-point" aria-hidden="true"></span>
+      <span class="bu-bubble" aria-hidden="true"><b class="bu-line l1">朝は ここで</b><b class="bu-line l2">コーヒーを</b><small class="bu-who">1F カフェの利用者</small></span>`,
 }
 
 textGrid.innerHTML = textSamples.map((sample) => `

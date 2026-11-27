@@ -57,6 +57,10 @@ export const samples: MotionSample[] = [
   { id: 'hotspot', number: '28', name: '注目点の脈動', english: 'Hotspot pulse', description: '写真の上の注目点から、輪が静かに広がり続ける。', category: 'dynamic', categoryLabel: 'はっきり', hint: '写真・パースの見どころ・押せる場所', avoid: '注目点が多すぎる画像', feel: ['注目させる', '誘う', '静かに'] },
   { id: 'floorswitch', number: '29', name: '階の切り替え', english: 'Floor switch', description: '重なった各階の平面から、選んだ階が浮き上がり、ほかの階は薄くなる。', category: 'dynamic', categoryLabel: 'はっきり', hint: 'フロア案内・各階の平面計画', avoid: '1階建ての建物', feel: ['立体的', '分かりやすい', '選ぶ'] },
   { id: 'roomhighlight', number: '30', name: '平面図の部屋を強調', english: 'Room highlight', description: '指した部屋に色が付いて名前が出て、ほかの部屋は薄くなる。', category: 'quiet', categoryLabel: '静か', hint: '平面図の説明・部屋の案内', avoid: '部屋の区切りがない大空間', feel: ['分かりやすい', '案内', '控えめ'] },
+  // v1.5-2 待つ・知らせる（120種類へ）
+  { id: 'skeleton', number: '31', name: '読み込み中（スケルトン）', english: 'Skeleton loading', description: '中身の形をした灰色の枠に光が流れ、読み込めたところから本物の写真と文字に替わる。', category: 'quiet', categoryLabel: '静か', hint: '画像の多い一覧・事例集の読み込み', avoid: 'すぐに表示できる軽い画面', feel: ['待たせない', '控えめ', '整理'] },
+  { id: 'progress', number: '32', name: '進み具合のバー', english: 'Progress bar', description: 'バーが左から伸びて数字が 100% まで上がり、終わると完了の印に替わる。', category: 'quiet', categoryLabel: '静か', hint: '書き出し・アップロード・手順の進み具合', avoid: '終わりの見えない処理', feel: ['安心', '分かりやすい', '進む'] },
+  { id: 'toast', number: '33', name: '通知が出て消える（トースト）', english: 'Toast notification', description: '画面の隅に小さな通知がせり上がり、残り時間の線が縮んで、自動で消える。', category: 'dynamic', categoryLabel: 'はっきり', hint: '保存・送信・コピーの完了の知らせ', avoid: '読んでもらう必要がある大事な警告', feel: ['知らせる', '控えめ', '完了'] },
 ]
 
 export const videoSamples: Sample[] = [
@@ -97,6 +101,8 @@ export const videoSamples: Sample[] = [
   { id: 'lightscene', number: 'V31', name: '照明シーンの切り替え', english: 'Lighting scenes', description: '同じ室内で、全般照明 → 作業 → くつろぎ → 常夜灯と、明かりの場面が切り替わる。', categoryLabel: '建築CG', hint: '照明計画の説明・調光の考え方', avoid: '明るさの違いが伝わりにくい小さな画面', feel: ['雰囲気', '比べる', '時間'] },
   { id: 'material', number: 'V32', name: '仕上げ材の切り替え', english: 'Material swap', description: '同じ外壁の仕上げが、コンクリート → 木 → 金属 → タイルと順に入れ替わる。', categoryLabel: '建築CG', hint: '仕上げの比較・色や素材の検討', avoid: '1案に決まった場面', feel: ['比べる', '素材', '検討'] },
   { id: 'airflow', number: 'V33', name: '気流・動線の見える化', english: 'Flow visualization', description: '断面の中を、吹き出す空気の流れと、人の動く線が矢印で流れていく。', categoryLabel: '建築CG', hint: '空調・換気の考え方・人の動線計画', avoid: '印象だけを伝える竣工映像', feel: ['分かりやすい', '流れ', '仕組み'] },
+  // v1.5-2
+  { id: 'morph', number: 'V34', name: '変形でつなぐ（モーフ）', english: 'Morph transition', description: 'A案の建物の形が、そのまま滑らかに形を変えてB案になる。', categoryLabel: 'つなぎ', hint: '案の変更・ボリューム検討の比較', avoid: '形がまったく違う2つの場面', feel: ['比べる', 'なめらか', '変化'] },
 ]
 
 export const textSamples: Sample[] = [
@@ -119,6 +125,8 @@ export const textSamples: Sample[] = [
   { id: 'lowerthird', number: 'T15', name: 'テロップ（画面下の帯）', english: 'Lower third', description: '映像の下の方に帯が伸び、場所や名前の文字が続けて出る。', categoryLabel: '静か', hint: '動画の場所名・人名・施設名', avoid: '静止画の資料', feel: ['分かりやすい', '番組らしい', '整理'] },
   { id: 'barchart', number: 'T16', name: '棒グラフが伸びる', english: 'Bar chart grow', description: '各階の面積などの棒が、順に下から伸びて数値が出る。', categoryLabel: '数値', hint: '面積・人数・コストの比較', avoid: '正確な値を細かく読ませる場面', feel: ['比べる', '分かりやすい', '説得力'] },
   { id: 'ratioring', number: 'T17', name: '割合のリング', english: 'Ratio ring', description: '円の線が割合の分だけ伸び、中の数字が上がっていく。', categoryLabel: '数値', hint: '緑化率・省エネ率・面積の割合', avoid: '項目が多い内訳', feel: ['説得力', 'すっきり', '注目させる'] },
+  // v1.5-2
+  { id: 'bubble', number: 'T18', name: '吹き出しが出る', english: 'Speech bubble', description: '指した場所から吹き出しが弾むように開き、中の言葉が続けて出る。', categoryLabel: 'リズム', hint: '利用者の声・場所ごとのひとこと', avoid: '文字の多い説明', feel: ['親しみ', '注目させる', '軽やか'] },
 ]
 
 /**
