@@ -51,7 +51,7 @@ export const storyTemplates: StoryTemplate[] = [
     slots: [
       { role: '近づく', note: 'アプローチを歩く目線で建物へ', candidates: ['V09', 'V07', 'V16', 'E01', 'E03', 'E11'], seconds: 5 },
       { role: '入口を抜ける', note: '外から内へのつなぎ', candidates: ['V18', 'V28', 'V07', 'V22'], seconds: 4 },
-      { role: '室内を見渡す', note: '広がりや吹抜けを見せる', candidates: ['V05', 'V06', 'V09', 'E05', 'E20'], seconds: 5 },
+      { role: '室内を見渡す', note: '広がりや吹抜けを見せる', candidates: ['V05', 'V06', 'V09', 'E05', 'E20', 'T18'], seconds: 5 },
       { role: '素材に寄る', note: '手に触れる素材を印象づける', candidates: ['V10', 'V04', 'T10'], seconds: 4 },
       { role: '夕景で締める', note: '明かりが灯る外観で終える', candidates: ['V12', 'V02', 'E08', 'E17'], seconds: 5 },
     ],
@@ -65,7 +65,7 @@ export const storyTemplates: StoryTemplate[] = [
       { role: '敷地と条件', note: '敷地の位置や日照の条件', candidates: ['V20', 'V13', '20', 'D11'], seconds: 4 },
       { role: '構成の考え方', note: '平面から立体、各階の重なり', candidates: ['V14', 'V15', 'V21', 'V33', '29', '30', 'D02', 'D04', 'D12'], seconds: 5 },
       { role: '断面で内部', note: '吹抜けや階のつながり', candidates: ['V11'], seconds: 4 },
-      { role: '案や前後の比較', note: 'A案B案、改修前後', candidates: ['11', 'V26', '16', 'V03', 'V32', 'D01', 'D14', 'D15'], seconds: 4 },
+      { role: '案や前後の比較', note: 'A案B案、改修前後', candidates: ['11', 'V26', '16', 'V03', 'V32', 'D01', 'D14', 'D15', 'V34'], seconds: 4 },
       { role: '規模と数値', note: '面積・階数・寸法', candidates: ['T08', 'T16', 'T17', 'T09', 'D06', 'D13'], seconds: 3 },
       { role: '完成イメージへ', note: 'スケッチから完成形へ', candidates: ['V19', 'V17'], seconds: 5 },
     ],
