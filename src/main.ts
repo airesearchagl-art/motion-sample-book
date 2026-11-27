@@ -920,12 +920,16 @@ const diagramScenes: Record<string, string> = {
       <g class="dg-box b5"><rect x="156" y="96" width="36" height="14" rx="3" /><text x="174" y="106">確認</text></g>
     </svg>`,
   /* 図・囲み・引き出し線・小窓を 1 つの SVG（200×112）に置き、舞台の縦横比が変わってもずれないようにする */
+  /*
+   * 元の図は 0.8 倍で左に置き（96×64）、右の空きに小窓（88×44）を開く。
+   * 囲みは図の (70, 26)〜(102, 42) ＝ 画面上で 25.6×12.8 → 小窓は約 3.4 倍
+   */
   detailinset: `<svg class="dg-detail" viewBox="0 0 200 112" aria-hidden="true">
-      <rect class="dg-paper" x="8" y="14" width="120" height="80" />
-      <g class="dg-draw" transform="translate(8 14)">${dgDrawing}</g>
-      <rect class="dg-region" pathLength="1" x="76" y="38" width="34" height="20" />
-      <path class="dg-leader" pathLength="1" d="M110 38 L136 20" /><path class="dg-leader" pathLength="1" d="M110 58 L136 54" />
-      <g class="dg-inset"><rect class="dg-inset-bg" x="136" y="20" width="58" height="34" /><svg class="dg-draw" x="136" y="20" width="58" height="34" viewBox="68 24 34 20">${dgDrawing}</svg><rect class="dg-inset-frame" x="136" y="20" width="58" height="34" /><text x="139" y="51">詳細 A</text></g>
+      <rect class="dg-paper" x="4" y="18" width="96" height="64" />
+      <g class="dg-draw" transform="translate(4 18) scale(.8)">${dgDrawing}</g>
+      <rect class="dg-region" pathLength="1" x="60" y="38.8" width="25.6" height="12.8" />
+      <path class="dg-leader" pathLength="1" d="M85.6 38.8 L108 26" /><path class="dg-leader" pathLength="1" d="M85.6 51.6 L108 70" />
+      <g class="dg-inset"><rect class="dg-inset-bg" x="108" y="26" width="88" height="44" /><svg class="dg-draw" x="108" y="26" width="88" height="44" viewBox="70 26 32 16">${dgDrawing}</svg><rect class="dg-inset-frame" x="108" y="26" width="88" height="44" /><text x="108" y="79">詳細 A（約 3.4 倍）</text></g>
     </svg>`,
   stepswap: `<span class="dg-steps">${[1, 2, 3, 4].map((step) => `<i style="--s:${step}">${step}</i>`).join('')}<b class="dg-step-name"><span>基礎</span><span>躯体</span><span>外装</span><span>完成</span></b></span>
     <svg class="dg-build" viewBox="0 0 120 70" aria-hidden="true">

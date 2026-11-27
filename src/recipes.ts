@@ -908,11 +908,11 @@ const step = (p) => el.textContent = [...target].map((c, i) => i < p * target.le
     prompt: 'A flowchart animation: lines draw out from a start box, split into two process boxes, then merge into one box; a small dot shuttles back and forth to a confirmation box, clean diagram style',
   },
   D03: {
-    css: `/* 囲み → 引き出し線 → 小窓。小窓は元の図を viewBox で切り取った SVG（同じ図を拡大して入れる） */
+    css: `/* 囲み → 引き出し線 → 小窓。小窓は元の図を viewBox で切り取った SVG（同じ図を約 3.4 倍で入れる） */
 .region, .leader { stroke-dasharray: 1; }
 .region { animation: draw .5s .15s both; } .leader { animation: draw .35s .7s both; }
 @keyframes draw { from { stroke-dashoffset: 1; } }
-.inset { transform-origin: 110px 48px; animation: open .5s .95s cubic-bezier(.2,.8,.2,1) both; }
+.inset { transform-origin: 85.6px 45px; /* 拡大率は、元の図の 1.5 倍以上（ここでは約 3.4 倍）にすると詳細として読みやすい */ animation: open .5s .95s cubic-bezier(.2,.8,.2,1) both; }
 @keyframes open { from { opacity: 0; transform: scale(.3); } }`,
     edit: 'After Effects：図のコンポジションを複製し、スケールを上げて範囲だけをマスクで切り抜いた小窓を作る（元の図と同じ素材なので、図を直すと小窓も変わる）。囲みと引き出し線は「パスのトリミング」で描き、小窓は囲みの位置を基準に、スケール 30→100% と不透明度で開く。Premiere Pro では、同じ画像を上のトラックに重ね、「クロップ」とスケールで小窓にする',
     powerpoint: '図の画像を複製してトリミングし、拡大して小窓にする（枠線を付ける）。囲みの四角形に開始効果「ワイプ」、引き出し線に「ワイプ」、小窓に開始効果「ズーム」（オブジェクトの中心）を「直前の動作の後」で順に。ズームの拡大でよければ、画面切り替え「変形」で元の図から小窓のスライドへ',

@@ -1900,8 +1900,9 @@ footer a { color: var(--ink); text-decoration: none; font-weight: 600; }
 .dg-scene .dg-detail svg { overflow: hidden; }
 .dg-inset-bg { fill: #fff; }
 .dg-inset-frame { fill: none; stroke: #ea6b4d; stroke-width: 1.4; }
-.dg-inset text { font-size: 4.6px; font-weight: 700; fill: #ea6b4d; letter-spacing: .04em; }
-.dg-inset { filter: drop-shadow(0 3px 5px rgba(37,35,31,.18)); transform-box: view-box; transform-origin: 110px 48px; }
+.dg-inset text { font-size: 5.4px; font-weight: 700; fill: #ea6b4d; letter-spacing: .04em; }
+.dg-inset { filter: drop-shadow(0 3px 5px rgba(37,35,31,.18)); transform-box: view-box; transform-origin: 85.6px 45px; }
+.dg-detail .dg-inset .dg-draw path, .dg-detail .dg-inset .dg-draw rect { stroke-width: .34; }
 .dg-effect-detailinset.is-playing .dg-region { animation: dg-draw .5s .15s cubic-bezier(.4,0,.2,1) both; }
 .dg-effect-detailinset.is-playing .dg-leader { animation: dg-draw .35s .7s cubic-bezier(.4,0,.2,1) both; }
 .dg-effect-detailinset.is-playing .dg-inset { animation: dg-inset .5s .95s cubic-bezier(.2,.8,.2,1) both; }
